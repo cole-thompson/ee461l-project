@@ -44,7 +44,7 @@
       <div class="col-xl">
         <table class="table table-bordered">
           <thead>
-            <tr>
+            <tr class="table-primary">
               <th scope="col">Sunday</th>
               <th scope="col">Monday</th>
               <th scope="col">Tuesday</th>

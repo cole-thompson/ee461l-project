@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- Can embedd this into our jsp file -->
 <html lang="en">
   <head>
     <title>Calendar</title>
@@ -12,17 +13,38 @@
   <body>
     <h1>Calendar</h1>
 
+    <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
     <div class="container">
       <div class="row">
-        <div class="col-sm">Sunday</div>
-        <div class="col-sm">Monday</div>
-        <div class="col-sm">Tuesday</div>
-        <div class="col-sm">Wednesday</div>
-        <div class="col-sm">Thursday</div>
-        <div class="col-sm">Friday</div>
-        <div class="col-sm">Saturday</div>
+        <div class="col-xl">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Sunday</th>
+                <th scope="col">Monday</th>
+                <th scope="col">Tuesday</th>
+                <th scope="col">Wednesday</th>
+                <th scope="col">Thursday</th>
+                <th scope="col">Friday</th>
+                <th scope="col">Saturday</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    </body>
+
+  </body>
 </html>

@@ -11,113 +11,205 @@
 
 
 <html>
-  <title>Calendar</title>
-   <!-- Required meta tags -->
-   <meta charset="utf-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<head>
+	 	<title>Calendar</title>
+	 	<!-- Required meta tags -->
+	 	<meta charset="utf-8">
+	 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	 </head>
 
-   <!-- Bootstrap CSS -->
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
- </head>
-
-  <body>
-	<%
-    UserService userService = UserServiceFactory.getUserService();
-    User user = userService.getCurrentUser();
-    if (user != null) {
-      	pageContext.setAttribute("user", user);
-		%>
-		<p>Hello, ${fn:escapeXml(user.nickname)}! (You can
-		<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
+  	<body>
 		<%
-    } else {
+		//Google sign-in initialization 
+	    UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+	    if (user != null) {
+	      	pageContext.setAttribute("user", user);
+			%>
+			<p>Hello, ${fn:escapeXml(user.nickname)}! (You can
+			<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
+			<%
+	    } else {
+			%>
+			<p>Hello!
+			<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a></p>
+			<%
+	    }
 		%>
-		<p>Hello!
-		<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a></p>
-		<%
-    }
-	%>
-
-	<%!
-	/*
-	 * zero-indexed months, can take Calendar.Month inputs
-	 */
-	private String getMonthName(int m) {
-		String name = "";
-		switch (m) {
-		case 0:
-			name = "January";break;
-		case 1:
-			name = "February";break;
-		case 2:
-			name = "March";break;
-		case 3:
-			name = "April";break;
-		case 4:
-			name = "May";break;
-		case 5:
-			name = "June";break;
-		case 6:
-			name = "July";break;
-		case 7:
-			name = "August";break;
-		case 8:
-			name = "September";break;
-		case 9:
-			name = "October";break;
-		case 10:
-			name = "November";break;
-		case 11:
-			name = "December";break;
+	
+		<%!
+		/*
+		 * zero-indexed months, can take Calendar.Month inputs
+		 */
+		private String getMonthName(Integer m) {
+			if (m == null)
+				return "";
+			String name = "";
+			switch (m) {
+				case 0: 	name = "January";break;
+				case 1: 	name = "February";break;
+				case 2: 	name = "March";break;
+				case 3: 	name = "April";break;
+				case 4: 	name = "May";break;
+				case 5: 	name = "June";break;
+				case 6: 	name = "July";break;
+				case 7: 	name = "August";break;
+				case 8: 	name = "September";break;
+				case 9: 	name = "October";break;
+				case 10: 	name = "November";break;
+				case 11: 	name = "December";break;
+			}
+			return name;
 		}
-		return name;
-	}
-	%>
-
-	<%
-	//create java calendar, get current date
-	Calendar currentCal = new GregorianCalendar();
-	int currentDate = currentCal.get(Calendar.DATE);
-	int currentMonth = currentCal.get(Calendar.MONTH);
-	int currentYear = currentCal.get(Calendar.YEAR);
+		%>
+		
+		<%!
+		private int getMonthInt(String mString) {
+			if (mString == null)
+				return -1;
+			int m = -1;
+			switch (mString) {
+				case "January": 	m = 0;break;
+				case "February": 	m = 1;break;
+				case "March": 		m = 2;break;
+				case "April": 		m = 3;break;
+				case "May": 		m = 4;break;
+				case "June": 		m = 5;break;
+				case "July": 		m = 6;break;
+				case "August": 		m = 7;break;
+				case "September": 	m = 8;break;
+				case "October": 	m = 9;break;
+				case "November": 	m = 10;break;
+				case "December": 	m = 11;break;
+				default: 			m = -1;break;
+			}
+			return m;
+		}
+		%>
 	
-	//get year and month from forms
+		<%
+		//main method initialization stuff
+		
+		//create java calendar, get current date
+		Calendar currentCal = new GregorianCalendar();
+		int currentDate = currentCal.get(Calendar.DATE);
+		int currentMonth = currentCal.get(Calendar.MONTH);
+		int currentYear = currentCal.get(Calendar.YEAR);
+		
+		//get year and month from forms if they have changed
+		int displayYear, displayMonth = 0;
+		int displayDate = 1;
+	   	if ((displayMonth = getMonthInt(request.getParameter("formMonth"))) == -1) {
+	   		displayMonth = currentMonth;
+	   	}
+	   	//TODO catch parseInt error
+		if ((displayYear = Integer.parseInt(request.getParameter("formYear"))) == -1) {
+			displayYear = currentYear;
+	   	}
+		if (displayYear == currentYear && displayMonth == currentMonth) {
+			displayDate = currentDate;
+		}
 	
-	int displayYear, displayMonth, displayDate = 0;
-	/* try {
-    	displayYear = Integer.parseInt(request.getParameter("formYear"));
-    	displayMonth = Integer.parseInt(request.getParameter("formMonth"));
-    	displayDate = 1;
-    } */
-    //catch(Exception e) {
-    	displayYear = currentYear;
-    	displayMonth = currentMonth;
-    	displayDate = currentDate;
-    //}
-    
-	/*
-	 * get info about the month
-	 * numDays = number of days in the month
-	 * firstDayOfWeek = day of week on the 1st of the month
-	 * dayOffset = number of days between Sunday and firstDayOfWeek
-	 * numWeeks = number of weeks in the month
-	 */
-	Calendar displayCal = new GregorianCalendar(displayYear, displayMonth, 1);
-	int numDays = displayCal.getActualMaximum(Calendar.DAY_OF_MONTH);
-	int firstDayOfWeek = displayCal.get(Calendar.DAY_OF_WEEK);
-	displayCal = new GregorianCalendar(displayYear, displayMonth, numDays);
-	int numWeeks = displayCal.get(Calendar.WEEK_OF_MONTH);
-	displayCal = new GregorianCalendar(displayYear, displayMonth, displayDate);
+	    
+		/*
+		 * get info about the month
+		 * numDays = number of days in the month
+		 * firstDayOfWeek = day of week on the 1st of the month
+		 * dayOffset = number of days between Sunday and firstDayOfWeek
+		 * numWeeks = number of weeks in the month
+		 */
+		Calendar displayCal = new GregorianCalendar(displayYear, displayMonth, 1);
+		int numDays = displayCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		int firstDayOfWeek = displayCal.get(Calendar.DAY_OF_WEEK);
+		displayCal = new GregorianCalendar(displayYear, displayMonth, numDays);
+		int numWeeks = displayCal.get(Calendar.WEEK_OF_MONTH);
+		displayCal = new GregorianCalendar(displayYear, displayMonth, displayDate);
 	
+		%>
+		
 	
-	%>
-	
-  <h1>Calendar</h1>
-
-  <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
-  <div class="container">
+	  <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
+	  
+	  <h1>Calendar</h1>
+	  <div class="container">
+		
+		<!-- Header Row: Drop down menus to change month and year-->
+		<form name="changeMonth" method="post">
+		<div class="row"> 
+			<div class="col-sm"> <h2><%=(getMonthName(displayMonth))%></h2> </div>
+			<div class="col-sm">
+				<div class="form-group">
+	    		<select name="formMonth" onchange="this.form.submit()" class="form-control form-control-lg">
+	    			<% for (int m = 0; m < 12; m++) { 
+	    				if (m == displayMonth) { %><option selected="selected" class="bg-primary text-light"> <% }
+	    				else { %><option><% } %>
+	    				<%=(getMonthName(m))%>
+	    				</option>
+	  				<%} %>
+				</select>
+				</div>
+			</div>
+			<div class="col-sm">
+				<div class="form-group">
+	    		<select name="formYear" onchange="this.form.submit()" class="form-control form-control-lg">
+	    			<% int numYearsToDisplay = 20;
+	    			for (int i = 0; i < numYearsToDisplay; i++) { 
+	    				int y = currentYear + numYearsToDisplay / 2 - i;
+	    				if (y == displayYear) { %><option selected="selected" class="bg-primary text-light"> <% }
+	    				else { %><option><% } %>
+	    				<%=(y)%>
+	    				</option>
+	  				<%} %>
+				</select>
+				</div>
+			</div>
+		</div>
+	    </form>
+	    
+	    <!-- Calendar table -->
+		<div class="row">
+	    	<div class="col-xl">
+	        	<table class="table table-bordered">
+	          		<thead>
+	            	<tr class="table-primary">
+		            	<th scope="col">Sunday</th>
+		            	<th scope="col">Monday</th>
+		              	<th scope="col">Tuesday</th>
+		              	<th scope="col">Wednesday</th>
+		              	<th scope="col">Thursday</th>
+		              	<th scope="col">Friday</th>
+		              	<th scope="col">Saturday</th>
+	            	</tr>
+	          		</thead>
+		         	<tbody>
+		          	<% int day = 0;
+		          	for (int week = 0; week < numWeeks; week++) { %>
+		            	<tr>
+		            	<% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
+		            		if ((day == currentDate) && (displayMonth == currentMonth) && (displayYear == currentYear)) {
+			            		//current day
+			            		%><td class ="table-success"><%
+		            		}
+		            		else { %><td><% }
+		            	
+		            		if ((day < numDays) && !(week == 0 && dayOfWeek < firstDayOfWeek)) { %>
+		            			<%day++;%>
+		            			<%=(day)%>
+		            		<%} %>
+		            		</td>
+		            	<%}%>
+		            	</tr>
+		      	  	<%} %>
+		          	</tbody>
+	        	</table>
+	    	</div>
+		</div>
+	</div>
   
-  	<!-- Print Tests for the Calendar Info -->
+	<!-- Print Tests for the Calendar Info -->
   	<!--  
   	<div class="row"> <div class="col-sm"> year: <%=(displayYear)%></div></div>
     <div class="row"> <div class="col-sm"> month: <%=(displayMonth)%></div></div>
@@ -125,49 +217,6 @@
     <div class="row"> <div class="col-sm"> numDays: <%=(numDays)%></div></div>
     <div class="row"> <div class="col-sm"> firstDayOfWeek: <%=(firstDayOfWeek)%></div></div>
     <div class="row"> <div class="col-sm"> numWeeks: <%=(numWeeks)%></div></div>
-	-->
-	
-	<div class="row"> <div class="col-xl"> <h2><%=(getMonthName(displayMonth))%></h2> </div></div>
-    <div class="row">
-      <div class="col-xl">
-        <table class="table table-bordered">
-          <thead>
-            <tr class="table-primary">
-              <th scope="col">Sunday</th>
-              <th scope="col">Monday</th>
-              <th scope="col">Tuesday</th>
-              <th scope="col">Wednesday</th>
-              <th scope="col">Thursday</th>
-              <th scope="col">Friday</th>
-              <th scope="col">Saturday</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% int day = 1;
-          for (int week = 0; week < numWeeks; week++) { %>
-            <tr>
-            <% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
-            	if (day == displayDate) {
-            		%><td class ="table-primary"><%
-            	}
-            	else {
-            		%><td><%
-            	}
-            	
-            	if ((day <= numDays) && !(week == 0 && dayOfWeek < firstDayOfWeek)) { %>
-            		<%=(day)%>
-            		<%day++;
-            	} %>
-            	</td>
-            	<%}%>
-            </tr>
-      	  <%} %>
-            
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  </body>
+	-->	
+	</body>
 </html>

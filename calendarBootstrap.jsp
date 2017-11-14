@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Collections" %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.GregorianCalendar" %>
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
@@ -36,10 +38,41 @@
     }
 	%>
 
+	<%
+	//create java calendar, get current date
+	Calendar currentCal = new GregorianCalendar();
+	int currentDate = currentCal.get(Calendar.DATE);
+	int currentMonth = currentCal.get(Calendar.MONTH);
+	int currentYear = currentCal.get(Calendar.YEAR);
+	
+	//get year and month from forms
+	
+	int displayYear, displayMonth, displayDate = 0;
+	/* try {
+    	displayYear = Integer.parseInt(request.getParameter("formYear"));
+    	displayMonth = Integer.parseInt(request.getParameter("formMonth"));
+    	displayDate = 1;
+    } */
+    //catch(Exception e) {
+    	displayYear = currentYear;
+    	displayMonth = currentMonth;
+    	displayDate = currentDate;
+    //}
+    
+	
+	Calendar displayCal = new GregorianCalendar(displayYear, displayMonth, 1);
+	int numDays = displayCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+	int firstDayOfWeek = displayCal.get(Calendar.DAY_OF_WEEK);
+	
+	%>
+	
   <h1>Calendar</h1>
 
   <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
   <div class="container">
+  	<div class="row"> <div class="col-xl"> year: <%=(displayYear)%></div></div>
+    <div class="row"> <div class="col-xl"> month: <%=(displayMonth)%></div></div>
+    <div class="row"> <div class="col-xl"> date: <%=(displayDate)%></div></div>
     <div class="row">
       <div class="col-xl">
         <table class="table table-bordered">

@@ -38,6 +38,42 @@
     }
 	%>
 
+	<%!
+	/*
+	 * zero-indexed months, can take Calendar.Month inputs
+	 */
+	private String getMonthName(int m) {
+		String name = "";
+		switch (m) {
+		case 0:
+			name = "January";break;
+		case 1:
+			name = "February";break;
+		case 2:
+			name = "March";break;
+		case 3:
+			name = "April";break;
+		case 4:
+			name = "May";break;
+		case 5:
+			name = "June";break;
+		case 6:
+			name = "July";break;
+		case 7:
+			name = "August";break;
+		case 8:
+			name = "September";break;
+		case 9:
+			name = "October";break;
+		case 10:
+			name = "November";break;
+		case 11:
+			name = "December";break;
+		}
+		return name;
+	}
+	%>
+
 	<%
 	//create java calendar, get current date
 	Calendar currentCal = new GregorianCalendar();
@@ -59,10 +95,20 @@
     	displayDate = currentDate;
     //}
     
-	
+	/*
+	 * get info about the month
+	 * numDays = number of days in the month
+	 * firstDayOfWeek = day of week on the 1st of the month
+	 * dayOffset = number of days between Sunday and firstDayOfWeek
+	 * numWeeks = number of weeks in the month
+	 */
 	Calendar displayCal = new GregorianCalendar(displayYear, displayMonth, 1);
 	int numDays = displayCal.getActualMaximum(Calendar.DAY_OF_MONTH);
 	int firstDayOfWeek = displayCal.get(Calendar.DAY_OF_WEEK);
+	displayCal = new GregorianCalendar(displayYear, displayMonth, numDays);
+	int numWeeks = displayCal.get(Calendar.WEEK_OF_MONTH);
+	displayCal = new GregorianCalendar(displayYear, displayMonth, displayDate);
+	
 	
 	%>
 	
@@ -70,9 +116,18 @@
 
   <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
   <div class="container">
-  	<div class="row"> <div class="col-xl"> year: <%=(displayYear)%></div></div>
-    <div class="row"> <div class="col-xl"> month: <%=(displayMonth)%></div></div>
-    <div class="row"> <div class="col-xl"> date: <%=(displayDate)%></div></div>
+  
+  	<!-- Print Tests for the Calendar Info -->
+  	<!--  
+  	<div class="row"> <div class="col-sm"> year: <%=(displayYear)%></div></div>
+    <div class="row"> <div class="col-sm"> month: <%=(displayMonth)%></div></div>
+    <div class="row"> <div class="col-sm"> date: <%=(displayDate)%></div></div>
+    <div class="row"> <div class="col-sm"> numDays: <%=(numDays)%></div></div>
+    <div class="row"> <div class="col-sm"> firstDayOfWeek: <%=(firstDayOfWeek)%></div></div>
+    <div class="row"> <div class="col-sm"> numWeeks: <%=(numWeeks)%></div></div>
+	-->
+	
+	<div class="row"> <div class="col-xl"> <h2><%=(getMonthName(displayMonth))%></h2> </div></div>
     <div class="row">
       <div class="col-xl">
         <table class="table table-bordered">
@@ -88,15 +143,26 @@
             </tr>
           </thead>
           <tbody>
+          <% int day = 1;
+          for (int week = 0; week < numWeeks; week++) { %>
             <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td>5</td>
-              <td>6</td>
-              <td>7</td>
+            <% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
+            	if (day == displayDate) {
+            		%><td class ="table-primary"><%
+            	}
+            	else {
+            		%><td><%
+            	}
+            	
+            	if ((day <= numDays) && !(week == 0 && dayOfWeek < firstDayOfWeek)) { %>
+            		<%=(day)%>
+            		<%day++;
+            	} %>
+            	</td>
+            	<%}%>
             </tr>
+      	  <%} %>
+            
           </tbody>
         </table>
       </div>

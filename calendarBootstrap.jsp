@@ -89,6 +89,26 @@
 			return m;
 		}
 		%>
+		
+		<%!
+		private int getYear(String yearString) {
+			int maxYear = 4000;
+			int minYear = 0;
+			int year = -1;
+			try {
+				//check bounds of year
+				year = Integer.parseInt(yearString);
+				if (year > maxYear || year < minYear) {
+					year = -1;
+				}
+			}
+			catch (Exception e) {
+				year = -1;
+			}
+			return year;
+		}
+		
+		%>
 	
 		<%
 		//main method initialization stuff
@@ -106,11 +126,19 @@
 	   		displayMonth = currentMonth;
 	   	}
 	   	//TODO catch parseInt error
-		if ((displayYear = Integer.parseInt(request.getParameter("formYear"))) == -1) {
+		if ((displayYear = getYear(request.getParameter("formYear"))) == -1) {
 			displayYear = currentYear;
 	   	}
 		if (displayYear == currentYear && displayMonth == currentMonth) {
 			displayDate = currentDate;
+		}
+		
+		//check year up/down buttons
+		if(request.getParameter("downYear") != null) {
+			displayYear--;
+		}
+		else if(request.getParameter("upYear") != null) {
+			displayYear++;
 		}
 	
 	    
@@ -142,7 +170,7 @@
 			<div class="col-sm"> <h2><%=(getMonthName(displayMonth))%></h2> </div>
 			<div class="col-sm">
 				<div class="form-group">
-	    		<select name="formMonth" onchange="this.form.submit()" class="form-control form-control-lg">
+	    		<select name="formMonth" onchange="changeMonth.submit()" class="form-control form-control-lg">
 	    			<% for (int m = 0; m < 12; m++) { 
 	    				if (m == displayMonth) { %><option selected="selected" class="bg-primary text-light"> <% }
 	    				else { %><option><% } %>
@@ -154,16 +182,15 @@
 			</div>
 			<div class="col-sm">
 				<div class="form-group">
-	    		<select name="formYear" onchange="this.form.submit()" class="form-control form-control-lg">
-	    			<% int numYearsToDisplay = 20;
-	    			for (int i = 0; i < numYearsToDisplay; i++) { 
-	    				int y = currentYear + numYearsToDisplay / 2 - i;
-	    				if (y == displayYear) { %><option selected="selected" class="bg-primary text-light"> <% }
-	    				else { %><option><% } %>
-	    				<%=(y)%>
-	    				</option>
-	  				<%} %>
-				</select>
+				<div class="input-group">   				
+	    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg" value="<%=(displayYear)%>">
+	    			<span class="input-group-addon">
+	    				<div class="btn-group" role="group">
+		    				<button type="submit" class="btn btn-secondary" name="downYear" onclick="changeMonth.submit()">&#9660;</button>
+	  						<button type="submit" class="btn btn-secondary" name="upYear" onclick="changeMonth.submit()">&#9650;</button>
+	  					</div>
+	    			</span>
+	    		</div>
 				</div>
 			</div>
 		</div>

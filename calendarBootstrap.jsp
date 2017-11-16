@@ -113,27 +113,27 @@
 		<%
 		//main method initialization stuff
 		
-		//create java calendar, get current date
+		//create java calendar, get current day/month/year
 		Calendar currentCal = new GregorianCalendar();
 		int currentDate = currentCal.get(Calendar.DATE);
 		int currentMonth = currentCal.get(Calendar.MONTH);
 		int currentYear = currentCal.get(Calendar.YEAR);
 		
-		//get year and month from forms if they have changed
+		/* Form inputs - 
+		 * if the month/year forms have content, set the display month/year
+		 * If forms are empty or invalid, display current month/year
+		 */
 		int displayYear, displayMonth = 0;
-		int displayDate = 1;
 	   	if ((displayMonth = getMonthInt(request.getParameter("formMonth"))) == -1) {
 	   		displayMonth = currentMonth;
 	   	}
-	   	//TODO catch parseInt error
 		if ((displayYear = getYear(request.getParameter("formYear"))) == -1) {
 			displayYear = currentYear;
 	   	}
-		if (displayYear == currentYear && displayMonth == currentMonth) {
-			displayDate = currentDate;
-		}
 		
-		//check year up/down buttons
+		/* year up/down buttons input
+		 * check if year up/down buttons were pressed, adjust displayYear
+		 */
 		if(request.getParameter("downYear") != null) {
 			displayYear--;
 		}
@@ -146,23 +146,20 @@
 		 * get info about the month
 		 * numDays = number of days in the month
 		 * firstDayOfWeek = day of week on the 1st of the month
-		 * dayOffset = number of days between Sunday and firstDayOfWeek
 		 * numWeeks = number of weeks in the month
 		 */
 		Calendar displayCal = new GregorianCalendar(displayYear, displayMonth, 1);
 		int numDays = displayCal.getActualMaximum(Calendar.DAY_OF_MONTH);
 		int firstDayOfWeek = displayCal.get(Calendar.DAY_OF_WEEK);
 		displayCal = new GregorianCalendar(displayYear, displayMonth, numDays);
-		int numWeeks = displayCal.get(Calendar.WEEK_OF_MONTH);
-		displayCal = new GregorianCalendar(displayYear, displayMonth, displayDate);
-	
+		int numWeeks = displayCal.get(Calendar.WEEK_OF_MONTH);	
 		%>
 		
 	
 	  <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
 	  
 	  <h1>Calendar</h1>
-	  <div class="container">
+	  <div class="container">	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
 		
 		<!-- Header Row: Drop down menus to change month and year-->
 		<form name="changeMonth" method="post">
@@ -182,15 +179,15 @@
 			</div>
 			<div class="col-sm">
 				<div class="form-group">
-				<div class="input-group">   				
-	    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg" value="<%=(displayYear)%>">
-	    			<span class="input-group-addon">
-	    				<div class="btn-group" role="group">
-		    				<button type="submit" class="btn btn-secondary" name="downYear" onclick="changeMonth.submit()">&#9660;</button>
-	  						<button type="submit" class="btn btn-secondary" name="upYear" onclick="changeMonth.submit()">&#9650;</button>
-	  					</div>
-	    			</span>
-	    		</div>
+					<div class="input-group">   				
+		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg" value="<%=(displayYear)%>">
+		    			<span class="input-group-addon">
+		    				<div class="btn-group" role="group">
+			    				<button type="submit" class="btn btn-secondary" name="downYear" onclick="changeMonth.submit()">&#9660;</button>
+		  						<button type="submit" class="btn btn-secondary" name="upYear" onclick="changeMonth.submit()">&#9650;</button>
+		  					</div>
+		    			</span>
+		    		</div>
 				</div>
 			</div>
 		</div>
@@ -211,7 +208,7 @@
 		              	<th scope="col">Saturday</th>
 	            	</tr>
 	          		</thead>
-		         	<tbody>
+		         	<tbody>		<!-- Iterate through the table, place numbers in proper locations -->
 		          	<% int day = 0;
 		          	for (int week = 0; week < numWeeks; week++) { %>
 		            	<tr>
@@ -224,7 +221,11 @@
 		            	
 		            		if ((day < numDays) && !(week == 0 && dayOfWeek < firstDayOfWeek)) { %>
 		            			<%day++;%>
-		            			<%=(day)%>
+		            			<%=(day)%>		<!-- This is where day number is printed, might need some styling-->
+		            			<!-- contents of a calendar cell - add stuff about events here -->
+		            			<!-- TODO -->
+		            			
+		            			
 		            		<%} %>
 		            		</td>
 		            	<%}%>
@@ -238,9 +239,9 @@
   
 	<!-- Print Tests for the Calendar Info -->
   	<!--  
-  	<div class="row"> <div class="col-sm"> year: <%=(displayYear)%></div></div>
-    <div class="row"> <div class="col-sm"> month: <%=(displayMonth)%></div></div>
-    <div class="row"> <div class="col-sm"> date: <%=(displayDate)%></div></div>
+  	<div class="row"> <div class="col-sm"> current year: <%=(currentYear)%></div></div>
+    <div class="row"> <div class="col-sm"> current month: <%=(currentMonth)%></div></div>
+    <div class="row"> <div class="col-sm"> current date: <%=(currentDate)%></div></div>
     <div class="row"> <div class="col-sm"> numDays: <%=(numDays)%></div></div>
     <div class="row"> <div class="col-sm"> firstDayOfWeek: <%=(firstDayOfWeek)%></div></div>
     <div class="row"> <div class="col-sm"> numWeeks: <%=(numWeeks)%></div></div>

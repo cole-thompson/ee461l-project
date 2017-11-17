@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MockHttpServletResponse implements HttpServletResponse {
 
   private String contentType;
+  private String encoding;
   private StringWriter writerContent = new StringWriter();
   private PrintWriter writer = new PrintWriter(writerContent);
 
@@ -55,7 +56,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
   @Override
   public String getCharacterEncoding() {
-    return null;
+    return encoding;
   }
 
   @Override
@@ -86,7 +87,8 @@ public class MockHttpServletResponse implements HttpServletResponse {
   }
 
   @Override
-  public void setCharacterEncoding(String arg0) {
+  public void setCharacterEncoding(String encoding) {
+    this.encoding = encoding;
   }
 
   @Override

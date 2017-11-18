@@ -15,16 +15,18 @@ import com.googlecode.objectify.*;
 
 public class CalendarServlet extends HttpServlet {
 	static {
-        //ObjectifyService.register();
+        //ObjectifyService.register(smartcal.CalEvent.class);
     }
 	
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
         
+        
         //String content = req.getParameter("content");
         //ObjectifyService.ofy().save().entity().now(); 
         
-        resp.sendRedirect("/ofyguestbook.jsp");
+        
+        resp.sendRedirect("/calendar.jsp");
     }
 }

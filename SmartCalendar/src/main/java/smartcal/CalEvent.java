@@ -11,6 +11,7 @@ import com.googlecode.objectify.annotation.Id;
 /*
  * Very basic event class that contains a user, start, and end time.
  * people: list of people in this event
+ * add key for user
  */
 
 

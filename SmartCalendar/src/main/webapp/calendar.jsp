@@ -134,12 +134,13 @@
 		/* year up/down buttons input
 		 * check if year up/down buttons were pressed, adjust displayYear
 		 */
+		 /*
 		if(request.getParameter("downYear") != null) {
 			displayYear--;
 		}
 		else if(request.getParameter("upYear") != null) {
 			displayYear++;
-		}
+		}*/
 	
 	    
 		/*
@@ -162,7 +163,7 @@
 	  <div class="container">	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
 		
 		<!-- Header Row: Drop down menus to change month and year-->
-		<form name="changeMonth" method="post">
+		<form action="calendar" name="changeMonth" method="post">
 		<div class="row"> 
 			<div class="col-sm"> <h2><%=(getMonthName(displayMonth))%></h2> </div>
 			<div class="col-sm">
@@ -183,8 +184,8 @@
 		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg" value="<%=(displayYear)%>">
 		    			<span class="input-group-addon">
 		    				<div class="btn-group" role="group">
-			    				<button type="submit" class="btn btn-secondary" name="downYear" onclick="changeMonth.submit()">&#9660;</button>
-		  						<button type="submit" class="btn btn-secondary" name="upYear" onclick="changeMonth.submit()">&#9650;</button>
+			    				<button type="submit" class="btn btn-secondary" name="downYear" onclick="document.getElementById('formYear').value = '<%=(displayYear - 1)%>';">&#9660;</button>
+		  						<button type="submit" class="btn btn-secondary" name="upYear" onclick="document.getElementById('formYear').value = '<%=(displayYear + 1)%>';">&#9650;</button>
 		  					</div>
 		    			</span>
 		    		</div>

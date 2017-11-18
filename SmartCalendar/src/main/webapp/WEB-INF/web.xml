@@ -19,7 +19,7 @@
 	
 	<servlet>
 	    <servlet-name>calendar</servlet-name>
-	    <servlet-class>smartcal.SmartCalendarLogin</servlet-class>
+	    <servlet-class>smartcal.CalendarServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>calendar</servlet-name>

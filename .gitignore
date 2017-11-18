@@ -1,11 +1,8 @@
 .DS_Store
-.project
-
-.DS_Store
 */.DS_Store
 
-SmartCalendar/.*
-SmartCalendar/.settings/*
-
+.project
+SmartCalendar/.classpath
+SmartCalendar/.project
+SmartCalendar/.settings/
 SmartCalendar/build/
-*

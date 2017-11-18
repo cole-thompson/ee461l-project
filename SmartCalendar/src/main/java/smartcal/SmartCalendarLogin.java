@@ -39,7 +39,7 @@ public class SmartCalendarLogin extends HttpServlet {
 
 }
 
-/*
+/*		//commented this out because it is currently in the jsp file
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
         if (user != null) {

@@ -19,8 +19,8 @@ public class UserDisplayData {
 	@Index User user;
 	
 	private List<CalEvent> displayEvents;
-	private int displayMonth;
-	private int displayYear;
+	private int displayMonth;		//auto current month = -1
+	private int displayYear;		//auto current year = -1
 	
 	public UserDisplayData() {
 		this.user = null;
@@ -37,12 +37,13 @@ public class UserDisplayData {
 		displayEvents = new ArrayList<CalEvent>();
 	}
 	
-	/* 
-	 * loads the events for the display month/year into displayEvents list with objectify
+	/* populate displayEvents
+	 * loads a User's events for the display month/year into displayEvents list with objectify
 	 */
 	public void loadDisplayEvents() {
 		//TODO
 	}
+	
 	
 	/* GETTERS AND SETTERS */
 	
@@ -78,6 +79,9 @@ public class UserDisplayData {
 		this.user = user;
 	}
 
+	
+	/* STATIC FUNCTIONS to help with displaying month and year with forms*/
+	
 	/*
 	 * zero-indexed months, can take Calendar.Month inputs
 	 */

@@ -72,8 +72,6 @@
 			displayYear = currentYear;
 	   	}
 		
-       	//print user display info to console
-       	System.out.println(username + " is displaying calendar for " + display.getDisplayMonth() + "/" + display.getDisplayYear());
 	    
 		/*
 		 * get info about the month

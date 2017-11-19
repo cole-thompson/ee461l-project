@@ -36,11 +36,19 @@ public class CalendarServlet extends HttpServlet {
     }
     
     
-    
+    /* check the changeMonth form in calendar.jsp
+     * updates the user's UserDisplayData in objectify, updates the events to display
+     */
     private void updateCalendarDisplayMonth(User user, HttpServletRequest req) {
         //check the changeMonth form - grab month and year from form
     	int displayMonth = UserDisplayData.getMonthInt(req.getParameter("formMonth"));
         int displayYear = UserDisplayData.getYear(req.getParameter("formYear"));
+        
+        //check the "Today" button
+        if (req.getParameter("today") != null) {
+        	displayMonth = -1;
+        	displayYear = -1;
+        }
         
     	//get UserDisplayData for the User, create new one if needed
        	UserDisplayData display = ObjectifyService.ofy().load().type(UserDisplayData.class).filter("user", user).first().now();

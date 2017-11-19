@@ -90,23 +90,26 @@
 	  <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
 	  
 	  <h1>Calendar</h1>
-	  <div class="container bg-light border border-primary p-2" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
+	  <div class="container bg-light border border-primary p-1" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
 		
 		<!-- Header Row: Drop down menus to change month and year-->
-		<form action="/calendar" name="changeMonth" method="post">
-		<div class="row"> 
-			<div class="col-sm"> 
+		
+		<div class="row m-1 align-middle"> 
+			<div class="col-md-auto"> 
 				<table>
-				<tr><td><h2><span class="text-primary"><%=(displayMonth)%></span> <span class="text-secondary"><%=(smartcal.UserDisplayData.getMonthName(displayMonth))%></span></h2></td></tr>
+				<tr><td><h2><span class="text-primary"><%=(displayMonth + 1)%></span> <span class="text-secondary"><%=(smartcal.UserDisplayData.getMonthName(displayMonth))%></span></h2></td></tr>
 				<tr><td><span class="text-secondary"><%=(username)%></span></td></tr>
 				</table>
 			</div>
-			<div class="col-sm">
-				<div class="form-group">
-					<div class="input-group"> 
+			
+			<div class="col-md">
+				<form action="/calendar" name="changeMonth" method="post">
+				<div class="form-group form-group-lg">
+					<div class="input-group input-group-lg"> 
 					  	<select name="formMonth" onchange="changeMonth.submit()" class="form-control form-control-lg">
 		    				<% for (int m = 0; m < 12; m++) { 
 		    					if (m == displayMonth) { %><option selected="selected" class="bg-primary text-light"> <% }
+		    					else if (m == currentMonth && displayYear == currentYear) { %><option class="bg-success text-light"> <% }
 		    					else { %><option><% } %>
 		    					<%=(smartcal.UserDisplayData.getMonthName(m))%>
 		    					</option>
@@ -114,15 +117,19 @@
 						</select>
 						<span class="input-group-addon">/</span>
 		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg" value="<%=(displayYear)%>" type="number" min="1000" max="3000">
-		    			
-		    		</div>
+		    		</div>		    		
 				</div>
+				</form>
 			</div>
+			
+			<div class="col-md-auto"><form action="/calendar" name="toToday" method="post">
+			<button name="today" class="btn btn-lg btn-success text-light" type="submit">Today</button>
+			</form></div>
 		</div>
-	    </form>
+	    
 	    	    
 	    <!-- Calendar table -->
-		<div class="row">
+		<div class="row m-1">
 	    	<div class="col-xl">
 	        	<table class="table table-bordered table-light">
 	          		<thead class="thead-dark">

@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Collections" %>
 <%@ page import="java.util.Calendar" %>
@@ -7,6 +8,7 @@
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="com.googlecode.objectify.ObjectifyService" %>
+
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
@@ -26,122 +28,52 @@
 		//Google sign-in initialization 
 	    UserService userService = UserServiceFactory.getUserService();
 	    User user = userService.getCurrentUser();
-	    if (user != null) {
-	      	pageContext.setAttribute("user", user);
-			%>
-			<p>Hello, ${fn:escapeXml(user.nickname)}! (You can
-			<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
-			<%
-	    } else {
+	    String username = "";
+	    if (user == null) {
 			%>
 			<p>Hello!
 			<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a></p>
 			<%
 	    }
-		%>
-	
-		<%!
-		/*
-		 * zero-indexed months, can take Calendar.Month inputs
-		 */
-		private String getMonthName(Integer m) {
-			if (m == null)
-				return "";
-			String name = "";
-			switch (m) {
-				case 0: 	name = "January";break;
-				case 1: 	name = "February";break;
-				case 2: 	name = "March";break;
-				case 3: 	name = "April";break;
-				case 4: 	name = "May";break;
-				case 5: 	name = "June";break;
-				case 6: 	name = "July";break;
-				case 7: 	name = "August";break;
-				case 8: 	name = "September";break;
-				case 9: 	name = "October";break;
-				case 10: 	name = "November";break;
-				case 11: 	name = "December";break;
-			}
-			return name;
-		}
-		%>
-		
-		<%!
-		private int getMonthInt(String mString) {
-			if (mString == null)
-				return -1;
-			int m = -1;
-			switch (mString) {
-				case "January": 	m = 0;break;
-				case "February": 	m = 1;break;
-				case "March": 		m = 2;break;
-				case "April": 		m = 3;break;
-				case "May": 		m = 4;break;
-				case "June": 		m = 5;break;
-				case "July": 		m = 6;break;
-				case "August": 		m = 7;break;
-				case "September": 	m = 8;break;
-				case "October": 	m = 9;break;
-				case "November": 	m = 10;break;
-				case "December": 	m = 11;break;
-				default: 			m = -1;break;
-			}
-			return m;
-		}
-		%>
-		
-		<%!
-		private int getYear(String yearString) {
-			int maxYear = 4000;
-			int minYear = 0;
-			int year = -1;
-			try {
-				//check bounds of year
-				year = Integer.parseInt(yearString);
-				if (year > maxYear || year < minYear) {
-					year = -1;
-				}
-			}
-			catch (Exception e) {
-				year = -1;
-			}
-			return year;
-		}
-		
-		%>
+	    else {
+	    	username = "" + user.getNickname();
+	      	pageContext.setAttribute("user", user);
+			%>
+			<p>Hello, ${fn:escapeXml(user.nickname)}! (You can
+			<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
+			<%
+	    }  
+		%>	
 	
 		<%
 		//main method initialization stuff
-		
+		ObjectifyService.register(smartcal.CalEvent.class);
+        ObjectifyService.register(smartcal.UserDisplayData.class);
+        
 		//create java calendar, get current day/month/year
 		Calendar currentCal = new GregorianCalendar();
 		int currentDate = currentCal.get(Calendar.DATE);
 		int currentMonth = currentCal.get(Calendar.MONTH);
 		int currentYear = currentCal.get(Calendar.YEAR);
-		
-		/* Form inputs - 
-		 * if the month/year forms have content, set the display month/year
-		 * If forms are empty or invalid, display current month/year
-		 */
+				
+		//grab user display information from objectify
+       	smartcal.UserDisplayData display = ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user", user).first().now();
+       	if (display == null) {
+       		System.out.println("null");
+       		display = new smartcal.UserDisplayData(user);
+       	}
+       	
+		//set the display month and year to current if invalid
 		int displayYear, displayMonth = 0;
-	   	if ((displayMonth = getMonthInt(request.getParameter("formMonth"))) == -1) {
+	   	if ((displayMonth = display.getDisplayMonth()) == -1) {
 	   		displayMonth = currentMonth;
 	   	}
-		if ((displayYear = getYear(request.getParameter("formYear"))) == -1) {
+		if ((displayYear = display.getDisplayYear()) == -1) {
 			displayYear = currentYear;
 	   	}
 		
-		/* year up/down buttons input
-		 * check if year up/down buttons were pressed, adjust displayYear
-		 */
-		 /*
-		if(request.getParameter("downYear") != null) {
-			displayYear--;
-		}
-		else if(request.getParameter("upYear") != null) {
-			displayYear++;
-		}*/
-	
+       	//print user display info to console
+       	System.out.println(username + " is displaying calendar for " + display.getDisplayMonth() + "/" + display.getDisplayYear());
 	    
 		/*
 		 * get info about the month
@@ -160,46 +92,43 @@
 	  <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
 	  
 	  <h1>Calendar</h1>
-	  <div class="container">	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
+	  <div class="container bg-light border border-primary p-2" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
 		
 		<!-- Header Row: Drop down menus to change month and year-->
-		<form action="calendar" name="changeMonth" method="post">
+		<form action="/calendar" name="changeMonth" method="post">
 		<div class="row"> 
-			<div class="col-sm"> <h2><%=(getMonthName(displayMonth))%></h2> </div>
-			<div class="col-sm">
-				<div class="form-group">
-	    		<select name="formMonth" onchange="changeMonth.submit()" class="form-control form-control-lg">
-	    			<% for (int m = 0; m < 12; m++) { 
-	    				if (m == displayMonth) { %><option selected="selected" class="bg-primary text-light"> <% }
-	    				else { %><option><% } %>
-	    				<%=(getMonthName(m))%>
-	    				</option>
-	  				<%} %>
-				</select>
-				</div>
+			<div class="col-sm"> 
+				<table>
+				<tr><td><h2><span class="text-primary"><%=(displayMonth)%></span> <span class="text-secondary"><%=(smartcal.UserDisplayData.getMonthName(displayMonth))%></span></h2></td></tr>
+				<tr><td><span class="text-secondary"><%=(username)%></span></td></tr>
+				</table>
 			</div>
 			<div class="col-sm">
 				<div class="form-group">
-					<div class="input-group">   				
-		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg" value="<%=(displayYear)%>">
-		    			<span class="input-group-addon">
-		    				<div class="btn-group" role="group">
-			    				<button type="submit" class="btn btn-secondary" name="downYear" onclick="document.getElementById('formYear').value = '<%=(displayYear - 1)%>';">&#9660;</button>
-		  						<button type="submit" class="btn btn-secondary" name="upYear" onclick="document.getElementById('formYear').value = '<%=(displayYear + 1)%>';">&#9650;</button>
-		  					</div>
-		    			</span>
+					<div class="input-group"> 
+					  	<select name="formMonth" onchange="changeMonth.submit()" class="form-control form-control-lg">
+		    				<% for (int m = 0; m < 12; m++) { 
+		    					if (m == displayMonth) { %><option selected="selected" class="bg-primary text-light"> <% }
+		    					else { %><option><% } %>
+		    					<%=(smartcal.UserDisplayData.getMonthName(m))%>
+		    					</option>
+		  					<%} %>
+						</select>
+						<span class="input-group-addon">/</span>
+		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg" value="<%=(displayYear)%>" type="number" min="1000" max="3000">
+		    			
 		    		</div>
 				</div>
 			</div>
 		</div>
 	    </form>
-	    
+	    	    
 	    <!-- Calendar table -->
 		<div class="row">
 	    	<div class="col-xl">
-	        	<table class="table table-bordered">
-	          		<thead>
-	            	<tr class="table-primary">
+	        	<table class="table table-bordered table-light">
+	          		<thead class="thead-dark">
+	            	<tr>
 		            	<th scope="col">Sunday</th>
 		            	<th scope="col">Monday</th>
 		              	<th scope="col">Tuesday</th>

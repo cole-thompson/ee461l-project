@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.appengine.api.users.User;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 /*
  * Very basic event class that contains a user, start, and end time.
@@ -18,10 +19,11 @@ import com.googlecode.objectify.annotation.Id;
 @Entity
 public class CalEvent {
 	@Id Long id;
-	private User creator;
+	@Index User creator;
+	
 	private Calendar startTime;
 	private Calendar endTime;
-	private List<User> people;
+	List<User> people;
 	private String location;
 	
 	public CalEvent(User creator, Calendar startTime, Calendar endTime) {
@@ -29,7 +31,7 @@ public class CalEvent {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		people = new ArrayList<User>();
-		people.add(creator);
+		people.add(this.creator);
 		location = "";
 	}
 	

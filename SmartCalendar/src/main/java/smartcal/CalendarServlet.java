@@ -61,7 +61,7 @@ public class CalendarServlet extends HttpServlet {
         display.setDisplayYear(displayYear);
         
         //print user display info to console
-       	System.out.println(getUserName(user) + " is displaying calendar for " + display.getDisplayMonth() + "/" + display.getDisplayYear());
+       	System.out.println(getUserName(user) + " is displaying calendar for " + (display.getDisplayMonth() + 1) + "/" + display.getDisplayYear());
         
        	//populate the list of all the events in the display month
        	display.loadDisplayEvents();
@@ -75,6 +75,9 @@ public class CalendarServlet extends HttpServlet {
         String username = "";
         if (user != null) {
         	username = user.getNickname();
+        }
+        else {
+        	username = "[unknown user]";
         }
         return username;
     }

@@ -24,6 +24,28 @@
 	 </head>
 
   	<body>
+  	
+  		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  			<a class="navbar-brand" href="#">Calendar</a>
+  			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+		    	<span class="navbar-toggler-icon"></span>
+		 	</button>
+		 	
+		 	<div class="collapse navbar-collapse" id="navbarContent">
+		    <ul class="navbar-nav mr-auto">
+		      <li class="nav-item active">
+		        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="#">Action</a>
+		          <div class="dropdown-divider"></div>
+		          <a class="dropdown-item" href="#">Something else here</a>
+		        </div>
+		      </li>
+		    </ul>
+
 		<%
 		//Google sign-in initialization 
 	    UserService userService = UserServiceFactory.getUserService();
@@ -31,19 +53,22 @@
 	    String username = "";
 	    if (user == null) {
 			%>
-			<p>Hello!
-			<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a></p>
+			<span class="navbar-text">Hello!
+			<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a></span>
 			<%
 	    }
 	    else {
 	    	username = "" + user.getNickname();
 	      	pageContext.setAttribute("user", user);
 			%>
-			<p>Hello, ${fn:escapeXml(user.nickname)}! (You can
-			<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">sign out</a>.)</p>
+			<span class="navbar-text">Hello, ${fn:escapeXml(user.nickname)}! 
+			<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">(sign out</a>.)</span>
 			<%
 	    }  
 		%>	
+		
+		</div>	
+		</nav>
 	
 		<%
 		//main method initialization stuff
@@ -89,7 +114,6 @@
 	
 	  <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
 	  
-	  <h1>Calendar</h1>
 	  <div class="container bg-light border border-primary p-1" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
 		
 		<!-- Header Row: Drop down menus to change month and year-->
@@ -181,5 +205,10 @@
     <div class="row"> <div class="col-sm"> firstDayOfWeek: <%=(firstDayOfWeek)%></div></div>
     <div class="row"> <div class="col-sm"> numWeeks: <%=(numWeeks)%></div></div>
 	-->	
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+	
 	</body>
 </html>

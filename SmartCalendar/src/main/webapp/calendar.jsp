@@ -53,16 +53,16 @@
 	    String username = "";
 	    if (user == null) {
 			%>
-			<span class="navbar-text">Hello!
-			<a href="<%= userService.createLoginURL(request.getRequestURI()) %>">Sign in</a></span>
+			<span class="navbar-text m-2">Hello!</span>
+			<a class="btn btn-outline-success" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
 			<%
 	    }
 	    else {
 	    	username = "" + user.getNickname();
 	      	pageContext.setAttribute("user", user);
 			%>
-			<span class="navbar-text">Hello, ${fn:escapeXml(user.nickname)}! 
-			<a href="<%= userService.createLogoutURL(request.getRequestURI()) %>">(sign out</a>.)</span>
+			<span class="navbar-text m-2">Hello, ${fn:escapeXml(user.nickname)}! </span>
+			<a class="btn btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
 			<%
 	    }  
 		%>	
@@ -114,16 +114,13 @@
 	
 	  <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
 	  
-	  <div class="container bg-light border border-primary p-1" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
+	  <div class="container bg-light border border-primary p-1 w-100" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
 		
 		<!-- Header Row: Drop down menus to change month and year-->
 		
 		<div class="row m-1 align-middle"> 
-			<div class="col-md-auto"> 
-				<table>
-				<tr><td><h2><span class="text-primary"><%=(displayMonth + 1)%></span> <span class="text-secondary"><%=(smartcal.UserDisplayData.getMonthName(displayMonth))%></span></h2></td></tr>
-				<tr><td><span class="text-secondary"><%=(username)%></span></td></tr>
-				</table>
+			<div class="col-md-auto">
+				<h2><span class="text-primary"><%=(displayMonth + 1)%></span> <span class="text-secondary"><%=(smartcal.UserDisplayData.getMonthName(displayMonth))%></span></h2>
 			</div>
 			
 			<div class="col-md">
@@ -155,8 +152,8 @@
 	    <!-- Calendar table -->
 		<div class="row m-1">
 	    	<div class="col-xl">
-	        	<table class="table table-bordered table-light">
-	          		<thead class="thead-dark">
+	        	<table class="table table-bordered table-light table-responsive-md">
+	          		<thead class="thead-dark w-100">
 	            	<tr>
 		            	<th scope="col">Sunday</th>
 		            	<th scope="col">Monday</th>
@@ -167,7 +164,7 @@
 		              	<th scope="col">Saturday</th>
 	            	</tr>
 	          		</thead>
-		         	<tbody>		<!-- Iterate through the table, place numbers in proper locations -->
+		         	<tbody class="w-100">		<!-- Iterate through the table, place numbers in proper locations -->
 		          	<% int day = 0;
 		          	for (int week = 0; week < numWeeks; week++) { %>
 		            	<tr>

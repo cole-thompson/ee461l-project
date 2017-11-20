@@ -2,6 +2,7 @@
 
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Collections" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.util.GregorianCalendar" %>
 <%@ page import="com.google.appengine.api.users.User" %>
@@ -97,7 +98,9 @@
 			displayYear = currentYear;
 	   	}
 		
-	    
+		//load the events in displayMonth for a user into the display object
+	    display.loadDisplayEvents();
+				
 		/*
 		 * get info about the month
 		 * numDays = number of days in the month
@@ -180,7 +183,14 @@
 		            			<%=(day)%>		<!-- This is where day number is printed, might need some styling-->
 		            			<!-- contents of a calendar cell - add stuff about events here -->
 		            			<!-- TODO -->
+		            			<% ArrayList<smartcal.CalEvent> todaysEvents = display.getDisplayEvents(day); 
 		            			
+		            			//display preview of first event that day - eventually loop through and display all of them
+		            			if (todaysEvents != null && !todaysEvents.isEmpty()) {
+		            				smartcal.CalEvent firstEvent = todaysEvents.get(0);
+		            				%><p><%=(firstEvent.getTimeString() + " " + firstEvent.getName())%></p> <% 
+		            			}
+		            			%>
 		            			
 		            		<%} %>
 		            		</td>

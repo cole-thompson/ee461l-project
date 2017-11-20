@@ -1,12 +1,15 @@
 package smartcal;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import com.google.appengine.api.users.User;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Stringify;
+import com.googlecode.objectify.stringifier.Stringifier;
 
 /*
  * Used to keep track of info about the user's current display
@@ -17,8 +20,11 @@ import com.googlecode.objectify.annotation.Index;
 public class UserDisplayData {
 	@Id Long id;
 	@Index User user;
+	@Stringify(IntegerStringifier.class)
 	
-	private List<CalEvent> displayEvents;
+	//events are stored for this month, keyed in the map by day
+	//easy to look up events for a day when the calendar gui is being created on a loop
+	private HashMap<Integer, ArrayList<CalEvent>> displayEvents;
 	private int displayMonth;		//auto current month = -1
 	private int displayYear;		//auto current year = -1
 	
@@ -26,15 +32,22 @@ public class UserDisplayData {
 		this.user = null;
 		displayMonth = -1;
 		displayYear = -1;
-		displayEvents = new ArrayList<CalEvent>();
+		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
 	}
 	
+	//test
+	public void createTestEvent() {
+		ArrayList<CalEvent> l = new ArrayList<CalEvent>();
+		CalEvent e = new CalEvent(user, Calendar.getInstance(), Calendar.getInstance());
+		l.add(e);
+		displayEvents.put(10, l);
+	}
 	
 	public UserDisplayData(User user) {
 		this.user = user;
 		displayMonth = -1;
 		displayYear = -1;
-		displayEvents = new ArrayList<CalEvent>();
+		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
 	}
 	
 	/* populate displayEvents
@@ -44,16 +57,12 @@ public class UserDisplayData {
 		//TODO
 	}
 	
+	public ArrayList<CalEvent> getDisplayEvents(int day) {
+		return displayEvents.get(day);
+	}
+	
 	
 	/* GETTERS AND SETTERS */
-	
-	public List<CalEvent> getDisplayEvents() {
-		return displayEvents;
-	}
-
-	public void setDisplayEvents(List<CalEvent> displayEvents) {
-		this.displayEvents = displayEvents;
-	}
 	
 	public void setDisplayMonth(int displayMonth) {
 		this.displayMonth = displayMonth;
@@ -145,4 +154,16 @@ public class UserDisplayData {
 		return year;
 	}
 
+}
+
+class IntegerStringifier implements Stringifier<Integer> {
+    @Override
+    public String toString(Integer obj) {
+        return obj.toString();
+    }
+
+    @Override
+    public Integer fromString(String obj) {
+        return Integer.parseInt(obj);
+    }
 }

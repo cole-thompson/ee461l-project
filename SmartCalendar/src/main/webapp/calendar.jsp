@@ -244,13 +244,40 @@
 							    </div>
 						  	</div>
 						<%} %>
-					</div>	
-						
+					</div>					  	
       		  	</div>
       		  	
       		  	<!-- Day View Tab -->
 				<div class="tab-pane fade" id="dayView" role="tabpanel" aria-labelledby="dayView-tab">
-					Create Day View - List Events
+					<table class="table table-bordered table-light table-responsive-md">
+						<thead class="thead-dark">
+							<tr><th colspan="2" scope="col">Day View</th></tr>
+						</thead>
+		            	<tbody class="w-100">		<!-- Iterate through the table, place numbers in proper locations -->
+		            	<col width="130">
+		            	<col width="30">
+				          	<%int displayTime;%>
+				          	<%String timeSuffix; %>
+				          	<%int numHoursPerDay = 24;%>
+				          	<%for (int hour = 0; hour < numHoursPerDay; hour++) { %>
+				            	<tr style="text-align:center;height:10px"><td>
+				            	<%if(hour == 0) {%>
+				            		<%displayTime = 12; //unique behaviors of "0th" time instance and 12AM midnight%>
+				            		<%timeSuffix = "AM"; %>
+				            	<%}else if(hour > 12){%>				            		
+				            		<%displayTime = hour - 12;%>
+				            		<%timeSuffix = "PM"; %>
+			            		<%}else{ %>
+			            			<%displayTime = hour; %>
+			            			<%timeSuffix = "AM"; %>
+		            			<%} %>
+			            		<p><%=displayTime%> <%=timeSuffix%></p></td>	
+			            		<td><p>Event Name</p></td>	            		
+				            	</tr>
+				            	<%displayTime=0; %>
+				      	  	<%} %>
+			          	</tbody>
+					</table>
 				</div>
 			</div>     
 		</div>

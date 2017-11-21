@@ -24,9 +24,9 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	 </head>
 
-  	<body>
+  	<body class="bg-light">
   	
-  		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  		<nav class="navbar navbar-expand-lg navbar-light bg-light border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
   			<a class="navbar-brand" href="#">Calendar</a>
   			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 		    	<span class="navbar-toggler-icon"></span>
@@ -54,7 +54,7 @@
 	    String username = "";
 	    if (user == null) {
 			%>
-			<span class="navbar-text m-2">Hello!</span>
+			<span class="navbar-text text-muted m-2">Hello!</span>
 			<a class="btn btn-outline-success" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
 			<%
 	    }
@@ -62,7 +62,7 @@
 	    	username = "" + user.getNickname();
 	      	pageContext.setAttribute("user", user);
 			%>
-			<span class="navbar-text m-2">Hello, ${fn:escapeXml(user.nickname)}! </span>
+			<span class="navbar-text text-muted m-2">Hello, ${fn:escapeXml(user.nickname)}! </span>
 			<a class="btn btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
 			<%
 	    }  
@@ -116,7 +116,7 @@
 		
 	  
 	  <!-- Calendar Container - contains the calendar, forms to change view, navs -->
-	  <div class="container bg-light border border-primary p-1 w-100" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
+	  <div class="container p-1" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
 		
 		<!-- Header/Navigation Row: Drop down menus to change month and year-->
 		<div class="row m-1 align-middle"> 
@@ -222,8 +222,118 @@
 		        	</table>
 		        </div>
 		        
-      		  	<div class="tab-pane fade" id="weekView" role="tabpanel" aria-labelledby="weekView-tab">Create Week View</div>
-				<div class="tab-pane fade" id="dayView" role="tabpanel" aria-labelledby="dayView-tab">Create Day View - List Events</div>
+		        <!-- Week View Tab -->
+      		  	<div class="tab-pane fade" id="weekView" role="tabpanel" aria-labelledby="weekView-tab">
+					<table class="table table-light table-responsive-md">
+						<thead class="thead-dark">
+							<tr><th colspan="2" scope="col">Week View</th></tr>
+						</thead>
+						
+						<tbody>	
+						  	<tr>
+						  	<th scope="row">
+						  		<p>11 Sunday</p>
+						  		<button class="btn btn-sm text-left" role="tab" id="sundayHeading" type="button" data-toggle="collapse" data-target="#sundayEvents" aria-expanded="true" aria-controls="sundayEvents">collapse</button>
+						  	</th>
+						  	<td class="w-100"><div class="card">
+							    <div id="sundayEvents" class="collapse show" role="tabpanel" aria-labelledby="sundayHeading">
+							    	<div class="card-body">
+										<p>Sunday Event 1</p>
+										<p>Sunday Event 2</p>
+							      	</div>
+							    </div>
+						  	</div></td></tr>
+							
+							<tr>
+								<td colspan="2"><div class="card">
+							    <button class="card-header btn text-left" role="tab" id="mondayHeading" type="button" data-toggle="collapse" data-target="#mondayEvents" aria-expanded="true" aria-controls="mondayEvents">
+							    	12 Monday
+							    </button>
+							    <div id="mondayEvents" class="collapse show" role="tabpanel" aria-labelledby="mondayHeading">
+							    	<div class="card-body">
+										<p>Monday Event 1</p>
+										<p>Monday Event 2</p>
+							      	</div>
+							    </div>
+						  	</div></td></tr>
+						  	
+						  	<tr>
+						  		<th scope="row">
+						  			<button class="btn font-weight-bold" role="tab" id="tuesdayHeading" type="button" data-toggle="collapse" data-target="#tuesdayEvents" aria-expanded="true" aria-controls="tuesdayEvents">
+							    	13 Tuesday
+							    	</button>
+						  		</th>
+						  		<td><div class="card">
+							    <div id="tuesdayEvents" class="collapse show" role="tabpanel" aria-labelledby="tuesdayHeading">
+							    	<div class="card-body">
+										<p>Tuesday Event 1</p>
+										<p>Tuesday Event 2</p>
+							      	</div>
+							    </div>
+						  	</div></td></tr>
+							
+							<tr>
+								<th scope="row">14 Wednesday</th>
+								<td><div class="card">
+							    <button class="card-header btn text-left" role="tab" id="wednesdayHeading" type="button" data-toggle="collapse" data-target="#wednesdayEvents" aria-expanded="true" aria-controls="wednesdayEvents">
+							    	Events
+							    </button>
+							    <div id="wednesdayEvents" class="collapse show" role="tabpanel" aria-labelledby="wednesdayHeading">
+							    	<div class="card-body">
+										<p>Wednesday Event 1</p>
+										<p>Wednesday Event 2</p>
+							      	</div>
+							    </div>
+						  	</div></td></tr>
+							
+							<tr>
+								<td colspan="2"><div class="card">
+								<div class="card-header d-flex">
+									<div><h4>15 <strong>Thursday</strong></h4></div>
+							    	<div class="ml-auto"><button class="btn btn-sm btn-secondary ml-auto" role="tab" id="thursdayHeading" type="button" data-toggle="collapse" data-target="#thursdayEvents" aria-expanded="true" aria-controls="thursdayEvents">collapse</button></div>
+							    </div>
+							    <div id="thursdayEvents" class="collapse show" role="tabpanel" aria-labelledby="thursdayHeading">
+							    	<div class="card-body">
+										<p>Thursday Event 1</p>
+										<p>Thursday Event 2</p>
+							      	</div>
+							    </div>
+						  	</div></td></tr>
+						  	
+						  	<tr>
+						  		<th scope="row">Friday</th>
+						  		<td><div class="card">
+							    <button class="card-header btn text-left" role="tab" id="fridayHeading" type="button" data-toggle="collapse" data-target="#fridayEvents" aria-expanded="true" aria-controls="fridayEvents">
+							    	
+							    </button>
+							    <div id="fridayEvents" class="collapse show" role="tabpanel" aria-labelledby="fridayHeading">
+							    	<div class="card-body">
+										Friday Events
+							      	</div>
+							    </div>
+						  	</div></td></tr>
+
+							<tr>
+								<th scope="row">Saturday</th>
+								<td><div class="card">
+							    <button class="card-header btn text-left" role="tab" id="saturdayHeading" type="button" data-toggle="collapse" data-target="#saturdayEvents" aria-expanded="true" aria-controls="saturdayEvents">
+							    	
+							    </button>
+							    <div id="saturdayEvents" class="collapse show" role="tabpanel" aria-labelledby="saturdayHeading">
+							    	<div class="card-body">
+										Saturday Events
+							      	</div>
+							    </div>
+						  	</div></td></tr>
+
+						</tbody>
+					</table>
+      		  	</div>
+      		  	
+      		  	<!-- Day View Tab -->
+				<div class="tab-pane fade" id="dayView" role="tabpanel" aria-labelledby="dayView-tab">
+					Create Day View - List Events
+				</div>
 			</div>     
 		</div>
 		

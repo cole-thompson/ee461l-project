@@ -33,19 +33,19 @@
 		 	</button>
 		 	
 		 	<div class="collapse navbar-collapse" id="navbarContent">
-		    <ul class="navbar-nav mr-auto">
-		      <li class="nav-item active">
-		        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-		      </li>
-		      <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		          <a class="dropdown-item" href="#">Action</a>
-		          <div class="dropdown-divider"></div>
-		          <a class="dropdown-item" href="#">Something else here</a>
-		        </div>
-		      </li>
-		    </ul>
+			    <ul class="navbar-nav mr-auto">
+			      <li class="nav-item active">
+			        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+			      </li>
+			      <li class="nav-item dropdown">
+			        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+			        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+			          <a class="dropdown-item" href="#">Action</a>
+			          <div class="dropdown-divider"></div>
+			          <a class="dropdown-item" href="#">Something else here</a>
+			        </div>
+			      </li>
+			    </ul>
 
 		<%
 		//Google sign-in initialization 
@@ -114,18 +114,33 @@
 		int numWeeks = displayCal.get(Calendar.WEEK_OF_MONTH);	
 		%>
 		
-	
-	  <!-- http://getbootstrap.com/docs/4.0/content/tables/ -->
 	  
+	  <!-- Calendar Container - contains the calendar, forms to change view, navs -->
 	  <div class="container bg-light border border-primary p-1 w-100" >	<!-- This div has 2 parts: header row (month name, forms) and the actual calendar -->
 		
-		<!-- Header Row: Drop down menus to change month and year-->
-		
+		<!-- Header/Navigation Row: Drop down menus to change month and year-->
 		<div class="row m-1 align-middle"> 
+			<!-- Month name/number -->
 			<div class="col-md-auto">
 				<h2><span class="text-primary"><%=(displayMonth + 1)%></span> <span class="text-secondary"><%=(smartcal.UserDisplayData.getMonthName(displayMonth))%></span></h2>
 			</div>
 			
+			<!-- Month/Week/Day view tab navigation -->
+			<div class="col-md-auto">
+				<ul class="nav nav-tabs" id="calendarViewTab" role="tablist">
+				  <li class="nav-item">
+				    <a class="nav-link active" id="monthView-tab" data-toggle="tab" href="#monthView" role="tab" aria-controls="monthView" aria-selected="true">Month</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link" id="weekView-tab" data-toggle="tab" href="#weekView" role="tab" aria-controls="weekView" aria-selected="false">Week</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link" id="dayView-tab" data-toggle="tab" href="#dayView" role="tab" aria-controls="dayView" aria-selected="false">Day</a>
+				  </li>
+				</ul>
+			</div>
+			
+			<!-- Change display month/year forms -->
 			<div class="col-md">
 				<form action="/calendar" name="changeMonth" method="post">
 				<div class="form-group form-group-lg">
@@ -146,61 +161,72 @@
 				</form>
 			</div>
 			
+			<!-- Today button form -->
 			<div class="col-md-auto"><form action="/calendar" name="toToday" method="post">
-			<button name="today" class="btn btn-lg btn-success text-light" type="submit">Today</button>
+				<button name="today" class="btn btn-lg btn-success text-light" type="submit">Today</button>
 			</form></div>
 		</div>
 	    
-	    	    
-	    <!-- Calendar table -->
+
+
+			
+	    <!-- Calendar View tables - Tab contents for month/week/day views -->
 		<div class="row m-1">
-	    	<div class="col-xl">
-	        	<table class="table table-bordered table-light table-responsive-md">
-	          		<thead class="thead-dark w-100">
-	            	<tr>
-		            	<th scope="col">Sunday</th>
-		            	<th scope="col">Monday</th>
-		              	<th scope="col">Tuesday</th>
-		              	<th scope="col">Wednesday</th>
-		              	<th scope="col">Thursday</th>
-		              	<th scope="col">Friday</th>
-		              	<th scope="col">Saturday</th>
-	            	</tr>
-	          		</thead>
-		         	<tbody class="w-100">		<!-- Iterate through the table, place numbers in proper locations -->
-		          	<% int day = 0;
-		          	for (int week = 0; week < numWeeks; week++) { %>
+	    	<div class="col-xl tab-content" id="calendarViewContent">
+	    	
+	    		<!-- Month View Tab -->
+		  		<div class="tab-pane fade show active" id="monthView" role="tabpanel" aria-labelledby="monthView-tab">
+		        	<table class="table table-bordered table-light table-responsive-md">
+		          		<thead class="thead-dark w-100">
 		            	<tr>
-		            	<% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
-		            		if ((day == currentDate) && (displayMonth == currentMonth) && (displayYear == currentYear)) {
-			            		//current day
-			            		%><td class ="table-success"><%
-		            		}
-		            		else { %><td><% }
-		            	
-		            		if ((day < numDays) && !(week == 0 && dayOfWeek < firstDayOfWeek)) { %>
-		            			<%day++;%>
-		            			<%=(day)%>		<!-- This is where day number is printed, might need some styling-->
-		            			<!-- contents of a calendar cell - add stuff about events here -->
-		            			<!-- TODO -->
-		            			<% ArrayList<smartcal.CalEvent> todaysEvents = display.getDisplayEvents(day); 
-		            			
-		            			//display preview of first event that day - eventually loop through and display all of them
-		            			if (todaysEvents != null && !todaysEvents.isEmpty()) {
-		            				smartcal.CalEvent firstEvent = todaysEvents.get(0);
-		            				%><p><%=(firstEvent.getTimeString() + " " + firstEvent.getName())%></p> <% 
-		            			}
-		            			%>
-		            			
-		            		<%} %>
-		            		</td>
-		            	<%}%>
+			            	<th scope="col">Sunday</th>
+			            	<th scope="col">Monday</th>
+			              	<th scope="col">Tuesday</th>
+			              	<th scope="col">Wednesday</th>
+			              	<th scope="col">Thursday</th>
+			              	<th scope="col">Friday</th>
+			              	<th scope="col">Saturday</th>
 		            	</tr>
-		      	  	<%} %>
-		          	</tbody>
-	        	</table>
-	    	</div>
+		          		</thead>
+			         	<tbody class="w-100">		<!-- Iterate through the table, place numbers in proper locations -->
+			          	<% int day = 0;
+			          	for (int week = 0; week < numWeeks; week++) { %>
+			            	<tr>
+			            	<% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
+			            		if ((day == currentDate) && (displayMonth == currentMonth) && (displayYear == currentYear)) {
+				            		//current day
+				            		%><td class ="table-success"><%
+			            		}
+			            		else { %><td><% }
+			            	
+			            		if ((day < numDays) && !(week == 0 && dayOfWeek < firstDayOfWeek)) { %>
+			            			<%day++;%>
+			            			<%=(day)%>		<!-- This is where day number is printed, might need some styling-->
+			            			<!-- contents of a calendar cell - add stuff about events here -->
+			            			<!-- TODO -->
+			            			<% ArrayList<smartcal.CalEvent> todaysEvents = display.getDisplayEvents(day); 
+			            			
+			            			//display preview of first event that day - eventually loop through and display all of them
+			            			if (todaysEvents != null && !todaysEvents.isEmpty()) {
+			            				smartcal.CalEvent firstEvent = todaysEvents.get(0);
+			            				%><p><%=(firstEvent.getTimeString() + " " + firstEvent.getName())%></p> <% 
+			            			}
+			            			%>
+			            			
+			            		<%} %>
+			            		</td>
+			            	<%}%>
+			            	</tr>
+			      	  	<%} %>
+			          	</tbody>
+		        	</table>
+		        </div>
+		        
+      		  	<div class="tab-pane fade" id="weekView" role="tabpanel" aria-labelledby="weekView-tab">Create Week View</div>
+				<div class="tab-pane fade" id="dayView" role="tabpanel" aria-labelledby="dayView-tab">Create Day View - List Events</div>
+			</div>     
 		</div>
+		
 	</div>
   
 	<!-- Print Tests for the Calendar Info -->

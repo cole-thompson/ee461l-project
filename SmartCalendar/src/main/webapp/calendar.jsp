@@ -22,6 +22,10 @@
 	
 		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	 	
+	 	<!-- Our custom css -->
+	 	<link rel="stylesheet" type="text/css" href="calendar.css">
+	 	
 	 </head>
 
   	<body class="bg-light">
@@ -179,13 +183,10 @@
 		        	<table class="table table-bordered table-light table-responsive-md">
 		          		<thead class="thead-dark w-100">
 		            	<tr>
-			            	<th scope="col">Sunday</th>
-			            	<th scope="col">Monday</th>
-			              	<th scope="col">Tuesday</th>
-			              	<th scope="col">Wednesday</th>
-			              	<th scope="col">Thursday</th>
-			              	<th scope="col">Friday</th>
-			              	<th scope="col">Saturday</th>
+		            		<%for (int i = 0; i < 7; i++) {
+								String dayName = smartcal.UserDisplayData.getDayName(i); %>
+				            	<th scope="col"><%=(dayName)%></th>
+			              	<%}%>
 		            	</tr>
 		          		</thead>
 			         	<tbody class="w-100">		<!-- Iterate through the table, place numbers in proper locations -->
@@ -224,110 +225,27 @@
 		        
 		        <!-- Week View Tab -->
       		  	<div class="tab-pane fade" id="weekView" role="tabpanel" aria-labelledby="weekView-tab">
-					<table class="table table-light table-responsive-md">
-						<thead class="thead-dark">
-							<tr><th colspan="2" scope="col">Week View</th></tr>
-						</thead>
-						
-						<tbody>	
-						  	<tr>
-						  	<th scope="row">
-						  		<p>11 Sunday</p>
-						  		<button class="btn btn-sm text-left" role="tab" id="sundayHeading" type="button" data-toggle="collapse" data-target="#sundayEvents" aria-expanded="true" aria-controls="sundayEvents">collapse</button>
-						  	</th>
-						  	<td class="w-100"><div class="card">
-							    <div id="sundayEvents" class="collapse show" role="tabpanel" aria-labelledby="sundayHeading">
-							    	<div class="card-body">
-										<p>Sunday Event 1</p>
-										<p>Sunday Event 2</p>
-							      	</div>
-							    </div>
-						  	</div></td></tr>
-							
-							<tr>
-								<td colspan="2"><div class="card">
-							    <button class="card-header btn text-left" role="tab" id="mondayHeading" type="button" data-toggle="collapse" data-target="#mondayEvents" aria-expanded="true" aria-controls="mondayEvents">
-							    	12 Monday
-							    </button>
-							    <div id="mondayEvents" class="collapse show" role="tabpanel" aria-labelledby="mondayHeading">
-							    	<div class="card-body">
-										<p>Monday Event 1</p>
-										<p>Monday Event 2</p>
-							      	</div>
-							    </div>
-						  	</div></td></tr>
-						  	
-						  	<tr>
-						  		<th scope="row">
-						  			<button class="btn font-weight-bold" role="tab" id="tuesdayHeading" type="button" data-toggle="collapse" data-target="#tuesdayEvents" aria-expanded="true" aria-controls="tuesdayEvents">
-							    	13 Tuesday
-							    	</button>
-						  		</th>
-						  		<td><div class="card">
-							    <div id="tuesdayEvents" class="collapse show" role="tabpanel" aria-labelledby="tuesdayHeading">
-							    	<div class="card-body">
-										<p>Tuesday Event 1</p>
-										<p>Tuesday Event 2</p>
-							      	</div>
-							    </div>
-						  	</div></td></tr>
-							
-							<tr>
-								<th scope="row">14 Wednesday</th>
-								<td><div class="card">
-							    <button class="card-header btn text-left" role="tab" id="wednesdayHeading" type="button" data-toggle="collapse" data-target="#wednesdayEvents" aria-expanded="true" aria-controls="wednesdayEvents">
-							    	Events
-							    </button>
-							    <div id="wednesdayEvents" class="collapse show" role="tabpanel" aria-labelledby="wednesdayHeading">
-							    	<div class="card-body">
-										<p>Wednesday Event 1</p>
-										<p>Wednesday Event 2</p>
-							      	</div>
-							    </div>
-						  	</div></td></tr>
-							
-							<tr>
-								<td colspan="2"><div class="card">
+      		  		<table class="table"><thead class="thead-dark w-100"><tr><th scope="col">This Week</th></tr></thead></table>
+      		  		
+      		  		<div class="card-columns">
+						<%for (int i = 0; i < 7; i++) {
+							String dayName = smartcal.UserDisplayData.getDayName(i);
+							%>	
+							<div class="card">
 								<div class="card-header d-flex">
-									<div><h4>15 <strong>Thursday</strong></h4></div>
-							    	<div class="ml-auto"><button class="btn btn-sm btn-secondary ml-auto" role="tab" id="thursdayHeading" type="button" data-toggle="collapse" data-target="#thursdayEvents" aria-expanded="true" aria-controls="thursdayEvents">collapse</button></div>
+									<div><h5># <strong><%=(dayName)%></strong></h5></div>
+							    	<div class="ml-auto"><button class="btn btn-sm btn-outline-secondary ml-auto" role="tab" id="<%=(dayName)%>Heading" type="button" data-toggle="collapse" data-target="#<%=(dayName)%>Events" aria-expanded="true" aria-controls="<%=(dayName)%>Events">...</button></div>
 							    </div>
-							    <div id="thursdayEvents" class="collapse show" role="tabpanel" aria-labelledby="thursdayHeading">
+							    <div id="<%=(dayName)%>Events" class="collapse show" role="tabpanel" aria-labelledby="<%=(dayName)%>Heading">
 							    	<div class="card-body">
-										<p>Thursday Event 1</p>
-										<p>Thursday Event 2</p>
+										<p><%=(dayName)%> Event 1</p>
+										<p><%=(dayName)%> Event 2</p>
 							      	</div>
 							    </div>
-						  	</div></td></tr>
-						  	
-						  	<tr>
-						  		<th scope="row">Friday</th>
-						  		<td><div class="card">
-							    <button class="card-header btn text-left" role="tab" id="fridayHeading" type="button" data-toggle="collapse" data-target="#fridayEvents" aria-expanded="true" aria-controls="fridayEvents">
-							    	
-							    </button>
-							    <div id="fridayEvents" class="collapse show" role="tabpanel" aria-labelledby="fridayHeading">
-							    	<div class="card-body">
-										Friday Events
-							      	</div>
-							    </div>
-						  	</div></td></tr>
-
-							<tr>
-								<th scope="row">Saturday</th>
-								<td><div class="card">
-							    <button class="card-header btn text-left" role="tab" id="saturdayHeading" type="button" data-toggle="collapse" data-target="#saturdayEvents" aria-expanded="true" aria-controls="saturdayEvents">
-							    	
-							    </button>
-							    <div id="saturdayEvents" class="collapse show" role="tabpanel" aria-labelledby="saturdayHeading">
-							    	<div class="card-body">
-										Saturday Events
-							      	</div>
-							    </div>
-						  	</div></td></tr>
-
-						</tbody>
-					</table>
+						  	</div>
+						<%} %>
+					</div>	
+						
       		  	</div>
       		  	
       		  	<!-- Day View Tab -->

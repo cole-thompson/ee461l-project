@@ -154,8 +154,22 @@ public class UserDisplayData {
 		return year;
 	}
 
+	public static String getDayName(int dayOfWeek) {
+		String dayName = "";
+		switch (dayOfWeek) {
+			case 0: 	dayName = "Sunday";break;
+			case 1: 	dayName = "Monday";break;
+			case 2: 	dayName = "Tuesday";break;
+			case 3: 	dayName = "Wednesday";break;
+			case 4: 	dayName = "Thursday";break;
+			case 5: 	dayName = "Friday";break;
+			case 6: 	dayName = "Saturday";break;
+		}
+		return dayName;
+	}
 }
 
+//this is a required class for an Objectify Entity to contain a HashMap with a non-string key
 class IntegerStringifier implements Stringifier<Integer> {
     @Override
     public String toString(Integer obj) {

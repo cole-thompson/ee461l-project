@@ -38,17 +38,20 @@
 		 	
 		 	<div class="collapse navbar-collapse" id="navbarContent">
 			    <ul class="navbar-nav mr-auto">
-			      <li class="nav-item active">
-			        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-			      </li>
-			      <li class="nav-item dropdown">
-			        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-			        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-			          <a class="dropdown-item" href="#">Action</a>
-			          <div class="dropdown-divider"></div>
-			          <a class="dropdown-item" href="#">Something else here</a>
-			        </div>
-			      </li>
+			    	<li class="nav-item active">
+			        	<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+			      	</li>
+			      	<li class="nav-item">
+			        	<a class="nav-link" href="#">Account</a>
+			      	</li>
+			      	<li class="nav-item dropdown">
+			        	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+			        	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+				          	<a class="dropdown-item" href="#">Action</a>
+				          	<div class="dropdown-divider"></div>
+				          	<a class="dropdown-item" href="#">Something else here</a>
+			        	</div>
+			      	</li>
 			    </ul>
 
 		<%
@@ -208,14 +211,26 @@
 			            			<% ArrayList<smartcal.CalEvent> todaysEvents = display.getDisplayEvents(day); 
 			            			
 			            			//display preview of first event that day - eventually loop through and display all of them
-			            			if (todaysEvents != null && !todaysEvents.isEmpty()) {
-			            				smartcal.CalEvent firstEvent = todaysEvents.get(0);
-			            				%><p><%=(firstEvent.getTimeString() + " " + firstEvent.getName())%></p> <% 
+			            			%><ul class="list-group"><%
+			            			int numEventsToDisplay = 3;
+			            			int numEvents = (todaysEvents == null)?0:todaysEvents.size();
+			            			int e;
+			            			for (e = 0; e < numEventsToDisplay; e++) {
+			            				//invisible elements help keep sizing constant
+			            				if (e >= numEvents) {
+			            					%> <li class="list-group-item invisible"></li> <%
+			            				}
+			            				else if (numEvents > numEventsToDisplay && e == numEvents - 2) {
+			            					//if there are more events than can be shown, indicate that there are more
+			            					%> <li class="list-group-item">(more events)</li> <%
+			            				}
+			            				else {
+			            					smartcal.CalEvent event = todaysEvents.get(e);
+			            					%><li class="list-group-item"><%=(event.getTimeString() + " " + event.getName())%></li><%
+			            				}
 			            			}
-			            			%>
-			            			
-			            		<%} %>
-			            		</td>
+			            			%></ul> <%
+			            		} %>
 			            	<%}%>
 			            	</tr>
 			      	  	<%} %>

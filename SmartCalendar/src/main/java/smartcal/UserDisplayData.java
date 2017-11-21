@@ -27,11 +27,24 @@ public class UserDisplayData {
 	private HashMap<Integer, ArrayList<CalEvent>> displayEvents;
 	private int displayMonth;		//auto current month = -1
 	private int displayYear;		//auto current year = -1
-	
+	private int displayWeekFirstDay;	//for week view
+	private int displayDate;			//for day view
+
 	public UserDisplayData() {
 		this.user = null;
 		displayMonth = -1;
 		displayYear = -1;
+		displayWeekFirstDay = -1;
+		displayDate = -1;
+		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
+	}
+	
+	public UserDisplayData(User user) {
+		this.user = user;
+		displayMonth = -1;
+		displayYear = -1;
+		displayWeekFirstDay = -1;
+		displayDate = -1;
 		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
 	}
 	
@@ -41,13 +54,6 @@ public class UserDisplayData {
 		CalEvent e = new CalEvent(user, Calendar.getInstance(), Calendar.getInstance());
 		l.add(e);
 		displayEvents.put(10, l);
-	}
-	
-	public UserDisplayData(User user) {
-		this.user = user;
-		displayMonth = -1;
-		displayYear = -1;
-		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
 	}
 	
 	/* populate displayEvents
@@ -64,6 +70,14 @@ public class UserDisplayData {
 	
 	/* GETTERS AND SETTERS */
 	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 	public void setDisplayMonth(int displayMonth) {
 		this.displayMonth = displayMonth;
 	}
@@ -79,13 +93,21 @@ public class UserDisplayData {
 	public int getDisplayYear() {
 		return this.displayYear;
 	}
-	
-	public User getUser() {
-		return user;
+
+	public int getDisplayWeekFirstDay() {
+		return displayWeekFirstDay;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setDisplayWeekFirstDay(int displayWeekFirstDay) {
+		this.displayWeekFirstDay = displayWeekFirstDay;
+	}
+
+	public int getDisplayDate() {
+		return displayDate;
+	}
+
+	public void setDisplayDate(int displayDate) {
+		this.displayDate = displayDate;
 	}
 
 	

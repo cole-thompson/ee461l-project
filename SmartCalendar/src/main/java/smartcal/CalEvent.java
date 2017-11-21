@@ -21,9 +21,10 @@ public class CalEvent {
 	@Id Long id;
 	@Index User creator;
 	
-	private Calendar startTime;
-	private Calendar endTime;
-	private List<User> people;
+	@Index private Calendar startTime;
+	@Index private Calendar endTime;
+	@Index private List<User> people;
+	
 	private String location;
 	private String name;
 	

@@ -62,7 +62,7 @@
 	    if (user == null) {
 			%>
 			<span class="navbar-text text-muted m-2">Hello!</span>
-			<a class="btn btn-outline-success" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
+			<a class="btn btn-sm btn-outline-success" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
 			<%
 	    }
 	    else {
@@ -70,7 +70,7 @@
 	      	pageContext.setAttribute("user", user);
 			%>
 			<span class="navbar-text text-muted m-2">Hello, ${fn:escapeXml(user.nickname)}! </span>
-			<a class="btn btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
+			<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
 			<%
 	    }  
 		%>	
@@ -92,21 +92,34 @@
 		//grab user display information from objectify
        	smartcal.UserDisplayData display = ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user", user).first().now();
        	if (display == null) {
-       		System.out.println("null");
+       		System.out.println("no displayData found for user " + username);
        		display = new smartcal.UserDisplayData(user);
        	}
+       	else {
+       		System.out.println("displayData found for user " + username);
+       	}
+       	
+     	 //load the events in displayMonth for a user into the display object
+	    display.loadDisplayEvents();
        	
 		//set the display month and year to current if invalid
-		int displayYear, displayMonth = 0;
+		int displayYear, displayMonth, displayWeekFirstDay, displayDate = 0;
 	   	if ((displayMonth = display.getDisplayMonth()) == -1) {
 	   		displayMonth = currentMonth;
 	   	}
 		if ((displayYear = display.getDisplayYear()) == -1) {
 			displayYear = currentYear;
 	   	}
+		if ((displayDate = display.getDisplayDate()) == -1) {
+			displayDate = currentDate;
+	   	}
+		if ((displayWeekFirstDay = display.getDisplayWeekFirstDay()) == -1) {
+			Calendar c = new GregorianCalendar(currentYear, currentMonth, currentDate);
+			int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+			displayWeekFirstDay = currentDate - (dayOfWeek - 1);
+			System.out.println(currentDate + " " + dayOfWeek + " " + displayWeekFirstDay);
+	   	}
 		
-		//load the events in displayMonth for a user into the display object
-	    display.loadDisplayEvents();
 				
 		/*
 		 * get info about the month
@@ -197,7 +210,7 @@
 			          	for (int week = 0; week < numWeeks; week++) { %>
 			            	<tr>
 			            	<% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
-			            		if ((day == currentDate) && (displayMonth == currentMonth) && (displayYear == currentYear)) {
+			            		if ((day + 1 == currentDate) && (displayMonth == currentMonth) && (displayYear == currentYear)) {
 				            		//current day
 				            		%><td width="14%" class ="table-success"><%
 			            		}
@@ -248,7 +261,7 @@
 							%>	
 							<div class="card">
 								<div class="card-header d-flex">
-									<div><h5># <strong><%=(dayName)%></strong></h5></div>
+									<div><h5><%=(displayWeekFirstDay + i)%> <strong><%=(dayName)%></strong></h5></div>
 							    	<div class="ml-auto"><button class="btn btn-sm btn-outline-secondary ml-auto" role="tab" id="<%=(dayName)%>Heading" type="button" data-toggle="collapse" data-target="#<%=(dayName)%>Events" aria-expanded="true" aria-controls="<%=(dayName)%>Events">...</button></div>
 							    </div>
 							    <div id="<%=(dayName)%>Events" class="collapse show" role="tabpanel" aria-labelledby="<%=(dayName)%>Heading">

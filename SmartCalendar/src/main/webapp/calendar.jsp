@@ -188,7 +188,7 @@
 		            	<tr>
 		            		<%for (int i = 0; i < 7; i++) {
 								String dayName = smartcal.UserDisplayData.getDayName(i); %>
-				            	<th scope="col"><%=(dayName)%></th>
+				            	<th scope="col" width="14%"><%=(dayName)%></th>
 			              	<%}%>
 		            	</tr>
 		          		</thead>
@@ -199,9 +199,9 @@
 			            	<% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
 			            		if ((day == currentDate) && (displayMonth == currentMonth) && (displayYear == currentYear)) {
 				            		//current day
-				            		%><td class ="table-success"><%
+				            		%><td width="14%" class ="table-success"><%
 			            		}
-			            		else { %><td><% }
+			            		else { %><td width="14%"><% }
 			            	
 			            		if ((day < numDays) && !(week == 0 && dayOfWeek < firstDayOfWeek)) { %>
 			            			<%day++;%>

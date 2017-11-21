@@ -325,6 +325,18 @@
 							      	</div>
 							    </div>
 						  	</div></td></tr>
+						  	
+						  	<tr>
+								<td colspan="2"><div class ="card">
+							    <button class="card-header btn text-center" style="font-size:24px" role="tab" id="someHeading" type="button" data-toggle="collapse" data-target="#someEvents" aria-expanded="true" aria-controls="someEvents">
+							    	<h4>## <strong>Day</strong></h4>
+							    </button>
+							    <div id="someEvents" class="collapse show" role="tabpanel" aria-labelledby="somedayHeading">
+							    	<div class="card-body">
+										<p>Wednesday Event 1</p>
+										<p>Wednesday Event 2</p>
+							      	</div></div>
+						  	</div></td></tr>
 
 						</tbody>
 					</table>

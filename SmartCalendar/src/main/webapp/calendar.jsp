@@ -102,6 +102,8 @@
      	 //load the events in displayMonth for a user into the display object
 	    display.loadDisplayEvents();
        	
+     	int displayView = display.getDisplayView(); 
+     			
 		//set the display month and year to current if invalid
 		int displayYear, displayMonth, displayWeekFirstDay, displayDate = 0;
 	   	if ((displayMonth = display.getDisplayMonth()) == -1) {
@@ -117,7 +119,6 @@
 			Calendar c = new GregorianCalendar(currentYear, currentMonth, currentDate);
 			int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 			displayWeekFirstDay = currentDate - (dayOfWeek - 1);
-			System.out.println(currentDate + " " + dayOfWeek + " " + displayWeekFirstDay);
 	   	}
 		
 				
@@ -146,19 +147,21 @@
 			</div>
 			
 			<!-- Month/Week/Day view tab navigation -->
+			<form action="/calendar" name="changeView" method="post">
 			<div class="col-md-auto">
 				<ul class="nav nav-tabs" id="calendarViewTab" role="tablist">
 				  <li class="nav-item">
-				    <a class="nav-link active" id="monthView-tab" data-toggle="tab" href="#monthView" role="tab" aria-controls="monthView" aria-selected="true">Month</a>
+				    <button type="submit" class="btn btn-link nav-link <%=((displayView == 0)?"active":"")%>" name="monthView-btn" role="tab">Month</button>
 				  </li>
 				  <li class="nav-item">
-				    <a class="nav-link" id="weekView-tab" data-toggle="tab" href="#weekView" role="tab" aria-controls="weekView" aria-selected="false">Week</a>
+				    <button type="submit" class="btn btn-link nav-link <%=((displayView == 1)?"active":"")%>" name="weekView-btn" role="tab">Week</button>
 				  </li>
 				  <li class="nav-item">
-				    <a class="nav-link" id="dayView-tab" data-toggle="tab" href="#dayView" role="tab" aria-controls="dayView" aria-selected="false">Day</a>
+				    <button type="submit" class="btn btn-link nav-link <%=((displayView == 2)?"active":"")%>" name="dayView-btn" role="tab">Day</button>
 				  </li>
 				</ul>
 			</div>
+			</form>
 			
 			<!-- Change display month/year forms -->
 			<div class="col-md" style="min-width: 30%;">
@@ -192,10 +195,12 @@
 			
 	    <!-- Calendar View tables - Tab contents for month/week/day views -->
 		<div class="row m-1">
-	    	<div class="col-xl tab-content" id="calendarViewContent">
-	    	
+		
+		<div class="col-xl tab-content" id="calendarViewContent">
+		
+			<%if (displayView == 0)  {%>
 	    		<!-- Month View Tab -->
-		  		<div class="tab-pane fade show active" id="monthView" role="tabpanel" aria-labelledby="monthView-tab">
+		  		<div id="monthView" role="tabpanel">
 		        	<table class="table table-bordered table-light table-responsive-md">
 		          		<thead class="thead-dark w-100">
 		            	<tr>
@@ -251,8 +256,10 @@
 		        	</table>
 		        </div>
 		        
+		 	<% } else if (displayView == 1) { %>
+		        
 		        <!-- Week View Tab -->
-      		  	<div class="tab-pane fade" id="weekView" role="tabpanel" aria-labelledby="weekView-tab">
+      		  	<div id="weekView" role="tabpanel">
       		  		
       		  		<form class="form-inline" action="/calendar" name="viewLeftRight" method="post">
       		  		<table class="table"><thead class="thead-dark"><tr class="d-flex w-100">
@@ -293,8 +300,9 @@
 					</div>					  	
       		  	</div>
       		  	
-      		  	<!-- Day View Tab -->
-				<div class="tab-pane fade" id="dayView" role="tabpanel" aria-labelledby="dayView-tab">
+      		<!-- Day View Tab -->  	
+      		<% } else if (displayView == 2) { %>
+				<div id="dayView" role="tabpanel">
 					<table class="table table-bordered table-light table-responsive-md">
 						<thead class="thead-dark">
 							<tr><th colspan="2" scope="col">Day View</th></tr>
@@ -325,6 +333,9 @@
 			          	</tbody>
 					</table>
 				</div>
+				
+			<%} %>
+		
 			</div>     
 		</div>
 		

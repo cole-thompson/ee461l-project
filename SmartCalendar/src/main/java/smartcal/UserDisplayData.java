@@ -25,10 +25,13 @@ public class UserDisplayData {
 	//events are stored for this month, keyed in the map by day
 	//easy to look up events for a day when the calendar gui is being created on a loop
 	private HashMap<Integer, ArrayList<CalEvent>> displayEvents;
+	
+	private int displayView;		//0=month view, 1=week view, 2=day view
 	private int displayMonth;		//auto current month = -1
 	private int displayYear;		//auto current year = -1
 	private int displayWeekFirstDay;	//for week view
 	private int displayDate;			//for day view
+	
 
 	public UserDisplayData() {
 		this.user = null;
@@ -36,6 +39,7 @@ public class UserDisplayData {
 		displayYear = -1;
 		displayWeekFirstDay = -1;
 		displayDate = -1;
+		displayView = 0;
 		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
 		//createTestEvent();
 	}
@@ -46,6 +50,7 @@ public class UserDisplayData {
 		displayYear = -1;
 		displayWeekFirstDay = -1;
 		displayDate = -1;
+		displayView = 0;
 		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
 		//createTestEvent();
 	}
@@ -111,6 +116,14 @@ public class UserDisplayData {
 
 	public void setDisplayDate(int displayDate) {
 		this.displayDate = displayDate;
+	}
+
+	public int getDisplayView() {
+		return displayView;
+	}
+
+	public void setDisplayView(int displayView) {
+		this.displayView = displayView;
 	}
 
 	

@@ -2,6 +2,7 @@ package smartcal;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import com.google.appengine.api.users.User;
@@ -29,30 +30,23 @@ public class UserDisplayData {
 	private int displayView;		//0=month view, 1=week view, 2=day view
 	private int displayMonth;		//auto current month = -1
 	private int displayYear;		//auto current year = -1
-	private int displayWeekFirstDay;	//for week view
-	private int displayDate;			//for day view
+	private int displayWeek;		//for week view
+	private int displayDate;		//for day view
 	
 
 	public UserDisplayData() {
 		this.user = null;
-		displayMonth = -1;
-		displayYear = -1;
-		displayWeekFirstDay = -1;
-		displayDate = -1;
 		displayView = 0;
 		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
-		//createTestEvent();
+		displayMonth = -1;
+		displayYear = -1;
+		displayWeek = -1;
+		displayDate = -1;
 	}
 	
 	public UserDisplayData(User user) {
+		this();
 		this.user = user;
-		displayMonth = -1;
-		displayYear = -1;
-		displayWeekFirstDay = -1;
-		displayDate = -1;
-		displayView = 0;
-		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
-		//createTestEvent();
 	}
 	
 	//test
@@ -65,14 +59,131 @@ public class UserDisplayData {
 	}
 	
 	/* populate displayEvents
-	 * loads a User's events for the display month/year into displayEvents list with objectify
+	 * loads a User's events from objectify
+	 * for the display view into displayEvents HashMap, store events by date #
 	 */
 	public void loadDisplayEvents() {
 		//TODO
+		createTestEvent();		//add a fake event
+		if (getDisplayView() == 0) {
+			
+		}
+		else if (getDisplayView() == 1) {
+			
+		}
+		else if (getDisplayView() == 2) {
+			
+		}
 	}
 	
 	public ArrayList<CalEvent> getDisplayEvents(int day) {
 		return displayEvents.get(day);
+	}
+	
+	public void displayToday() {
+		Calendar c = new GregorianCalendar();
+		displayMonth = c.get(Calendar.MONTH);
+		displayYear = c.get(Calendar.YEAR);
+		displayWeek = c.get(Calendar.WEEK_OF_MONTH);
+		displayDate = c.get(Calendar.DATE);
+	}
+	
+	/* Returns the date of the start of this week
+	 * If that day is in previous month, return negative number
+	 */
+	public int getDisplayWeekStartDate() {
+		Calendar c;
+		if (displayWeek == -1) {
+			c = new GregorianCalendar();
+			displayToday();
+		}
+		else {
+			c = new GregorianCalendar(displayYear, displayMonth, 1);
+			c.set(Calendar.WEEK_OF_MONTH, displayWeek);
+		}
+		
+		c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		int startDate = c.get(Calendar.DATE);
+		
+		if (c.get(Calendar.MONTH) != displayMonth) {
+			int numDays = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+			startDate = startDate - numDays;
+		}
+		
+		//System.out.println(displayWeek + " " + startDate);
+		return startDate;
+	}
+	
+	/* Increment the display week forward or backwards one week
+	 * Cycle to next or prev month if needed, set all vars
+	 */
+	public void changeWeek(boolean forward) {
+		Calendar c;
+		if (displayWeek == -1) {
+			c = new GregorianCalendar();
+			displayToday();
+		}
+		else {
+			c = new GregorianCalendar(displayYear, displayMonth, 1);
+		}
+		
+		if (forward) {		//increment week up
+			int numDays = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+			c = new GregorianCalendar(displayYear, displayMonth, numDays);
+			int numWeeks = c.get(Calendar.WEEK_OF_MONTH);
+			if (displayWeek + 1 <= numWeeks) {
+				displayWeek++;
+			}
+			else {
+				changeMonth(true);
+				displayWeek = 1;
+			}
+		}
+		else {				//increment week down
+			if (displayWeek - 1 >= 1) {
+				displayWeek--;
+			}
+			else {
+				changeMonth(false);
+				c = new GregorianCalendar(displayYear, displayMonth, 1);
+				int numDays = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+				c = new GregorianCalendar(displayYear, displayMonth, numDays);
+				int numWeeks = c.get(Calendar.WEEK_OF_MONTH);
+				displayWeek = numWeeks;
+			}
+		}
+	}
+
+	public void changeMonth(boolean forward) {
+		if (displayMonth == -1) {
+			displayToday();
+		}
+		
+		if (forward) {		//increment month up
+			if (displayMonth + 1 <= 11) {
+				displayMonth++;
+			}
+			else {
+				displayMonth = 1;
+				displayYear++;
+			}
+		}
+		else {				//increment month down
+			if (displayMonth - 1 >=0) {
+				displayMonth--;
+			}
+			else {
+				displayMonth = 11;
+				displayYear--;
+			}
+		}
+	}
+	
+	/* Increment the display day forward or backwards
+	 * Cycle to next or prev month if needed, set all vars
+	 */
+	public void changeDay(boolean forward) {
+		//TODO
 	}
 	
 	
@@ -102,12 +213,12 @@ public class UserDisplayData {
 		return this.displayYear;
 	}
 
-	public int getDisplayWeekFirstDay() {
-		return displayWeekFirstDay;
+	public int getDisplayWeek() {
+		return displayWeek;
 	}
 
-	public void setDisplayWeekFirstDay(int displayWeekFirstDay) {
-		this.displayWeekFirstDay = displayWeekFirstDay;
+	public void setDisplayWeek(int displayWeek) {
+		this.displayWeek = displayWeek;
 	}
 
 	public int getDisplayDate() {
@@ -123,6 +234,9 @@ public class UserDisplayData {
 	}
 
 	public void setDisplayView(int displayView) {
+		if (displayView < 0 || displayView > 2) {
+			displayView = 0;
+		}
 		this.displayView = displayView;
 	}
 

@@ -82,43 +82,34 @@
 		//main method initialization stuff
 		ObjectifyService.register(smartcal.CalEvent.class);
         ObjectifyService.register(smartcal.UserDisplayData.class);
-        
-		//create java calendar, get current day/month/year
-		Calendar currentCal = new GregorianCalendar();
-		int currentDate = currentCal.get(Calendar.DATE);
-		int currentMonth = currentCal.get(Calendar.MONTH);
-		int currentYear = currentCal.get(Calendar.YEAR);
 				
 		//grab user display information from objectify
        	smartcal.UserDisplayData display = ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user", user).first().now();
        	if (display == null) {
-       		System.out.println("no displayData found for user " + username);
+       		System.out.println(username + " found no displayData, creating new");
        		display = new smartcal.UserDisplayData(user);
        	}
        	else {
-       		System.out.println("displayData found for user " + username);
+       		System.out.println(username + " found displayData");
        	}
        	
-     	 //load the events in displayMonth for a user into the display object
+     	 //load the events for a user into the display object
 	    display.loadDisplayEvents();
        	
+     	//View tab - Month(0), Week(1), or Day(2) view
      	int displayView = display.getDisplayView(); 
      			
-		//set the display month and year to current if invalid
-		int displayYear, displayMonth, displayWeekFirstDay, displayDate = 0;
-	   	if ((displayMonth = display.getDisplayMonth()) == -1) {
-	   		displayMonth = currentMonth;
-	   	}
-		if ((displayYear = display.getDisplayYear()) == -1) {
-			displayYear = currentYear;
-	   	}
-		if ((displayDate = display.getDisplayDate()) == -1) {
-			displayDate = currentDate;
-	   	}
-		if ((displayWeekFirstDay = display.getDisplayWeekFirstDay()) == -1) {
-			Calendar c = new GregorianCalendar(currentYear, currentMonth, currentDate);
-			int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-			displayWeekFirstDay = currentDate - (dayOfWeek - 1);
+		//create java calendar, get current day/month/year/week
+		Calendar currentCal = new GregorianCalendar();
+		int currentDate = currentCal.get(Calendar.DATE);
+		int currentMonth = currentCal.get(Calendar.MONTH);
+		int currentYear = currentCal.get(Calendar.YEAR);
+		int currentWeek = currentCal.get(Calendar.YEAR);		 
+     			 
+		
+		//check if display is set to auto today
+	   	if (display.getDisplayMonth() == -1) {
+	   		display.displayToday();
 	   	}
 		
 				
@@ -128,11 +119,13 @@
 		 * firstDayOfWeek = day of week on the 1st of the month
 		 * numWeeks = number of weeks in the month
 		 */
-		Calendar displayCal = new GregorianCalendar(displayYear, displayMonth, 1);
+		Calendar displayCal = new GregorianCalendar(display.getDisplayYear(), display.getDisplayMonth(), 1);
 		int numDays = displayCal.getActualMaximum(Calendar.DAY_OF_MONTH);
 		int firstDayOfWeek = displayCal.get(Calendar.DAY_OF_WEEK);
-		displayCal = new GregorianCalendar(displayYear, displayMonth, numDays);
+		displayCal = new GregorianCalendar(display.getDisplayYear(), display.getDisplayMonth(), numDays);
 		int numWeeks = displayCal.get(Calendar.WEEK_OF_MONTH);	
+		displayCal = new GregorianCalendar(display.getDisplayYear(), display.getDisplayMonth(), display.getDisplayDate());
+
 		%>
 		
 	  
@@ -143,7 +136,7 @@
 		<div class="row m-1 align-middle"> 
 			<!-- Month name/number -->
 			<div class="col-md-auto">
-				<h2><span class="text-primary"><%=(displayMonth + 1)%></span> <span class="text-secondary"><%=(smartcal.UserDisplayData.getMonthName(displayMonth))%></span></h2>
+				<h2><span class="text-primary"><%=(display.getDisplayMonth() + 1)%></span> <span class="text-secondary"><%=(smartcal.UserDisplayData.getMonthName(display.getDisplayMonth()))%></span></h2>
 			</div>
 			
 			<!-- Month/Week/Day view tab navigation -->
@@ -170,15 +163,15 @@
 					<div class="input-group input-group-lg"> 
 					  	<select name="formMonth" onchange="changeMonth.submit()" class="form-control form-control-lg p-2">
 		    				<% for (int m = 0; m < 12; m++) { 
-		    					if (m == displayMonth) { %><option selected="selected" class="bg-primary text-light"> <% }
-		    					else if (m == currentMonth && displayYear == currentYear) { %><option class="bg-success text-light"> <% }
+		    					if (m == display.getDisplayMonth()) { %><option selected="selected" class="bg-primary text-light"> <% }
+		    					else if (m == currentMonth && display.getDisplayYear() == currentYear) { %><option class="bg-success text-light"> <% }
 		    					else { %><option><% } %>
 		    					<%=(smartcal.UserDisplayData.getMonthName(m))%>
 		    					</option>
 		  					<%} %>
 						</select>
 						<span class="input-group-addon">/</span>
-		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg p-2" value="<%=(displayYear)%>" type="number" min="1000" max="3000">
+		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg p-2" value="<%=(display.getDisplayYear())%>" type="number" min="1000" max="3000">
 		    		</div>		    		
 				</div>
 				</form>
@@ -197,9 +190,9 @@
 		<div class="row m-1">
 		
 		<div class="col-xl tab-content" id="calendarViewContent">
-		
+			
+			<!-- Month View Tab -->
 			<%if (displayView == 0)  {%>
-	    		<!-- Month View Tab -->
 		  		<div id="monthView" role="tabpanel">
 		        	<table class="table table-bordered table-light table-responsive-md">
 		          		<thead class="thead-dark w-100">
@@ -215,7 +208,7 @@
 			          	for (int week = 0; week < numWeeks; week++) { %>
 			            	<tr>
 			            	<% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
-			            		if ((day + 1 == currentDate) && (displayMonth == currentMonth) && (displayYear == currentYear)) {
+			            		if ((day + 1 == currentDate) && (display.getDisplayMonth() == currentMonth) && (display.getDisplayYear() == currentYear)) {
 				            		//current day
 				            		%><td width="14%" class ="table-success"><%
 			            		}
@@ -232,8 +225,7 @@
 			            			%><ul class="list-group"><%
 			            			int numEventsToDisplay = 3;
 			            			int numEvents = (todaysEvents == null)?0:todaysEvents.size();
-			            			int e;
-			            			for (e = 0; e < numEventsToDisplay; e++) {
+			            			for (int e = 0; e < numEventsToDisplay; e++) {
 			            				//invisible elements help keep sizing constant
 			            				if (e >= numEvents) {
 			            					%> <li class="list-group-item invisible"></li> <%
@@ -256,15 +248,15 @@
 		        	</table>
 		        </div>
 		        
-		 	<% } else if (displayView == 1) { %>
-		        
-		        <!-- Week View Tab -->
+		    <!-- Week View Tab -->    
+		 	<% } else if (displayView == 1) { 
+		 		int displayWeekFirstDay = display.getDisplayWeekStartDate();
+		 		%>
       		  	<div id="weekView" role="tabpanel">
-      		  		
+  
       		  		<form class="form-inline" action="/calendar" name="viewLeftRight" method="post">
       		  		<table class="table"><thead class="thead-dark"><tr class="d-flex w-100">
-      		  			<th class="w-100">This Week</th>
-      		  			
+      		  			<th class="w-100">This Week</th>	  			
       		  			<!-- Left/Right arrows for navigation -->
       		  			<th width="10%" class="p-2 d-flex justify-content-end">
 	    		  		<div class="btn-group btn-group-sm" role="group" aria-label="leftRightButtons">
@@ -280,24 +272,45 @@
 						</th>
       		  		</tr></thead></table></form>
       		  		
+      		  		<!-- Week View Cards -->
       		  		<div class="card-columns">
 						<%for (int i = 0; i < 7; i++) {
-							String dayName = smartcal.UserDisplayData.getDayName(i);
-							%>	
-							<div class="card">
-								<div class="card-header d-flex">
-									<div><h5><%=(displayWeekFirstDay + i)%> <strong><%=(dayName)%></strong></h5></div>
-							    	<div class="ml-auto"><button class="btn btn-sm btn-outline-secondary ml-auto" role="tab" id="<%=(dayName)%>Heading" type="button" data-toggle="collapse" data-target="#<%=(dayName)%>Events" aria-expanded="true" aria-controls="<%=(dayName)%>Events">...</button></div>
-							    </div>
-							    <div id="<%=(dayName)%>Events" class="collapse show" role="tabpanel" aria-labelledby="<%=(dayName)%>Heading">
-							    	<div class="card-body">
-										<p><%=(dayName)%> Event 1</p>
-										<p><%=(dayName)%> Event 2</p>
-							      	</div>
-							    </div>
-						  	</div>
-						<%} %>
-					</div>					  	
+							int nextDay = displayWeekFirstDay + i;
+							if (nextDay >= 1 && nextDay <= numDays) {
+								String dayName = smartcal.UserDisplayData.getDayName(i);
+								boolean isToday = (nextDay == currentDate) && (display.getDisplayMonth() == currentMonth) && (display.getDisplayYear() == currentYear);
+								%>
+								<div class="card <%=(isToday?"border-success":"")%>">
+									<div class="card-header d-flex">
+										<div><h5 class="<%=(isToday?"text-success":"")%>"><%=(displayWeekFirstDay + i)%> <strong><%=(dayName)%></strong></h5></div>
+								    	<div class="ml-auto"><button class="btn btn-sm btn-outline-secondary ml-auto" role="tab" id="<%=(dayName)%>Heading" type="button" data-toggle="collapse" data-target="#<%=(dayName)%>Events" aria-expanded="true" aria-controls="<%=(dayName)%>Events">...</button></div>
+								    </div>
+								    <div id="<%=(dayName)%>Events" class="collapse show" role="tabpanel" aria-labelledby="<%=(dayName)%>Heading">
+								    	<div class="card-body">
+											<% ArrayList<smartcal.CalEvent> todaysEvents = display.getDisplayEvents(nextDay); 
+					            			%><ul class="list-group"><%
+					            			int numEventsToDisplay = 10;
+					            			int numEvents = (todaysEvents == null)?0:todaysEvents.size();
+					            			for (int e = 0; e < numEventsToDisplay; e++) {
+					            				if (e >= numEvents) {
+					            					//currently not doing anything here, no reason for constant size
+					            				}
+					            				else if (numEvents > numEventsToDisplay && e == numEvents - 2) {
+					            					//if there are more events than can be shown, indicate that there are more
+					            					%> <li class="list-group-item p-2">(more events)</li> <%
+					            				}
+					            				else {
+					            					smartcal.CalEvent event = todaysEvents.get(e);
+					            					%><li class="list-group-item p-2"><%=(event.getTimeStringFull() + " " + event.getName())%></li><%
+					            				}
+					            			}
+					            			%></ul>								
+								      	</div>
+								    </div>
+							  	</div>
+						<%} } %>
+					</div>	
+									  	
       		  	</div>
       		  	
       		<!-- Day View Tab -->  	
@@ -344,11 +357,6 @@
 	<!-- Print Tests for the Calendar Info -->
   	<!--  
   	<div class="row"> <div class="col-sm"> current year: <%=(currentYear)%></div></div>
-    <div class="row"> <div class="col-sm"> current month: <%=(currentMonth)%></div></div>
-    <div class="row"> <div class="col-sm"> current date: <%=(currentDate)%></div></div>
-    <div class="row"> <div class="col-sm"> numDays: <%=(numDays)%></div></div>
-    <div class="row"> <div class="col-sm"> firstDayOfWeek: <%=(firstDayOfWeek)%></div></div>
-    <div class="row"> <div class="col-sm"> numWeeks: <%=(numWeeks)%></div></div>
 	-->	
 	
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

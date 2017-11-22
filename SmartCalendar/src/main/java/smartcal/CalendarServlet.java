@@ -32,13 +32,17 @@ public class CalendarServlet extends HttpServlet {
        		display = new UserDisplayData(user);
        	}
     	
-       	//checK Week Day view
-        boolean changeViewPressed =  updateViewTab(display, req);
+       	//TODO there is probably a better way to do this part
+       	//basically only 1 form can redirect here at a time, so handle the one that comes in
        	
-    	//check the changeMonth form in calendar.jsp
-        if (!changeViewPressed) {
-        	updateCalendarDisplayMonth(display, req);
-        }
+       	//check all the different forms in calendar.jsp
+       	if (!checkTodayButton(display, req)) {
+        	if (!checkWeekLRButtons(display, req)) {
+            	if (!checkViewButtons(display, req)) {
+                	updateCalendarDisplayMonth(display, req);
+            	}
+        	}
+       	} 	
         
         //save in objectify
         ObjectifyService.ofy().save().entity(display); 
@@ -47,10 +51,28 @@ public class CalendarServlet extends HttpServlet {
         resp.sendRedirect("/calendar.jsp");
     }
     
+    /* check the today button
+     * sets parameters to -1
+     * TODO considering using something different for auto current day
+     */
+    private boolean checkTodayButton(UserDisplayData display, HttpServletRequest req) {
+    	boolean pressed = false;
+    	//check the "Today" button
+        if (req.getParameter("today") != null) {
+        	display.setDisplayMonth(-1);
+            display.setDisplayYear(-1);
+            display.setDisplayDate(-1);
+            display.setDisplayWeek(-1);
+            pressed = true;
+        }
+    	System.out.println(getUserName(display.getUser()) + " is viewing current day");
+    	return pressed;
+    }
+    
     /* Update Month Week Day view, changeView form
      * Check buttons, return true if they were pressed
      */
-    private boolean updateViewTab(UserDisplayData display, HttpServletRequest req) {
+    private boolean checkViewButtons(UserDisplayData display, HttpServletRequest req) {
     	boolean pressed = false;
     	if (req.getParameter("monthView-btn") != null) {
     		display.setDisplayView(0);
@@ -64,7 +86,21 @@ public class CalendarServlet extends HttpServlet {
     		display.setDisplayView(2);
     		pressed = true;
         }
-    	//System.out.println("view: " + display.getDisplayView());
+    	System.out.println(getUserName(display.getUser()) + " is displaying view: " + display.getDisplayView());
+    	return pressed;
+    }
+    
+    private boolean checkWeekLRButtons(UserDisplayData display, HttpServletRequest req) {
+    	boolean pressed = false;
+    	//check the "Today" button
+        if (req.getParameter("left") != null) {
+        	display.changeWeek(false);
+        	pressed = true;
+        }
+        if (req.getParameter("right") != null) {
+        	display.changeWeek(true);
+        	pressed = true;
+        }
     	return pressed;
     }
     
@@ -76,21 +112,13 @@ public class CalendarServlet extends HttpServlet {
     	int displayMonth = UserDisplayData.getMonthInt(req.getParameter("formMonth"));
         int displayYear = UserDisplayData.getYear(req.getParameter("formYear"));
         
-        //check the "Today" button
-        if (req.getParameter("today") != null) {
-        	displayMonth = -1;
-        	displayYear = -1;
-        }
-        
         //update UserDisplayData for the User
         display.setDisplayMonth(displayMonth);
         display.setDisplayYear(displayYear);
+        display.setDisplayDate(1);
+        display.setDisplayWeek(1);
         
-        //print user display info to console
        	System.out.println(getUserName(display.getUser()) + " is displaying calendar for " + (display.getDisplayMonth() + 1) + "/" + display.getDisplayYear());
-        
-       	//populate the list of all the events in the display month
-       	display.loadDisplayEvents();
     }
     
     private String getUserName(User user) {

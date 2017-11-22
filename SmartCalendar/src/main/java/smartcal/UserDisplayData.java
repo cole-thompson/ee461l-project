@@ -37,7 +37,7 @@ public class UserDisplayData {
 		displayWeekFirstDay = -1;
 		displayDate = -1;
 		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
-		createTestEvent();
+		//createTestEvent();
 	}
 	
 	public UserDisplayData(User user) {
@@ -47,7 +47,7 @@ public class UserDisplayData {
 		displayWeekFirstDay = -1;
 		displayDate = -1;
 		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
-		createTestEvent();
+		//createTestEvent();
 	}
 	
 	//test

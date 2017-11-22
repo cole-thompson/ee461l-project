@@ -15,7 +15,7 @@
 
 <html>
 	<head>
-	 	<title>Calendar</title>
+	 	<title>Smart Calendar</title>
 	 	<!-- Required meta tags -->
 	 	<meta charset="utf-8">
 	 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -30,8 +30,8 @@
 
   	<body class="bg-light">
   	
-  		<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
-  			<a class="navbar-brand" href="#">Calendar</a>
+  		<nav class="navbar navbar-expand-lg p-1 navbar-light bg-light sticky-top border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
+  			<a class="navbar-brand" href="#">Smart Calendar</a>
   			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 		    	<span class="navbar-toggler-icon"></span>
 		 	</button>
@@ -61,7 +61,7 @@
 	    String username = "";
 	    if (user == null) {
 			%>
-			<span class="navbar-text text-muted m-2">Hello!</span>
+			<span class="navbar-text text-muted mr-3">Hello!</span>
 			<a class="btn btn-sm btn-outline-success" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
 			<%
 	    }
@@ -69,7 +69,7 @@
 	    	username = "" + user.getNickname();
 	      	pageContext.setAttribute("user", user);
 			%>
-			<span class="navbar-text text-muted m-2">Hello, ${fn:escapeXml(user.nickname)}! </span>
+			<span class="navbar-text text-muted mr-3">Hello, ${fn:escapeXml(user.nickname)}! </span>
 			<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
 			<%
 	    }  
@@ -161,11 +161,11 @@
 			</div>
 			
 			<!-- Change display month/year forms -->
-			<div class="col-md">
+			<div class="col-md" style="min-width: 30%;">
 				<form action="/calendar" name="changeMonth" method="post">
 				<div class="form-group form-group-lg">
 					<div class="input-group input-group-lg"> 
-					  	<select name="formMonth" onchange="changeMonth.submit()" class="form-control form-control-lg">
+					  	<select name="formMonth" onchange="changeMonth.submit()" class="form-control form-control-lg p-2">
 		    				<% for (int m = 0; m < 12; m++) { 
 		    					if (m == displayMonth) { %><option selected="selected" class="bg-primary text-light"> <% }
 		    					else if (m == currentMonth && displayYear == currentYear) { %><option class="bg-success text-light"> <% }
@@ -175,7 +175,7 @@
 		  					<%} %>
 						</select>
 						<span class="input-group-addon">/</span>
-		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg" value="<%=(displayYear)%>" type="number" min="1000" max="3000">
+		    			<input name="formYear" onchange="changeMonth.submit()" class="form-control form-control-lg p-2" value="<%=(displayYear)%>" type="number" min="1000" max="3000">
 		    		</div>		    		
 				</div>
 				</form>
@@ -253,7 +253,25 @@
 		        
 		        <!-- Week View Tab -->
       		  	<div class="tab-pane fade" id="weekView" role="tabpanel" aria-labelledby="weekView-tab">
-      		  		<table class="table"><thead class="thead-dark w-100"><tr><th scope="col">This Week</th></tr></thead></table>
+      		  		
+      		  		<form class="form-inline" action="/calendar" name="viewLeftRight" method="post">
+      		  		<table class="table"><thead class="thead-dark"><tr class="d-flex w-100">
+      		  			<th class="w-100">This Week</th>
+      		  			
+      		  			<!-- Left/Right arrows for navigation -->
+      		  			<th width="10%" class="p-2 d-flex justify-content-end">
+	    		  		<div class="btn-group btn-group-sm" role="group" aria-label="leftRightButtons">
+							<button type="submit" class="btn btn-outline-light btn-sm" name="left">
+						  		<span aria-hidden="true">&laquo;</span>
+						        <span class="sr-only">Previous</span>
+						  	</button>
+						  	<button type="submit" class="btn btn-outline-light btn-sm" name="right">
+						  		<span aria-hidden="true">&raquo;</span>
+						        <span class="sr-only">Next</span>
+						  	</button>
+						</div>
+						</th>
+      		  		</tr></thead></table></form>
       		  		
       		  		<div class="card-columns">
 						<%for (int i = 0; i < 7; i++) {

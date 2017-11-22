@@ -239,7 +239,7 @@
 			            				}
 			            				else {
 			            					smartcal.CalEvent event = todaysEvents.get(e);
-			            					%><li class="list-group-item"><%=(event.getTimeString() + " " + event.getName())%></li><%
+			            					%><li class="list-group-item p-1"><small><%=(event.getTimeString() + " " + event.getName())%></small></li><%
 			            				}
 			            			}
 			            			%></ul> <%

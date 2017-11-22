@@ -47,6 +47,19 @@ public class CalEvent {
 	 * meant for visualizing events that last <1 day */
 	public String getTimeString() {
 		int startHour = startTime.get(Calendar.HOUR);
+		int startAmPm = startTime.getMaximum(Calendar.AM_PM);
+		
+		int endHour = endTime.get(Calendar.HOUR);
+		int endAmPm = endTime.getMaximum(Calendar.AM_PM);
+		
+		String s = startHour + getAmPmString(startAmPm);
+		s += "-";
+		s += endHour + getAmPmString(endAmPm);
+		return s;
+	}
+	
+	public String getTimeStringFull() {
+		int startHour = startTime.get(Calendar.HOUR);
 		int startMinute = startTime.get(Calendar.MINUTE);
 		int startAmPm = startTime.getMaximum(Calendar.AM_PM);
 		

@@ -37,6 +37,7 @@ public class UserDisplayData {
 		displayWeekFirstDay = -1;
 		displayDate = -1;
 		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
+		createTestEvent();
 	}
 	
 	public UserDisplayData(User user) {
@@ -46,12 +47,14 @@ public class UserDisplayData {
 		displayWeekFirstDay = -1;
 		displayDate = -1;
 		displayEvents = new HashMap<Integer, ArrayList<CalEvent>>();
+		createTestEvent();
 	}
 	
 	//test
 	public void createTestEvent() {
 		ArrayList<CalEvent> l = new ArrayList<CalEvent>();
 		CalEvent e = new CalEvent(user, Calendar.getInstance(), Calendar.getInstance());
+		e.setName("My Event");
 		l.add(e);
 		displayEvents.put(10, l);
 	}

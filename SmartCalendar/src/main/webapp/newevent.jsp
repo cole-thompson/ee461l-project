@@ -56,7 +56,7 @@
 			        	</div>
 			      	</li>
 			      	<li class="nav-item active">
-			        	<a class="nav-link" href="#">New Event</a>
+			        	<a class="nav-link" href="/newevent.jsp">New Event</a>
 			      	</li>
 			    </ul>
 

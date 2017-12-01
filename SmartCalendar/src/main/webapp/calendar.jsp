@@ -104,9 +104,6 @@
        		System.out.println("friendslist found: \n" + flist);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
        	}
        	
-       	if(flist.getFriends().isEmpty()){
-       		flist.add(ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user");
-       	}
        	
        	
      	 //load the events for a user into the display object

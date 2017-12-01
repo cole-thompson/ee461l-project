@@ -82,6 +82,7 @@
 		//main method initialization stuff
 		ObjectifyService.register(smartcal.CalEvent.class);
         ObjectifyService.register(smartcal.UserDisplayData.class);
+        ObjectifyService.register(smartcal.FriendsList.class);
 				
 		//grab user display information from objectify
        	smartcal.UserDisplayData display = ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user", user).first().now();
@@ -92,6 +93,21 @@
        	else {
        		System.out.println(username + " found displayData");
        	}
+       	
+       	//grabbing FriendsList for the current user
+       	smartcal.FriendsList flist = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now();
+       	if(flist == null){
+       		System.out.println(user + " didnt have a friendslist for some reason, creating it now");
+       		flist = new smartcal.FriendsList(user);
+       		ObjectifyService.ofy().save().entity(flist);
+       	}else{
+       		System.out.println("friendslist found: \n" + flist);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
+       	}
+       	
+       	if(flist.getFriends().isEmpty()){
+       		flist.add(ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user");
+       	}
+       	
        	
      	 //load the events for a user into the display object
 	    display.loadDisplayEvents();

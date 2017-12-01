@@ -36,13 +36,12 @@ public class CalendarServlet extends HttpServlet {
        	//basically only 1 form can redirect here at a time, so handle the one that comes in
        	
        	//check all the different forms in calendar.jsp
-       	if (!checkTodayButton(display, req)) {
-        	if (!checkWeekLRButtons(display, req)) {
-            	if (!checkViewButtons(display, req)) {
-                	updateCalendarDisplayMonth(display, req);
-            	}
-        	}
-       	} 	
+       	if (checkTodayButton(display, req)) {}
+       	else if (checkWeekLRButtons(display, req)) {}
+       	else if (checkViewButtons(display, req)) {}
+       	else {
+       		updateCalendarDisplayMonth(display, req);
+       	}
         
         //save in objectify
         ObjectifyService.ofy().save().entity(display); 

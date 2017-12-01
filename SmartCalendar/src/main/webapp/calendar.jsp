@@ -52,6 +52,9 @@
 				          	<a class="dropdown-item" href="#">Something else here</a>
 			        	</div>
 			      	</li>
+			      	<li class="nav-item">
+			        	<a class="nav-link" href="#">New Event</a>
+			      	</li>
 			    </ul>
 
 		<%

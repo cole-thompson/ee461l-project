@@ -229,7 +229,7 @@
 			            	<% for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; dayOfWeek++) { 
 			            		if ((week == 0 && dayOfWeek < firstDayOfWeek) || day >= numDays) {
 			            			//current day
-			            			System.out.println("week:" + week + " day:" + day + " dayOfWeek:" + dayOfWeek);
+			            			//System.out.println("week:" + week + " day:" + day + " dayOfWeek:" + dayOfWeek);
 				            		%><td width="14%"><%
 			            		}
 			            		else if ( !(week == 0 && dayOfWeek < firstDayOfWeek) && (day + 1 == currentDate) && (display.getDisplayMonth() == currentMonth) && (display.getDisplayYear() == currentYear)) {

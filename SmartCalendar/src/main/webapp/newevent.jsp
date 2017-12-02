@@ -102,23 +102,32 @@
        	
        	<div class="container">
        		<div class="row"><div class="col-md">
+       			<h2><span class="text-primary">Create New Event</span></h2>
+       		</div></div>
+       		
+       		<div class="row"><div class="col-md">
        		<!-- Main Event Creation Stuff -->	
-       		<table class="table"><thead class="thead-dark"><tr class="d-flex w-100">
-      		  			<th class="w-100">Create New Event</th>
-      		</tr> </thead> </table>
-      		
-       		<form action="/newevent" name="stage1" method="post"> 
-       			<div class="form-group form-group-lg">
-       				<div class="input-group input-group-lg">	<!-- form groups style inputs like our month/year switcher -->
-		    			<span class="input-group-addon">Event Name</span>
-		    			<input name="formYear" class="form-control form-control-lg">
-		    		</div>
-		    		
-		    		<!-- look into checkboxes for type -->
-		    		
-				</div>
-       		</form>	
-	
+       		<table class="table table-bordered table-light">
+       			<thead class="thead-dark"><tr class="d-flex w-100">
+      		  			<th class="w-100">Choose a Name and Type</th>
+      			</tr> </thead> 
+      			<tbody>
+      			<tr><td>
+		       		<form action="/newevent" name="stage1" method="post"> 
+		       			<div class="form-group form-group-lg">
+		       				<div class="input-group input-group-lg">	<!-- form groups style inputs like our month/year switcher -->
+				    			<span class="input-group-addon">Event Name</span>
+				    			<input name="formYear" class="form-control form-control-lg">
+				    		</div>
+				    	</div>
+		       		</form>	
+			   </td></tr>
+			   <!-- look into checkboxes for type -->
+			   
+			   
+			   </tbody>	
+			</table>
+			
        		<form action="/newevent" name="stage2" method="post"> 	
        		
        		

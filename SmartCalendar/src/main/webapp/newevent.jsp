@@ -101,19 +101,31 @@
        	
        	
        	<div class="container">
-       		<div class="row"><div class="col">
+       		<div class="row"><div class="col-md">
        		<!-- Main Event Creation Stuff -->	
+       		<table class="table"><thead class="thead-dark"><tr class="d-flex w-100">
+      		  			<th class="w-100">Create New Event</th>
+      		</tr> </thead> </table>
+      		
        		<form action="/newevent" name="stage1" method="post"> 
-       			
-       		
-       			<button type="submit">Button</button>
-       		
-       		
+       			<div class="form-group form-group-lg">
+       				<div class="input-group input-group-lg">	<!-- form groups style inputs like our month/year switcher -->
+		    			<span class="input-group-addon">Event Name</span>
+		    			<input name="formYear" class="form-control form-control-lg">
+		    		</div>
+		    		
+		    		<!-- look into checkboxes for type -->
+		    		
+				</div>
        		</form>	
-       			
-       			
-       			
-       			
+	
+       		<form action="/newevent" name="stage2" method="post"> 	
+       		
+       		
+       		
+       			<!-- Submit Button (final step) TODO popup -->
+       			<button class="form-control form-control-lg btn btn-success" type="submit">Create Event</button>
+       		</form>
        			
        		
        			

@@ -26,6 +26,15 @@
 	    <url-pattern>/calendar</url-pattern>
 	</servlet-mapping>
    	
+   	<servlet>
+	    <servlet-name>newevent</servlet-name>
+	    <servlet-class>smartcal.NewEventServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>newevent</servlet-name>
+	    <url-pattern>/newevent</url-pattern>
+	</servlet-mapping>
+   	
    	
 	<welcome-file-list>
 	  	<welcome-file>calendar.jsp</welcome-file>

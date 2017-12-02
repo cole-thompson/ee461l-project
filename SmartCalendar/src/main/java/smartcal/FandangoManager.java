@@ -8,16 +8,16 @@ import com.google.appengine.api.urlfetch.*;
 
 public class FandangoManager {
 	
-	protected String sha256Encode(String StringToEncode) throws NoSuchAlgorithmException {
+	static protected String sha256Encode(String StringToEncode) throws NoSuchAlgorithmException {
 	        
 	        MessageDigest digest = MessageDigest.getInstance("SHA-256");
 	        byte[] buffUtf8Msg = digest.digest(StringToEncode.getBytes());
 	        String result = String.format("%0" + (buffUtf8Msg.length*2) + "X", new BigInteger(1, buffUtf8Msg));
 	        
 	        return result;
-	    }
+	}
 
-    protected String buildAuthorizationParameters(String apiKey, String sharedSecret) throws NoSuchAlgorithmException {
+    static protected String buildAuthorizationParameters(String apiKey, String sharedSecret) throws NoSuchAlgorithmException {
         
         long seconds =  System.currentTimeMillis() / 1000;
         String paramsToEncode = apiKey + sharedSecret + seconds;
@@ -31,8 +31,9 @@ public class FandangoManager {
 	
 	/*
 	 * this function sends requests to fandango's website
+	 * inputs: opString (String) -- contains operation and parameter
 	 */
-	private String makeRequest(String opString) {
+	static public String makeRequest(String opString) {
 		String baseUrl = "http://api.fandango.com/";
 		String apiVer = "1";
 		String apiKey = "q763vgth9rru2b66g9pspsf3"; 

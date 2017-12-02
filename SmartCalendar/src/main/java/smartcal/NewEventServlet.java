@@ -26,5 +26,10 @@ public class NewEventServlet extends HttpServlet{
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		//get the current user
 		User user = UserServiceFactory.getUserService().getCurrentUser();
+		
+		
+		//System.out.println("worked");
+		
+		resp.sendRedirect("/newevent.jsp");
 	}
 }

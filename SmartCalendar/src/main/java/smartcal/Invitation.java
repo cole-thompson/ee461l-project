@@ -27,12 +27,15 @@ public class Invitation {
 	private List<User> friends;
 	private Type type;
 	private String name;
+	
+	private List<InvitationOption> options;
 
 	public Invitation() {
 		stage = 1;
-		friends = new ArrayList();
+		friends = new ArrayList<User>();
 		type = Type.G;
 		finished = false;
+		options = new ArrayList<InvitationOption>();
 	}
 	
 	public Invitation(User creator) {
@@ -65,6 +68,17 @@ public class Invitation {
 		return s;
 	}
 	
+	public void nextStage() {
+		stage++;
+	}
+	
+	public void finishCreation() {
+		finished = true;
+	}
+	
+	
+	
+	
 	
 	public Type getType() {
 		return type;
@@ -74,10 +88,6 @@ public class Invitation {
 		this.type = type;
 	}
 
-	public void nextStage() {
-		stage++;
-	}
-	
 	public int getStage() {
 		return stage;
 	}
@@ -96,5 +106,17 @@ public class Invitation {
 
 	public void setCreator(User creator) {
 		this.creator = creator;
+	}
+
+	public List<InvitationOption> getOptions() {
+		return options;
+	}
+
+	public void setOptions(List<InvitationOption> options) {
+		this.options = options;
+	}
+	
+	public void addOption(InvitationOption option) {
+		options.add(option);
 	}
 }

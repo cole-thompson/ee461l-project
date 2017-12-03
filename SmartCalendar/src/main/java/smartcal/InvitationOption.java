@@ -5,18 +5,21 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.google.appengine.api.users.User;
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
 
-@Entity
+
+
 public class InvitationOption {
-	@Id Long id;
+
 	
 	private String location;
 	private Calendar startTime;
 	private Calendar endTime;
 	private boolean allDay;
+	
+	public InvitationOption() {
+		setLocation("undecided");
+		setAllDay(true);
+	}
 	
 	public InvitationOption(String loc) {
 		setLocation(loc);
@@ -26,11 +29,13 @@ public class InvitationOption {
 		setLocation("undecided");
 		setStartTime(start);
 		setEndTime(end);
+		setAllDay(false);
 	}
 	public InvitationOption(String loc, Calendar start, Calendar end) {
 		setLocation(loc);
 		setStartTime(start);
 		setEndTime(end);
+		setAllDay(false);
 	}
 	
 	//Getters and Setters
@@ -49,6 +54,7 @@ public class InvitationOption {
 
 	public void setStartTime(Calendar startTime) {
 		this.startTime = startTime;
+		setAllDay(false);
 	}
 
 	public Calendar getEndTime() {
@@ -57,6 +63,7 @@ public class InvitationOption {
 
 	public void setEndTime(Calendar endTime) {
 		this.endTime = endTime;
+		setAllDay(false);
 	}
 
 	public boolean isAllDay() {

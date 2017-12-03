@@ -223,26 +223,34 @@
 				<div class="row"><div class="col-md">
 	       		<table class="table table-bordered table-light">
 	       			<thead class="thead-dark"><tr class="d-flex w-100">
-	      		  			<th class="w-100">Time and Location</th>
+	      		  			<th class="w-100">Add an Option</th>
 	      			</tr> </thead> 
 	      			<tbody><tr><td>  
 				       	<form action="/newevent" name="stage2" method="post"> 	
-				       		<button class="form-control form-control-lg btn btn-success" type="submit">Finish Invitation</button>
+				       		<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+					    			<span class="input-group-addon">Location</span>
+					    			<input name="location" class="form-control">
+					    		</div>
+					    	</div>
+				       		<!-- TODO time -->
 				       	
 				       	
-				       	
+				       		<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Option</button>
 				       	</form>
 	      				</td></tr></tbody>
-	       			
-	       		</div></div>
+	       		</table>
+	       		</div></div> 
+	       		
+	       		<div class="row"><div class="col-md">
+	       			<form action="/newevent" name="finishInvitation" method="post"> 	
+				       		<button name="part2submit" class="form-control form-control-lg btn-lg btn-success" type="submit">Finish Invitation</button>
+				       	</form>
+	       		</div></div>      		
        		</div>
-       		
-       		
        	<%} %>
        		
-       		
-       	</div>
-	
+  
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>

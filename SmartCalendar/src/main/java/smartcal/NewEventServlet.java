@@ -42,12 +42,13 @@ public class NewEventServlet extends HttpServlet{
        	
        	//check all the different forms in newevent.jsp
 		
-       	if (checkForm1(req, user, flist)) {}
-       	else if (checkForm2(req, user)) {}
-		
+       	if (checkForm1(req, user, flist)) {resp.sendRedirect("/newevent.jsp");}
+       	else if (checkNewOption(req, user)) {resp.sendRedirect("/newevent.jsp");}
+       	else if (checkForm2(req, user)) {resp.sendRedirect("/calendar.jsp");}
+       	
 		//System.out.println("worked");
 		
-		resp.sendRedirect("/newevent.jsp");
+		
 	}
 	 
 	//Stage1: Invitation creation
@@ -103,17 +104,43 @@ public class NewEventServlet extends HttpServlet{
 	}
 	
 	//Stage2: Confirm invitation complete
+		private boolean checkNewOption(HttpServletRequest req, User creator) {
+			boolean pressed = false;
+			if (req.getParameter("newoption") != null) {
+		       	Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
+				if (invitation == null) {
+					return true;
+				}
+				String eventLoc = req.getParameter("location");
+				
+				InvitationOption option = new InvitationOption();
+				
+				if (eventLoc != null) {
+					option.setLocation(eventLoc);
+				}
+				//TODO handle times, all day
+				
+				System.out.println("o:" + (option==null) + " i:" + (invitation==null));
+				invitation.addOption(option);
+				ObjectifyService.ofy().save().entity(invitation); 
+				pressed = true;
+	        }
+			return pressed;
+		}
 	
+	//Stage2: Confirm invitation complete
 	private boolean checkForm2(HttpServletRequest req, User creator) {
 		boolean pressed = false;
-		//hypothetical middle buttons for 'completing' an Option
-		
-		
 		if (req.getParameter("part2submit") != null) {
-			//Stuff that sends out the invitation
+			System.out.println("Finishing invitation");
+	       	Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
+	       	//TODO send invitation to people
+	       	
+	       	
+	       	invitation.finishCreation(); 	
+	       	ObjectifyService.ofy().save().entity(invitation); 
     		pressed = true;
         }
-		
 		return pressed;
 	}
 }

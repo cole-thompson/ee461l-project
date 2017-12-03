@@ -28,8 +28,8 @@ public class NewEventServlet extends HttpServlet{
 		User user = UserServiceFactory.getUserService().getCurrentUser();
 		
        	//check all the different forms in newevent.jsp
-       	if (checkForm1(req)) {}
-       	else if (checkForm2(req)) {}
+       	if (checkForm1(req, user)) {}
+       	else if (checkForm2(req, user)) {}
 		
 		//System.out.println("worked");
 		
@@ -38,19 +38,25 @@ public class NewEventServlet extends HttpServlet{
 	 
 	//Stage1: Invitation creation
 	
-	private boolean checkForm1(HttpServletRequest req) {
+	private boolean checkForm1(HttpServletRequest req, User creator) {
 		boolean pressed = false;
 		
 		if (req.getParameter("part1submit") != null) {
 			//Stuff that creates Invitation
 			String eventName = req.getParameter("eventname");
-			
 			String eventType = req.getParameter("eventtype");
-			if(eventType.equals("Generic")) {
+			
+			if(eventName == null || eventType == null) {
+				//indicate that you need to fill in the fields
+				System.out.println("One or more fields have not been filed in");
+			}
+			else if(eventType.equals("Generic")) {
 				System.out.println("Event Type: Generic");
+				Invitation invite = new Invitation(creator);
 			}
 			else if(eventType.equals("Movie")) {
 				System.out.println("Event Type: Movie");
+				Invitation invite = new Invitation(creator);
 			}
 			else {
 				System.out.println("Event Type: Invalid");
@@ -61,9 +67,9 @@ public class NewEventServlet extends HttpServlet{
 		return pressed;
 	}
 	
-	//Stage1: Confirm invitation complete
+	//Stage2: Confirm invitation complete
 	
-	private boolean checkForm2(HttpServletRequest req) {
+	private boolean checkForm2(HttpServletRequest req, User creator) {
 		boolean pressed = false;
 		//hypothetical middle buttons for 'completing' an Option
 		

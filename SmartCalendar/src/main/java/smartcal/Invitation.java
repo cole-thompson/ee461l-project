@@ -11,7 +11,7 @@ import com.googlecode.objectify.annotation.Index;
 @Entity
 public class Invitation {
 	@Id Long id;
-	@Index User creator;
+	@Index UserAccount creator;
 	
 	//true when it has been sent out
 	@Index boolean finished;
@@ -21,16 +21,17 @@ public class Invitation {
 	 */
 	@Index int stage;
 	
-	private List<User> friends;
+	List<UserAccount> friends;
+
 	
-	public Invitation(User creator) {
+	public Invitation(UserAccount creator) {
 		this.creator = creator;
 
 		stage = 1;
 		friends = new ArrayList();
 	}
 	
-	public boolean addFreind(User user) {
+	public boolean addFriend(UserAccount user) {
 		if (stage == 1) {
 			friends.add(user);
 			return true;

@@ -87,7 +87,8 @@
 		<%
 		//main method initialization stuff
 		
-       	
+       	ObjectifyService.register(smartcal.FriendsList.class);
+		
        	//grabbing FriendsList for the current user
        	smartcal.FriendsList flist = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now();
        	if(flist == null){
@@ -114,12 +115,32 @@
       			<tbody>
       			<tr><td>
 		       		<form action="/newevent" name="stage1" method="post"> 
-		       			<div class="form-group form-group-lg">
-		       				<div class="input-group input-group-lg">	<!-- form groups style inputs like our month/year switcher -->
+		       			
+		       			<div class="form-group">
+		       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
 				    			<span class="input-group-addon">Event Name</span>
-				    			<input name="formYear" class="form-control form-control-lg">
+				    			<input name="eventname" class="form-control">
 				    		</div>
 				    	</div>
+				    	
+				    	<div class="form-group form-group-lg">
+				    		<div class="input-group">
+							    <span class="input-group-addon"><label>Event Type</label></span>
+							    <div class="form-control form-check form-check-inline">
+							  		<label class="form-check-label">
+								    <input class="form-check-input" type="radio" name="eventtype" value="Generic"> Generic
+								  	</label>
+								</div>
+								<div class="form-control form-check form-check-inline">
+								  	<label class="form-check-label">
+								    <input class="form-check-input" type="radio" name="eventtype" value="Movie"> Movie
+									</label>
+								</div>
+							</div>
+  						</div>
+  						
+  						<button name="part1submit" class="form-control form-control-lg btn btn-success" type="submit">Start Invitation</button>
+  					
 		       		</form>	
 			   </td></tr>
 			   <!-- look into checkboxes for type -->
@@ -128,14 +149,12 @@
 			   </tbody>	
 			</table>
 			
+			<!--  
        		<form action="/newevent" name="stage2" method="post"> 	
-       		
-       		
-       		
-       			<!-- Submit Button (final step) TODO popup -->
-       			<button class="form-control form-control-lg btn btn-success" type="submit">Create Event</button>
-       		</form>
        			
+       			<button class="form-control form-control-lg btn btn-success" type="submit">Create Invitation</button>
+       		</form>
+       		-->
        		
        			
        			

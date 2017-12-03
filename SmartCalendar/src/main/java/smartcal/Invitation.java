@@ -10,5 +10,7 @@ public class Invitation {
 	@Id Long id;
 	@Index User user;
 	
-	public class In
+	public Invitation() {
+		
+	}
 }

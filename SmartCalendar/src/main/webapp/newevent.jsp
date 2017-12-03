@@ -123,20 +123,35 @@
 				    		</div>
 				    	</div>
 				    	
-				    	<div class="form-group form-group-lg">
-				    		<div class="input-group">
-							    <span class="input-group-addon"><label>Event Type</label></span>
-							    <div class="form-control form-check form-check-inline">
-							  		<label class="form-check-label">
-								    <input class="form-check-input" type="radio" name="eventtype" value="Generic"> Generic
-								  	</label>
-								</div>
-								<div class="form-control form-check form-check-inline">
-								  	<label class="form-check-label">
-								    <input class="form-check-input" type="radio" name="eventtype" value="Movie"> Movie
-									</label>
-								</div>
+				    	<div class="form-group input-group">
+						    <span class="input-group-addon"><label>Event Type</label></span>
+						  	<div class="form-control">
+								<input class="form-check-input ml-1" type="radio" name="eventtype" value="Generic">
+							  	<label class="form-check form-check-label ml-1">Generic</label>
 							</div>
+							<div class="form-control">
+								<input class="form-check-input ml-1" type="radio" name="eventtype" value="Movie">
+							  	<label class="form-check form-check-label ml-1">Movie</label>
+							</div>
+  						</div>
+  						
+  						<div class="form-group form-group-lg">
+	  						<div class="input-group">
+								<span class="input-group-addon"><label>Invite Friends</label></span>
+	  							<% List<User> friends = flist.getFriends();
+	  							if (friends.size() == 0) { %>
+	  								<div class="form-control form-check">
+								  		<label class="form-check-label">You have no friends.</label>
+									</div>
+	  							<%}
+	  							for (int i = 0; i < friends.size(); i++) { %>
+	  								<div class="form-control form-check">
+								  		<label class="form-check-label">
+									    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> <%=friends.get(i).getNickname()%>
+									  	</label>
+									</div>
+	  							<%}%>
+		  					</div>
   						</div>
   						
   						<button name="part1submit" class="form-control form-control-lg btn btn-success" type="submit">Start Invitation</button>
@@ -151,7 +166,6 @@
 			
 			<!--  
        		<form action="/newevent" name="stage2" method="post"> 	
-       			
        			<button class="form-control form-control-lg btn btn-success" type="submit">Create Invitation</button>
        		</form>
        		-->

@@ -32,10 +32,11 @@ public class Invitation {
 
 	public Invitation() {
 		stage = 1;
+		options = new ArrayList<InvitationOption>();
 		friends = new ArrayList<User>();
 		type = Type.G;
 		finished = false;
-		options = new ArrayList<InvitationOption>();
+		
 	}
 	
 	public Invitation(User creator) {

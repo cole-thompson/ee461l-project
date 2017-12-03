@@ -1,6 +1,7 @@
 package smartcal;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
 
@@ -12,8 +13,8 @@ public class InvitationOption {
 
 	
 	private String location;
-	private Calendar startTime;
-	private Calendar endTime;
+	private Date startTime;
+	private Date endTime;
 	private boolean allDay;
 	
 	public InvitationOption() {
@@ -25,17 +26,26 @@ public class InvitationOption {
 		setLocation(loc);
 		setAllDay(true);
 	}
-	public InvitationOption(Calendar start, Calendar end) {
+	public InvitationOption(Date start, Date end) {
 		setLocation("undecided");
 		setStartTime(start);
 		setEndTime(end);
 		setAllDay(false);
 	}
-	public InvitationOption(String loc, Calendar start, Calendar end) {
+	public InvitationOption(String loc, Date start, Date end) {
 		setLocation(loc);
 		setStartTime(start);
 		setEndTime(end);
 		setAllDay(false);
+	}
+	
+	public String getTimeString() {
+		int length = 16;
+		if (allDay) {
+			length = 10;
+		}
+		return getStartTime().toString().substring(0, length) + " to " + getEndTime().toString().substring(0, length);
+		
 	}
 	
 	//Getters and Setters
@@ -48,25 +58,23 @@ public class InvitationOption {
 		this.location = location;
 	}
 
-	public Calendar getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Calendar startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
-		setAllDay(false);
 	}
 
-	public Calendar getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Calendar endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
-		setAllDay(false);
 	}
 
-	public boolean isAllDay() {
+	public boolean getAllDay() {
 		return allDay;
 	}
 

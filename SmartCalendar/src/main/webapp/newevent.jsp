@@ -26,6 +26,7 @@
 	 	<!-- Our custom css -->
 	 	<link rel="stylesheet" type="text/css" href="calendar.css">
 	 	
+	 	
 	 </head>
 
   	<body class="bg-light">
@@ -108,7 +109,7 @@
        	<%if(invitation == null) {%>
        		<div class="container">
 	       		<div class="row"><div class="col-md">
-	       			<h2><span class="text-primary">Start New Event</span></h2>
+	       			<h2><span class="text-primary">New Event</span></h2>
 	       		</div></div>
 	       		
 	       		<div class="row"><div class="col-md">
@@ -174,15 +175,17 @@
 	       		</div></div>
 	       	</div> 	
 	    
+	    
+	    
 	    <!-- STAGE 2 -->
      	<%} 
      	else if (invitation.getStage() == 2) { %>
        		<div class="container">
 	       		<div class="row"><div class="col-md">
-	       			<h2><span class="text-primary">Finish New Event</span></h2>
+	       			<h2><span class="text-primary">New Event</span></h2>
 	       		</div></div>
 	       		
-	       		<!-- This table prints info from stage 1 -->
+	       		<!-- Print info from stage 1 -->
 	       		<div class="row"><div class="col-md">
 	       		<table class="table table-bordered table-light">
 	       			<thead class="thead-dark"><tr class="d-flex w-100">
@@ -190,13 +193,13 @@
 	      			</tr> </thead> 
 	      			<tbody><tr><td>
 	      				<div class="form-group">
-		       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+		       				<div class="input-group">	
 				    			<span class="input-group-addon">Event Name</span>
 				    			<input readonly name="eventname" class="form-control bg-white" value="<%=(invitation.getName())%>">
 				    		</div>
 					    </div> 
 				    	<div class="form-group">
-		       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+		       				<div class="input-group">	
 				    			<span class="input-group-addon">Event Type</span>
 				    			<input readonly name="eventname" class="form-control bg-white" value="<%=(invitation.getTypeString())%>">
 				    		</div>
@@ -204,7 +207,7 @@
 					    <% List<User> friends = invitation.getFriends();
 		  				if (friends.size() != 0) { %>
 					    <div class="form-group">
-		       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+		       				<div class="input-group">	
 				    			<span class="input-group-addon">Friends</span>
 				    			<div class="form-control">
 				    				<ul class="list-group">
@@ -219,7 +222,36 @@
 					    <%}%>				
 				   </td></tr></tbody>	
 				</table>
+				</div></div>
 				
+				<!-- List Existing Options -->
+				<% List<smartcal.InvitationOption> options = invitation.getOptions();
+				int i = 0;
+				if (options != null)  { %>
+					<div class="row"><div class="col-md">
+	       			<table class="table table-bordered table-light">
+		       			<thead class="thead-dark"><tr class="d-flex w-100">
+		      		  			<th class="w-100">Options</th>
+		      			</tr> </thead> 
+		      			<tbody><tr><td>  
+		      				<% for (smartcal.InvitationOption option : options) {
+							i++; %>
+		      				<div class="form-group">
+			       				<div class="input-group">
+			       					<span class="input-group-addon"><%=(i)%></span>
+			       					<span class="input-group-addon">Location</span>
+				    				<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getLocation())%>">
+					    			<span class="input-group-addon">Time</span>
+					    			<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getTimeString())%>">
+					    		</div>
+					    	</div>
+					    	<%} %>
+						</td></tr></tbody>
+					</table>
+					</div></div>
+				<%} %>
+				
+				<!-- Add New Option -->
 				<div class="row"><div class="col-md">
 	       		<table class="table table-bordered table-light">
 	       			<thead class="thead-dark"><tr class="d-flex w-100">
@@ -233,9 +265,34 @@
 					    			<input name="location" class="form-control">
 					    		</div>
 					    	</div>
-				       		<!-- TODO time -->
+					    	<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+					    			<span class="input-group-addon">Start Day</span>
+					    			<input type="date" name="startday" class="form-control">
+					    			<span class="input-group-addon">End Day</span>
+					    			<input type="date" name="endday" class="form-control">
+					    			<span class="input-group-addon bg-white">
+								  		<label class="form-check-label">
+									    <input id="allday" name="allday" class="form-check-input" type="checkbox">All Day
+									  	</label>
+									</span>
+					    		</div>
+					    	</div>
+				       		<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+					    			<span class="input-group-addon">Start Time</span>
+					    			<input type="time" id="starttime" name="starttime" class="form-control">
+					    			<span class="input-group-addon">End Time</span>
+					    			<input type="time" id="endtime" name="endtime" class="form-control">
+					    		</div>
+					    	</div>
 				       	
-				       	
+				       		<div class="form-group">
+		  						<div class="input-group">
+									
+			  					</div>
+	  						</div>
+	  						
 				       		<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Option</button>
 				       	</form>
 	      				</td></tr></tbody>
@@ -249,7 +306,14 @@
 	       		</div></div>      		
        		</div>
        	<%} %>
-       		
+       	
+       	<script>
+		 	document.getElementById('allday').onchange = function() {
+		 		document.getElementById('starttime').disabled = this.checked;
+		 	    document.getElementById('endtime').disabled = this.checked;
+		 	};
+	 	</script>
+       	
   
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>

@@ -7,8 +7,12 @@ import com.googlecode.objectify.ObjectifyService;
 
 import java.util.List;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +28,8 @@ public class NewEventServlet extends HttpServlet{
 	static {
         ObjectifyService.register(CalEvent.class);
         ObjectifyService.register(UserDisplayData.class);
+        ObjectifyService.register(FriendsList.class);
+        ObjectifyService.register(Invitation.class);
     }
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -111,16 +117,65 @@ public class NewEventServlet extends HttpServlet{
 				if (invitation == null) {
 					return true;
 				}
-				String eventLoc = req.getParameter("location");
-				
+
 				InvitationOption option = new InvitationOption();
 				
+				String eventLoc = req.getParameter("location");
 				if (eventLoc != null) {
 					option.setLocation(eventLoc);
 				}
-				//TODO handle times, all day
 				
-				System.out.println("o:" + (option==null) + " i:" + (invitation==null));
+				Date startTimeCal = null;
+				Date endTimeCal = null;
+				
+				if (req.getParameter("allday") == null) {
+					option.setAllDay(false);
+				}
+				else {
+					option.setAllDay(true);
+				}
+				
+				String startDay = req.getParameter("startday");
+				if (startDay != null) {
+					//System.out.println(startDay);
+					if (!option.getAllDay()) {
+						String startTime = req.getParameter("starttime");
+						if (startTime != null) {
+							//System.out.println(startTime);
+							startTimeCal = dayTimeStringToCal(startDay, startTime);
+						}
+						else {
+							startTimeCal = dayStringToCal(startDay);
+						}
+					}
+					else {
+						startTimeCal = dayStringToCal(startDay);
+					}
+				}
+				
+				String endDay = req.getParameter("endday");
+				if (endDay != null) {
+					//System.out.println(endDay);
+					if(!option.getAllDay()) {						
+						String endTime = req.getParameter("endtime");
+						if (endTime != null) {
+							//System.out.println(endTime);
+							endTimeCal = dayTimeStringToCal(endDay, endTime);
+						}
+						else {
+							endTimeCal = dayStringToCal(endDay);
+						}
+					}
+					else {
+						endTimeCal = dayStringToCal(endDay);
+					}
+				}
+				
+				option.setStartTime(startTimeCal);
+				option.setEndTime(endTimeCal);
+				
+				System.out.println("NEW EVENT location: " + eventLoc + "time: " + option.getTimeString() + " allday: " + option.getAllDay());
+
 				invitation.addOption(option);
 				ObjectifyService.ofy().save().entity(invitation); 
 				pressed = true;
@@ -142,5 +197,37 @@ public class NewEventServlet extends HttpServlet{
     		pressed = true;
         }
 		return pressed;
+	}
+	
+	private Date dayStringToCal(String day) {
+		Date cal = null;
+		try {
+			if (day.length() == 10) {
+				int y = Integer.parseInt(day.substring(0, 4));
+				int m = Integer.parseInt(day.substring(5, 7));
+				int d = Integer.parseInt(day.substring(8));
+				cal = new Date(y, m, d);
+			}
+		}
+		catch (NumberFormatException e) {}
+		
+		return cal;
+	}
+	
+	private Date dayTimeStringToCal(String day, String time) {
+		Date cal = null;
+		try {
+			if (day.length() == 10 && time.length() == 5) {
+				int y = Integer.parseInt(day.substring(0, 4));
+				int m = Integer.parseInt(day.substring(5, 7));
+				int d = Integer.parseInt(day.substring(8));
+				int h = Integer.parseInt(time.substring(0, 2));
+				int min = Integer.parseInt(time.substring(3, 5));				
+				cal = new Date(y, m, d, h, min);
+			}
+		}
+		catch (NumberFormatException e) {}
+		
+		return cal;
 	}
 }

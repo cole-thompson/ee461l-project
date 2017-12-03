@@ -89,22 +89,30 @@
 		ObjectifyService.register(smartcal.CalEvent.class);
         ObjectifyService.register(smartcal.UserDisplayData.class);
         ObjectifyService.register(smartcal.FriendsList.class);
+        ObjectifyService.register(smartcal.UserAccount.class);
 				
+        smartcal.UserAccount userAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+        if (userAccount == null) {
+        	//TODO redirect to a new page
+        	userAccount = new smartcal.UserAccount(user, user.getNickname());
+        }
+        
+        
 		//grab user display information from objectify
-       	smartcal.UserDisplayData display = ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user", user).first().now();
+       	smartcal.UserDisplayData display = ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user", userAccount).first().now();
        	if (display == null) {
        		System.out.println(username + " found no displayData, creating new");
-       		display = new smartcal.UserDisplayData(user);
+       		display = new smartcal.UserDisplayData(userAccount);
        	}
        	else {
        		System.out.println(username + " found displayData");
        	}
        	
        	//grabbing FriendsList for the current user
-       	smartcal.FriendsList flist = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now();
+       	smartcal.FriendsList flist = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", userAccount).first().now();
        	if(flist == null){
        		System.out.println(user + " didnt have a friendslist for some reason, creating it now");
-       		flist = new smartcal.FriendsList(user);
+       		flist = new smartcal.FriendsList(userAccount);
        		ObjectifyService.ofy().save().entity(flist);
        	}else{
        		System.out.println("friendslist found: \n" + flist);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED

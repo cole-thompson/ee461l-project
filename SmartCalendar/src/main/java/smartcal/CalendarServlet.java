@@ -19,6 +19,7 @@ public class CalendarServlet extends HttpServlet {
 	static {
         ObjectifyService.register(CalEvent.class);
         ObjectifyService.register(UserDisplayData.class);
+        ObjectifyService.register(UserAccount.class);
 
     }
 	
@@ -26,10 +27,16 @@ public class CalendarServlet extends HttpServlet {
         //get the current user
     	User user = UserServiceFactory.getUserService().getCurrentUser();
     	
+    	UserAccount userAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+        if (userAccount == null) {
+        	//TODO redirect to a new page
+        	userAccount = new UserAccount(user, user.getNickname());
+        }
+    	
     	//get UserDisplayData for the User, create new one if needed
-       	UserDisplayData display = ObjectifyService.ofy().load().type(UserDisplayData.class).filter("user", user).first().now();
+       	UserDisplayData display = ObjectifyService.ofy().load().type(UserDisplayData.class).filter("user", userAccount).first().now();
        	if (display == null) {
-       		display = new UserDisplayData(user);
+       		display = new UserDisplayData(userAccount);
        	}
     	
        	//TODO there is probably a better way to do this part
@@ -120,11 +127,11 @@ public class CalendarServlet extends HttpServlet {
        	System.out.println(getUserName(display.getUser()) + " is displaying calendar for " + (display.getDisplayMonth() + 1) + "/" + display.getDisplayYear());
     }
     
-    private String getUserName(User user) {
+    private String getUserName(UserAccount user) {
     	//get the user's nickname if needed;
         String username = "";
         if (user != null) {
-        	username = user.getNickname();
+        	username = user.getUsername();
         }
         else {
         	username = "[unknown user]";

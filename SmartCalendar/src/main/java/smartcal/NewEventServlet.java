@@ -21,15 +21,22 @@ public class NewEventServlet extends HttpServlet{
 	static {
         ObjectifyService.register(CalEvent.class);
         ObjectifyService.register(UserDisplayData.class);
+        ObjectifyService.register(UserAccount.class);
     }
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		//get the current user
 		User user = UserServiceFactory.getUserService().getCurrentUser();
 		
+		UserAccount userAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+        if (userAccount == null) {
+        	//TODO redirect to a new page
+        	userAccount = new UserAccount(user, user.getNickname());
+        }
+		
        	//check all the different forms in newevent.jsp
-       	if (checkForm1(req, user)) {}
-       	else if (checkForm2(req, user)) {}
+       	if (checkForm1(req, userAccount)) {}
+       	else if (checkForm2(req, userAccount)) {}
 		
 		//System.out.println("worked");
 		
@@ -38,7 +45,7 @@ public class NewEventServlet extends HttpServlet{
 	 
 	//Stage1: Invitation creation
 	
-	private boolean checkForm1(HttpServletRequest req, User creator) {
+	private boolean checkForm1(HttpServletRequest req, UserAccount creator) {
 		boolean pressed = false;
 		
 		if (req.getParameter("part1submit") != null) {
@@ -69,7 +76,7 @@ public class NewEventServlet extends HttpServlet{
 	
 	//Stage2: Confirm invitation complete
 	
-	private boolean checkForm2(HttpServletRequest req, User creator) {
+	private boolean checkForm2(HttpServletRequest req, UserAccount creator) {
 		boolean pressed = false;
 		//hypothetical middle buttons for 'completing' an Option
 		

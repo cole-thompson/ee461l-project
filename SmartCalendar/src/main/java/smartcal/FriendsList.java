@@ -11,7 +11,7 @@ import com.googlecode.objectify.annotation.Index;
 @Entity
 public class FriendsList {
 	@Id Long id;
-	@Index private User user;
+	@Index private UserAccount user;
 	@Index private List<User> friends;
 	
 	public FriendsList() {
@@ -19,16 +19,16 @@ public class FriendsList {
 		setFriends(new ArrayList<User>());
 	}
 	
-	public FriendsList(User user) { 
+	public FriendsList(UserAccount user) { 
 		setUser(user);
 		setFriends(new ArrayList<User>());
 	}
 
-	User getUser() {
+	UserAccount getUser() {
 		return user;
 	}
 
-	void setUser(User user) {
+	void setUser(UserAccount user) {
 		this.user = user;
 	}
 

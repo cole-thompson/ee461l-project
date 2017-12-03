@@ -19,27 +19,27 @@ import com.googlecode.objectify.annotation.Index;
 @Entity
 public class CalEvent {
 	@Id Long id;
-	@Index User creator;
+	@Index UserAccount creator;
 	
 	@Index private Calendar startTime;
 	@Index private Calendar endTime;
-	@Index private List<User> people;
+	@Index private List<UserAccount> people;
 	
 	private String location;
 	private String name;
 	
 
 
-	public CalEvent(User creator, Calendar startTime, Calendar endTime) {
+	public CalEvent(UserAccount creator, Calendar startTime, Calendar endTime) {
 		this.creator = creator;
 		this.startTime = startTime;
 		this.endTime = endTime;
-		people = new ArrayList<User>();
+		people = new ArrayList<UserAccount>();
 		people.add(this.creator);
 		location = "";
 	}
 	
-	public void addUser(User user) {
+	public void addUser(UserAccount user) {
 		people.add(user);
 	}
 	
@@ -85,7 +85,7 @@ public class CalEvent {
 	
 	/* GETTERS AND SETTERS */
 	
-	public User getCreator() {
+	public UserAccount getCreator() {
         return creator;
     }
 	

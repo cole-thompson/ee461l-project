@@ -61,6 +61,16 @@
  		</nav>
  		
  		
+ 		<!-- Initialization stuff i.e. registering userAccounts, pulling the full list of users into an account list, 
+ 			obtaining a reference to the currently logged in user  -->
+ 		<%UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+	    
+	    ObjectifyService.register(smartcal.UserAccount.class);
+ 		ObjectifyService.register(smartcal.FriendsList.class);
+	    List<smartcal.UserAccount> accounts = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).list(); %>
+ 		
+ 		
  		<!-- Tables -->
  		<table class="w-100"> <!-- Parent table -->
  		<tr>
@@ -77,31 +87,14 @@
 	           	<tbody style="top:0">		<!-- Iterate through the table, place numbers in proper locations -->
 	           	
 					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-	          	
+	          		<%List<smartcal.UserAccount> currentUserFriends = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).list();
+	          		for(smartcal.UserAccount friendAccount : currentUserFriends){
+	          			String friendName = friendAccount.getUsername();%>
+	          		
+	          			<tr><td><p><%=(friendName)%></p></td></tr>
+	          		<%}%>
+	          		
+	          		
 	          	</tbody>
 	          	
 			</table></div>

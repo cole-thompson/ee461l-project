@@ -16,13 +16,17 @@ public class Invitation {
 	//true when it has been sent out
 	@Index boolean finished;
 	
-	/* stage 1 = name type friends
-	 * stage 2 = time location etc
+	/* 1 = name type friends
+	 * 2 = time location etc
 	 */
 	@Index int stage;
 	
+<<<<<<< HEAD
 	List<UserAccount> friends;
 
+=======
+	List<User> friends;
+>>>>>>> parent of 60e9e65... switched to UserAccount
 	
 	public Invitation(UserAccount creator) {
 		this.creator = creator;

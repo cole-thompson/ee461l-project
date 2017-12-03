@@ -20,7 +20,7 @@ import com.googlecode.objectify.stringifier.Stringifier;
 @Entity
 public class UserDisplayData {
 	@Id Long id;
-	@Index UserAccount user;
+	@Index User user;
 	@Stringify(IntegerStringifier.class)
 	
 	//events are stored for this month, keyed in the map by day
@@ -44,7 +44,7 @@ public class UserDisplayData {
 		displayDate = -1;
 	}
 	
-	public UserDisplayData(UserAccount user) {
+	public UserDisplayData(User user) {
 		this();
 		this.user = user;
 	}
@@ -189,11 +189,11 @@ public class UserDisplayData {
 	
 	/* GETTERS AND SETTERS */
 	
-	public UserAccount getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(UserAccount user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 	

@@ -88,6 +88,7 @@
 		//main method initialization stuff
 		
        	ObjectifyService.register(smartcal.FriendsList.class);
+		ObjectifyService.register(smartcal.Invitation.class);
 		
        	//grabbing FriendsList for the current user
        	smartcal.FriendsList flist = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now();
@@ -98,81 +99,148 @@
        	}else{
        		System.out.println("friendslist found: \n" + flist);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
        	}
+       	
+       	smartcal.Invitation invitation = ObjectifyService.ofy().load().type(smartcal.Invitation.class).filter("creator", user).filter("finished", false).first().now();
+       	
        	%>
        	
-       	
-       	<div class="container">
-       		<div class="row"><div class="col-md">
-       			<h2><span class="text-primary">Create New Event</span></h2>
-       		</div></div>
-       		
-       		<div class="row"><div class="col-md">
-       		<!-- Main Event Creation Stuff -->	
-       		<table class="table table-bordered table-light">
-       			<thead class="thead-dark"><tr class="d-flex w-100">
-      		  			<th class="w-100">Choose a Name and Type</th>
-      			</tr> </thead> 
-      			<tbody>
-      			<tr><td>
-		       		<form action="/newevent" name="stage1" method="post"> 
-		       			
-		       			<div class="form-group">
+       	<!-- STAGE 1 -->
+       	<%if(invitation == null) {%>
+       		<div class="container">
+	       		<div class="row"><div class="col-md">
+	       			<h2><span class="text-primary">Start New Event</span></h2>
+	       		</div></div>
+	       		
+	       		<div class="row"><div class="col-md">
+	       		<!-- Main Event Creation Stuff -->	
+	       		<table class="table table-bordered table-light">
+	       			<thead class="thead-dark"><tr class="d-flex w-100">
+	      		  			<th class="w-100">Choose a Name and Type</th>
+	      			</tr> </thead> 
+	      			<tbody>
+	      			<tr><td>
+			       		<form action="/newevent" name="stage1" method="post"> 
+			       			
+			       			<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+					    			<span class="input-group-addon">Event Name</span>
+					    			<input name="eventname" class="form-control">
+					    		</div>
+					    	</div>
+					    	
+					    	<div class="form-group input-group">
+							    <span class="input-group-addon"><label>Event Type</label></span>
+							  	<div class="form-control form-check">
+									
+								  	<label class="form-check form-check-label ml-1"><input class="form-check-input" type="radio" name="eventtype" value="Generic">Generic</label>
+								</div>
+								<div class="form-control form-check">
+									
+								  	<label class="form-check form-check-label ml-1"><input class="form-check-input" type="radio" name="eventtype" value="Movie">Movie</label>
+								</div>
+	  						</div>
+	  						
+	  						<div class="form-group form-group-lg">
+		  						<div class="input-group">
+									<span class="input-group-addon"><label>Invite Friends</label></span>
+		  							<% List<User> friends = flist.getFriends();
+		  							if (friends.size() == 0) { %>
+		  								<div class="form-control form-check">
+									  		<label class="form-check-label">You have no friends.</label>
+										</div>
+		  							<%}
+		  							for (int i = 0; i < friends.size(); i++) { %>
+		  								<div class="form-control form-check">
+									  		<label class="form-check-label">
+										    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> <%=friends.get(i).getNickname()%>
+										  	</label>
+										</div>
+		  							<%}%>
+			  					</div>
+	  						</div>
+	  						
+	  						<button name="part1submit" class="form-control form-control-lg btn btn-success" type="submit">Start Invitation</button>
+	  					
+			       		</form>	
+				   </td></tr>
+				   <!-- look into checkboxes for type -->
+				   
+				   
+				   </tbody>	
+				</table>
+				
+				
+	       			
+	       		</div></div>
+	       	</div> 	
+	    
+	    <!-- STAGE 2 -->
+     	<%} 
+     	else if (invitation.getStage() == 2) { %>
+       		<div class="container">
+	       		<div class="row"><div class="col-md">
+	       			<h2><span class="text-primary">Finish New Event</span></h2>
+	       		</div></div>
+	       		
+	       		<!-- This table prints info from stage 1 -->
+	       		<div class="row"><div class="col-md">
+	       		<table class="table table-bordered table-light">
+	       			<thead class="thead-dark"><tr class="d-flex w-100">
+	      		  			<th class="w-100">Name and Type</th>
+	      			</tr> </thead> 
+	      			<tbody><tr><td>
+	      				<div class="form-group">
 		       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
 				    			<span class="input-group-addon">Event Name</span>
-				    			<input name="eventname" class="form-control">
+				    			<input readonly name="eventname" class="form-control bg-white" value="<%=(invitation.getName())%>">
 				    		</div>
-				    	</div>
-				    	
-				    	<div class="form-group input-group">
-						    <span class="input-group-addon"><label>Event Type</label></span>
-						  	<div class="form-control">
-								<input class="form-check-input ml-1" type="radio" name="eventtype" value="Generic">
-							  	<label class="form-check form-check-label ml-1">Generic</label>
-							</div>
-							<div class="form-control">
-								<input class="form-check-input ml-1" type="radio" name="eventtype" value="Movie">
-							  	<label class="form-check form-check-label ml-1">Movie</label>
-							</div>
-  						</div>
-  						
-  						<div class="form-group form-group-lg">
-	  						<div class="input-group">
-								<span class="input-group-addon"><label>Invite Friends</label></span>
-	  							<% List<User> friends = flist.getFriends();
-	  							if (friends.size() == 0) { %>
-	  								<div class="form-control form-check">
-								  		<label class="form-check-label">You have no friends.</label>
-									</div>
-	  							<%}
-	  							for (int i = 0; i < friends.size(); i++) { %>
-	  								<div class="form-control form-check">
-								  		<label class="form-check-label">
-									    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> <%=friends.get(i).getNickname()%>
-									  	</label>
-									</div>
-	  							<%}%>
-		  					</div>
-  						</div>
-  						
-  						<button name="part1submit" class="form-control form-control-lg btn btn-success" type="submit">Start Invitation</button>
-  					
-		       		</form>	
-			   </td></tr>
-			   <!-- look into checkboxes for type -->
-			   
-			   
-			   </tbody>	
-			</table>
-			
-			<!--  
-       		<form action="/newevent" name="stage2" method="post"> 	
-       			<button class="form-control form-control-lg btn btn-success" type="submit">Create Invitation</button>
-       		</form>
-       		-->
+					    </div> 
+				    	<div class="form-group">
+		       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+				    			<span class="input-group-addon">Event Type</span>
+				    			<input readonly name="eventname" class="form-control bg-white" value="<%=(invitation.getTypeString())%>">
+				    		</div>
+					    </div>
+					    <% List<User> friends = invitation.getFriends();
+		  				if (friends.size() != 0) { %>
+					    <div class="form-group">
+		       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+				    			<span class="input-group-addon">Friends</span>
+				    			<div class="form-control">
+				    				<ul class="list-group">
+			  							<%for (int i = 0; i < friends.size(); i++) { %>
+											<li class="list-group-item"> <%=friends.get(i).getNickname()%></li>
+										<%} %>
+		  							</ul>
+		  							</div>
+				    			</div>
+					    	</div>
+					    </div>
+					    <%}%>				
+				   </td></tr></tbody>	
+				</table>
+				
+				<div class="row"><div class="col-md">
+	       		<table class="table table-bordered table-light">
+	       			<thead class="thead-dark"><tr class="d-flex w-100">
+	      		  			<th class="w-100">Time and Location</th>
+	      			</tr> </thead> 
+	      			<tbody><tr><td>  
+				       	<form action="/newevent" name="stage2" method="post"> 	
+				       		<button class="form-control form-control-lg btn btn-success" type="submit">Finish Invitation</button>
+				       	
+				       	
+				       	
+				       	</form>
+	      				</td></tr></tbody>
+	       			
+	       		</div></div>
+       		</div>
        		
-       			
-       			
-       		</div></div> 	
+       		
+       	<%} %>
+       		
+       		
        	</div>
 	
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

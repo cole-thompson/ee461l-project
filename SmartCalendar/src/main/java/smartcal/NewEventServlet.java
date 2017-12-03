@@ -69,6 +69,9 @@ public class NewEventServlet extends HttpServlet{
 				return true;
 			}
 			
+			Invitation invite = new Invitation(creator);
+			invite.setName(eventName);
+			
 			for(int i = 0;  i < friends.size(); i++) {
 				String name = "friend" + i;
 				if(req.getParameter(name) != null) {
@@ -76,18 +79,23 @@ public class NewEventServlet extends HttpServlet{
 				}
 			}
 			
+			invite.setFriends(eventFriends);
+			
 			if(eventType.equals("Generic")) {
 				System.out.println("Event Type: Generic");
-				Invitation invite = new Invitation(creator);
+				invite.setType(Invitation.Type.G);
+				
 			}
 			else if(eventType.equals("Movie")) {
 				System.out.println("Event Type: Movie");
-				Invitation invite = new Invitation(creator);
+				invite.setType(Invitation.Type.M);
 			}
 			else {
 				System.out.println("Event Type: Invalid");
 			}
 			
+			invite.nextStage();
+			ObjectifyService.ofy().save().entity(invite); 
     		pressed = true;
         }	
 		

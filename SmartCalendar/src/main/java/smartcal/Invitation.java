@@ -12,7 +12,7 @@ import com.googlecode.objectify.annotation.Index;
 public class Invitation {
 	@Id Long id;
 	@Index User creator;
-	
+
 	//true when it has been sent out
 	@Index boolean finished;
 	
@@ -21,19 +21,32 @@ public class Invitation {
 	 */
 	@Index int stage;
 	
-	List<User> friends;
 
+	public enum Type {G, M};
 	
-	public Invitation(User creator) {
-		this.creator = creator;
+	private List<User> friends;
+	private Type type;
+	private String name;
 
+	public Invitation() {
 		stage = 1;
 		friends = new ArrayList();
+		type = Type.G;
+		finished = false;
 	}
 	
-	public boolean addFriend(User user) {
+	public Invitation(User creator) {
+		this();
+		this.creator = creator;
+	}
+	
+	public List<User> getFriends() {
+		return friends;
+	}
+	
+	public boolean setFriends(List<User> friends) {
 		if (stage == 1) {
-			friends.add(user);
+			friends.addAll(friends);
 			return true;
 		}
 		else {
@@ -41,5 +54,47 @@ public class Invitation {
 		}
 	}
 	
+	public String getTypeString() {
+		String s = "";
+		if (type == Type.G) {
+			s = "Generic";
+		}
+		else if (type == Type.M) {
+			s = "Movie";
+		}
+		return s;
+	}
 	
+	
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public void nextStage() {
+		stage++;
+	}
+	
+	public int getStage() {
+		return stage;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public User getCreator() {
+		return creator;
+	}
+
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
 }

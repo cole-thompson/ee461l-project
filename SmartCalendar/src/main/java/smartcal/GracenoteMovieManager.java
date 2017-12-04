@@ -2,11 +2,12 @@ package smartcal;
 
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import com.google.appengine.api.urlfetch.*;
 
-public class FandangoManager {
+public class GracenoteMovieManager {
 	
 	static protected String sha256Encode(String StringToEncode) throws NoSuchAlgorithmException {
 	        
@@ -29,34 +30,39 @@ public class FandangoManager {
     }
 	
 	
-	/*
-	 * this function sends requests to fandango's website
-	 * inputs: opString (String) -- contains operation and parameter
+	/* static public String makeMoviesRequest
+	 * this function sends requests to gracenote's website
+	 * inputs: dateZip (String) -- contains date and zip formatted "YYYY-MM-DD" and zip formatted "XXXXX"
 	 */
-	static public String makeRequest(String opString) {
-		String baseUrl = "http://api.fandango.com/";
+	public MovieDatabase makeMoviesRequest(String date, String zip) {
+		String baseUrl = "http://data.tmsapi.com/v1.1/movies/showings?";
 		String apiVer = "1";
-		String apiKey = "q763vgth9rru2b66g9pspsf3"; 
+		String apiKey = "styt25a56dg574x5x29yaws4"; 
 		String sharedSecret = "aUhDUZzNPp";
 		String result = null; 
-		//these are required by fandango to send requests for movies	
+		MovieDatabase mdb = new MovieDatabase();
+		//these are required by gracenote to send requests for movies	
 		
 		try {
-			//we're building this string http://api.fandango.com/<version>?op=<operation>&<parameter list>&apikey=<apikey>&sig=<sig>
-			//to send to fandango to get our XML formatted results
-			String authParams = buildAuthorizationParameters(apiKey, sharedSecret);
-			String requestUrl = String.format("%s/v%s/?%s&%s", baseUrl, apiVer, opString, authParams);
+			//we're building this string http://data.tmsapi.com/v1.1/movies/showings?startDate=<date>&zip=<zip>&api_key=<styt25a56dg574x5x29yaws4>
+			//to send to gracenote to get our results
+			String requestUrl = String.format("%sstartDate=%s&zip=%s&api_key=%s", baseUrl, date, zip, apiKey);
 			
 			URLFetchService urlfetchservice = URLFetchServiceFactory.getURLFetchService(); //app engine's HTTP request service
 			
-			HTTPResponse response = urlfetchservice.fetch(new HTTPRequest(new URL(requestUrl)));
-			result = new String(response.getContent());
+			HTTPResponse response = urlfetchservice.fetch(new URL(requestUrl));
+			
+			//we need to format the response to add a proper key for the movie listings so google json parser can correctly place it into the database fields
+			mdb.getMovies(new String(response.getContent()));
+			//response = new HTTPResponse(response.getResponseCode(), content.getBytes(StandardCharsets.UTF_8), response.getFinalUrl(), response.getHeaders());
+			
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return result;
+		return mdb;
 	}
 	
 }

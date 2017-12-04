@@ -80,8 +80,14 @@
 			<span class="navbar-text text-muted mr-3">Hello, ${fn:escapeXml(user.nickname)}! </span>
 			<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
 			<%
-	    }  
-		%>	
+			ObjectifyService.register(smartcal.UserAccount.class);
+			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+			if(accountData == null){
+				accountData = new smartcal.UserAccount(user, user.getNickname());
+				ObjectifyService.ofy().save().entity(accountData);
+				System.out.println("your username is now: " + accountData.getUsername());
+			}
+	    }%>	
 		
 		</div>	
 		</nav>

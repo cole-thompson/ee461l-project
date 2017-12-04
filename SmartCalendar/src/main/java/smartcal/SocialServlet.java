@@ -63,6 +63,7 @@ public class SocialServlet extends HttpServlet {
     				Invitation current = currentUserInvitations.getInvitations().get(i);
     				currentUserInvitations.setDisplayedInvitation(current);
     				clickedInvitation = true;
+    				ObjectifyService.ofy().save().entity(currentUserInvitations);
     			}
     		}
     		
@@ -76,7 +77,7 @@ public class SocialServlet extends HttpServlet {
     	}else {
     		resp.sendRedirect("/friends.jsp");
     	}
-        
+
     }
 
 }

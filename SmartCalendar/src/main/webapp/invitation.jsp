@@ -49,8 +49,10 @@
  					<div class="form-control form-check">
 				  		<label class="form-check-label">
 						    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> Option <%=i %>
-						    	<div><p></p></div>
+						    	
 					  	</label>
+					  	<div><p><%=loc %></p></div>
+				    	<div><p><%=time %></p></div>
 					</div>
  					
  	 			</form>

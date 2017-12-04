@@ -127,12 +127,12 @@
 		  <tbody>
 		    <tr>
 		      <th scope="row">Username</th>
-		      <td><%=currentUserAccount.getUsername() %></td>
+		      <td><%=(smartcal.UserAccount.getNameForUser(user))%></td>
 
 		    </tr>
 		    <tr>
 		      <th scope="row">Email</th>
-		      <td><%=currentUserAccount.getEmail() %></td>
+		      <td><%=(user.getEmail())%></td>
 		    </tr>
 		  </tbody>
 		</table>
@@ -145,4 +145,6 @@
 		</div></div>
 		
 		</div>
+		
+		<%} } %>
   	</body>

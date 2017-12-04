@@ -17,10 +17,8 @@ public class Invitation {
 	//true when it has been sent out
 	@Index boolean finished;
 	
-	/* 1 = name type friends
-	 * 2 = time location etc
-	 */
-	@Index int stage;
+	//true when "start invitation" pressed
+	@Index boolean started;
 	
 
 	public enum Type {G, M};
@@ -32,11 +30,12 @@ public class Invitation {
 	private List<InvitationOption> options;
 
 	public Invitation() {
-		stage = 1;
+		started = false;
+		finished = false;
 		options = new ArrayList<InvitationOption>();
 		friends = new ArrayList<User>();
 		type = Type.G;
-		finished = false;
+		
 		
 	}
 	
@@ -50,8 +49,8 @@ public class Invitation {
 	}
 	
 	public boolean setFriends(List<User> friends) {
-		if (stage == 1) {
-			friends.addAll(friends);
+		if (!started) {
+			this.friends = friends;
 			return true;
 		}
 		else {
@@ -71,7 +70,7 @@ public class Invitation {
 	}
 	
 	public void nextStage() {
-		stage++;
+		started = true;
 	}
 	
 	public void finishCreation() {
@@ -84,10 +83,11 @@ public class Invitation {
 	       	if(invitations == null){
 	       		System.out.println(u + " didnt have an invitations list, creating it now");
 	       		invitations = new InvitationsList(u);
-	       		ObjectifyService.ofy().save().entity(invitations);
 	       	}else{
-	       		System.out.println("invitations list found: \n" + invitations);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
+	       		System.out.println(u.getNickname() + " invitations list found: \n" + invitations);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
 	       	}
+	       	invitations.addInvitation(this);
+	       	ObjectifyService.ofy().save().entity(invitations);
 		}
 	}
 	
@@ -102,8 +102,8 @@ public class Invitation {
 		this.type = type;
 	}
 
-	public int getStage() {
-		return stage;
+	public boolean getStarted() {
+		return this.started;
 	}
 	
 	public String getName() {

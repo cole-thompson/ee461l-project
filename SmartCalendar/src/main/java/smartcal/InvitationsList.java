@@ -13,7 +13,7 @@ public class InvitationsList {
 	@Id Long id;
 	@Index private User user;
 	@Index private List<Invitation> invitations;
-	
+	private Invitation displayedInvitation;
 	
 	public InvitationsList() {
 		setUser(null);
@@ -40,6 +40,14 @@ public class InvitationsList {
 	public void setInvitations(ArrayList<Invitation> arrayList) {
 		this.invitations = arrayList;
 	}
+
+	public Invitation getDisplayedInvitation() {
+		return displayedInvitation;
+	}
+
+	public void setDisplayedInvitation(Invitation displayedInvitation) {
+		this.displayedInvitation = displayedInvitation;
+	}
 	
 	public boolean addInvitation(Invitation newInvite) {
 		if(newInvite == null){
@@ -60,7 +68,8 @@ public class InvitationsList {
 		invitations.remove(oldInvite);
 		return true;	//by reaching this boolean statement, the friend is successfully removed
 	}
-	
+		
+
 	@Override
 	public String toString() {
 		String allInvites = "";
@@ -108,6 +117,8 @@ public class InvitationsList {
 		}
 		return allInvites;
 	}
+
+
 	
 
 }

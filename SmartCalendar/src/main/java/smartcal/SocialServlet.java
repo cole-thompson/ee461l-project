@@ -19,18 +19,29 @@ public class SocialServlet extends HttpServlet {
     	
     	if(req.getParameter("addfriend") != null){
     		currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
+    		if(currentUserFriends == null) {
+    			System.out.println("no friends list detected, making one");
+    			currentUserFriends = new FriendsList(user);
+    			ObjectifyService.ofy().save().entity(currentUserFriends);
+    		}
     		String toAdd = req.getParameter("friendname");
     		UserAccount friendAccount = ObjectifyService.ofy().load().type(UserAccount.class).filter("username", toAdd).first().now();
     		if(friendAccount == null) {
     			System.out.println("Friend doesn't have an account??????");
+    		}else {
+	    		boolean worked = currentUserFriends.addFriend(friendAccount.getUser());
+	    		ObjectifyService.ofy().save().entity(currentUserFriends);
+	    		System.out.println(worked);
     		}
-    		boolean worked = currentUserFriends.addFriend(friendAccount.getUser());
-    		ObjectifyService.ofy().save().entity(currentUserFriends);
-    		System.out.println(worked);
     	}else if(req.getParameter("removefriend") != null){
     		currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
-    		String toAdd = req.getParameter("friendname");
-    		UserAccount friendAccount = ObjectifyService.ofy().load().type(UserAccount.class).filter("username", toAdd).first().now();
+    		String toRemove = req.getParameter("friendname");
+    		if(currentUserFriends == null) {
+    			System.out.println("no friends list detected, making one");
+    			currentUserFriends = new FriendsList(user);
+    			ObjectifyService.ofy().save().entity(currentUserFriends);
+    		}
+    		UserAccount friendAccount = ObjectifyService.ofy().load().type(UserAccount.class).filter("username", toRemove).first().now();
     		if(friendAccount == null) {
     			System.out.println("Friend shouldn't have ever made it on your list since they have no list");
     		}

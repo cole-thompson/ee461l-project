@@ -73,6 +73,8 @@
 	    
 	    ObjectifyService.register(smartcal.UserAccount.class);
  		ObjectifyService.register(smartcal.FriendsList.class);
+ 		ObjectifyService.register(smartcal.InvitationsList.class);
+ 		
 	    List<smartcal.UserAccount> accounts = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).list(); // This is all the accounts in Objectify
 	    smartcal.UserAccount currentUserAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
 	    smartcal.FriendsList mattFriends = new smartcal.FriendsList();
@@ -144,9 +146,21 @@
 			<!-- Start table2 -->
 			<div class="col w-50"><div style="max-height: 500px;	height:500px;	overflow-y:auto">
 			<table class="table table-bordered table-light table-responsive-md table-hover w-100">
-				<tbody style="top:0">		<!-- Iterate through the table, place numbers in proper locations -->
-					
-					<!-- THIS IS WHERE THE INVITATION PULLING LOOP WILL GO -->
+				<tbody style="top:0">			
+	          		<%smartcal.InvitationsList currentUserInvitationsList = ObjectifyService.ofy().load().type(smartcal.InvitationsList.class).filter("user", user).first().now();
+	          		
+	          		if (currentUserInvitationsList != null) {
+		          		List<smartcal.Invitation> currentUserInvitations = currentUserInvitationsList.getInvitations();
+		          		for(smartcal.Invitation inv : currentUserInvitations){ 
+		          			smartcal.UserAccount friendAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", inv.getCreator()).first().now();
+		          			if(friendAccount == null){
+		          				System.out.println("friendAccount was null (this means that some friend on your friends list doesn't have an account??), breaking from loop");
+		          				break;
+		          			}
+	          				String friendName = friendAccount.getUsername();%>
+		          			<tr><td><span class="text-primary"><%=(inv.getName())%></span><span class="text-secondary"><%=("\tfrom: " + friendName)%></span></p></td></tr>
+		          		<%}
+		          	}%>
 		          	
 	          	</tbody>
 	          	

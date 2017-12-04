@@ -1,6 +1,7 @@
 package smartcal;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +57,11 @@ public class SocialServlet extends HttpServlet {
     		boolean worked = currentUserFriends.removeFriend(friendAccount.getUser());
     		ObjectifyService.ofy().save().entity(currentUserFriends);
     		System.out.println(worked);
-    	}else {
+    	}else if (req.getParameter("sendoptions") != null) {
+    		clickedInvitation = true;
+    		sendOptionVote(req, user);
+    	}
+    	else {
     		InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
     		for(int i = 0; i < currentUserInvitations.getInvitations().size(); i++) {
     			if(req.getParameter("invitation" + i) != null){
@@ -78,6 +83,21 @@ public class SocialServlet extends HttpServlet {
     		resp.sendRedirect("/friends.jsp");
     	}
 
+    }
+    
+    public void sendOptionVote(HttpServletRequest req, User user) {
+    	InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
+    	Invitation displayInvitation = currentUserInvitations.getDisplayedInvitation();
+    	if (!displayInvitation.hasPersonVoted(user)) {
+	    	List<InvitationOption> options = displayInvitation.getOptions();
+	    	for (int i = 0; i < options.size(); i++) {
+	    		if (req.getParameter("option" + i) != null) {
+	    			options.get(i).addAvailablePerson(user);
+	    		}
+	    	}
+	    	displayInvitation.personVoted(user);
+	    	ObjectifyService.ofy().save().entity(currentUserInvitations);
+    	}
     }
 
 }

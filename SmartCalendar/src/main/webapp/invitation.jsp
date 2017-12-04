@@ -128,9 +128,9 @@
 	     	<div class="col-md"><h2><span class="text-secondary">created by </span><span class="text-primary"><%=(smartcal.UserAccount.getNameForUser(toDisplay.getCreator()))%></span></h2></div>
 	     </div>
 		 
-		 
+		 <%if (!toDisplay.hasPersonVoted(user)) {%>
 		 <div class="row"><div class="col-md">
-		 	<form>
+		 	<form action="/social" name="optionsform" method="post">
 	     	<table class="table table-bordered table-light">
 	       		<thead class="thead-dark"><tr class="d-flex w-100">
 	      			<th class="w-100">Select Available Options</th>
@@ -146,17 +146,18 @@
 					 for(smartcal.InvitationOption op : toDisplay.getOptions()){
 			 				String loc = op.getLocation();
 			 				String time = op.getTimeString();
-			 				i++;%>
+			 				%>
 			 				<li class="list-group-item w-100">
 			 				<div class="form-group"> 			
 						  		<label class="form-check-label">
-								    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>">
+								    <input class="form-check-input" type="checkbox" name="option<%=(i)%>" value="option<%=(i)%>">
 							  		<span class="text-secondary">Location: </span><%=loc %><br />
 						    		<%=time %>
 							  	</label>
 			 	 			</div>
 			 	 			</li>
-					<%}%>		
+					<%i++;
+					}%>		
 					</ul>
 					</td></tr>
 					
@@ -167,7 +168,7 @@
 			</table>
 			</form>
 		</div></div>
-		
+		<% } %>
 		
 		<div class="row"><div class="col-md">
 	     	<table class="table table-bordered table-light">
@@ -188,8 +189,13 @@
 				    		<p><%=time %></p>
 				    		<p>
 				    			<span class="text-secondary">People Available (<%=(op.numAvailablePeople())%>): </span>
-				    			<%for (User u : op.getAvailablePeople()) {%>
-				    				<span class=""><%=(smartcal.UserAccount.getNameForUser(u))%>, </span>
+				    			<%List<User> availablePeople = op.getAvailablePeople();
+				    			for (int i = 0; i < availablePeople.size(); i++) {
+				    				User u = availablePeople.get(i);%>
+				    				<span class="">
+				    					<%=(smartcal.UserAccount.getNameForUser(u))%>
+				    					<%if (i < availablePeople.size() - 1) { %><%=(", ")%><% } %>
+				    				</span>
 				    			<%} %>
 				    		</p>
 		 	 			</li>

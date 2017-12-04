@@ -99,6 +99,10 @@ public class Invitation {
 		}
 	}
 	
+	public boolean hasPersonVoted(User u) {
+		return peopleVotedForOptions.contains(u);
+	}
+	
 	public int numPeopleVoted() {
 		return peopleVotedForOptions.size();
 	}

@@ -35,6 +35,10 @@ public class NewEventServlet extends HttpServlet{
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		//get the current user
 		User user = UserServiceFactory.getUserService().getCurrentUser();
+		if(user == null) {
+			System.out.println("No user detected for some reason, failed to execute NewEventServlet");
+			return;
+		}
 		
 		//get FriendsList
        	FriendsList flist = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();

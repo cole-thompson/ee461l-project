@@ -104,8 +104,12 @@ public class InvitationsList {
 					if(k < invitedFriends.size() - 1) {
 						invitedString += invitedFriends.get(k).getNickname() + ", ";
 					}
-					else {
+					else if(invitedFriends.get(k) == null){
+						System.out.println(invitedFriends);
+						return null;
+					}else{
 						invitedString += invitedFriends.get(k).getNickname();
+						
 					}
 				}
 			}

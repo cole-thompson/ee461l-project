@@ -12,7 +12,7 @@ import com.googlecode.objectify.annotation.Index;
 public class FriendsList {
 	@Id Long id;
 	@Index private User user;
-	@Index private List<User> friends;
+	private List<User> friends;
 	
 	public FriendsList() {
 		setUser(null);

@@ -14,7 +14,7 @@ import com.googlecode.objectify.ObjectifyService;
 public class SocialServlet extends HttpServlet {
 	
 	static {
-        ObjectifyService.register(CalEvent.class);
+        ObjectifyService.register(CalEventList.class);
         ObjectifyService.register(FriendsList.class);
         ObjectifyService.register(Invitation.class);
         ObjectifyService.register(InvitationsList.class);
@@ -60,8 +60,9 @@ public class SocialServlet extends HttpServlet {
     	}else if (req.getParameter("sendoptions") != null) {
     		clickedInvitation = true;
     		sendOptionVote(req, user);
-    	}
-    	else {
+    	}else if (req.getParameter("finalizeinvitation") != null) {
+    		finalizeInvitation(req, user);
+    	}else {
     		InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
     		for(int i = 0; i < currentUserInvitations.getInvitations().size(); i++) {
     			if(req.getParameter("invitation" + i) != null){
@@ -96,8 +97,27 @@ public class SocialServlet extends HttpServlet {
 	    		}
 	    	}
 	    	displayInvitation.personVoted(user);
-	    	ObjectifyService.ofy().save().entity(currentUserInvitations);
+	    	ObjectifyService.ofy().save().entity(currentUserInvitations).now();
     	}
     }
+    
+    public void finalizeInvitation(HttpServletRequest req, User user) {
+    	InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
+    	Invitation displayInvitation = currentUserInvitations.getDisplayedInvitation();
+    	List<InvitationOption> options = displayInvitation.getOptions();
+    	for (int i = 0; i < options.size(); i++) {
+    		if (req.getParameter("option" + i) != null) {
+    			InvitationOption option = options.get(i);
+    			CalEvent event = CalEvent.invitationOptionToEvent(displayInvitation, option);
+    			for (User u : displayInvitation.getFriends()) {
+    				CalEventList friendEventList = ObjectifyService.ofy().load().type(CalEventList.class).filter("user", u).first().now();
+    				friendEventList.addEvent(event);
+    				ObjectifyService.ofy().save().entity(friendEventList).now();
+    			}
+    			ObjectifyService.ofy().delete().entity(currentUserInvitations).now();
+    		}	
+    	}
+    }
+    
 
 }

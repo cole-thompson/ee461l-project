@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class NewEventServlet extends HttpServlet{
 	static {
-        ObjectifyService.register(CalEvent.class);
         ObjectifyService.register(UserDisplayData.class);
         ObjectifyService.register(FriendsList.class);
         ObjectifyService.register(Invitation.class);

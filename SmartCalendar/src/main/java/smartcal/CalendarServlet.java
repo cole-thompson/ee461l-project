@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CalendarServlet extends HttpServlet {
 	static {
-        ObjectifyService.register(CalEvent.class);
         ObjectifyService.register(UserDisplayData.class);
 
     }

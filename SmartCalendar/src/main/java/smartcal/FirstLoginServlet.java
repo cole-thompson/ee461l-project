@@ -19,7 +19,6 @@ public class FirstLoginServlet extends HttpServlet {
         ObjectifyService.register(UserAccount.class);
         ObjectifyService.register(CalEventList.class);
         ObjectifyService.register(UserDisplayData.class);
-        ObjectifyService.register(CalEvent.class);
         ObjectifyService.register(Invitation.class);
     }
 	

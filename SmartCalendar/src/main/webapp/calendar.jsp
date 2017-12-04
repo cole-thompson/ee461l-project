@@ -124,7 +124,6 @@
 	
 		<%
 		//main method initialization stuff
-		ObjectifyService.register(smartcal.CalEvent.class);
         ObjectifyService.register(smartcal.UserDisplayData.class);
         ObjectifyService.register(smartcal.FriendsList.class);
         ObjectifyService.register(smartcal.CalEventList.class);

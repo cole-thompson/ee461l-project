@@ -2,10 +2,13 @@ package smartcal;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.appengine.api.users.User;
+import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -49,35 +52,43 @@ public class UserDisplayData {
 		this.user = user;
 	}
 	
-	//test
-	public void createTestEvent() {
-		ArrayList<CalEvent> l = new ArrayList<CalEvent>();
-		CalEvent e = new CalEvent(user, Calendar.getInstance(), Calendar.getInstance());
-		e.setName("My Event");
-		l.add(e);
-		displayEvents.put(10, l);
-	}
 	
 	/* populate displayEvents
 	 * loads a User's events from objectify
 	 * for the display view into displayEvents HashMap, store events by date #
 	 */
 	public void loadDisplayEvents() {
-		//TODO
-		createTestEvent();		//add a fake event
-		if (getDisplayView() == 0) {
-			
-		}
-		else if (getDisplayView() == 1) {
-			
-		}
-		else if (getDisplayView() == 2) {
-			
+		CalEventList eventList = ObjectifyService.ofy().load().type(CalEventList.class).filter("user", user).first().now();
+		List<CalEvent> events = eventList.getEvents();
+		for (CalEvent event : events) {
+			Date dayDate = event.getStartTime();
+			Calendar day = Calendar.getInstance();
+			day.setTime(dayDate);
+			if (day.get(Calendar.MONTH) == displayMonth) {
+				int date = day.get(Calendar.DATE);
+				if (getDisplayView() == 2) {
+					if (date == displayDate) {
+						addDisplayEvent(date, event);
+					}
+				}
+				else {
+					addDisplayEvent(date, event);
+				}
+			}
 		}
 	}
 	
 	public ArrayList<CalEvent> getDisplayEvents(int day) {
 		return displayEvents.get(day);
+	}
+	
+	public void addDisplayEvent(int date, CalEvent event) {
+		ArrayList<CalEvent> dayEvents = displayEvents.get(date);
+		if (dayEvents == null) {
+			dayEvents = new ArrayList<CalEvent>();
+		}
+		dayEvents.add(event);
+		displayEvents.put(date, dayEvents);
 	}
 	
 	public void displayToday() {

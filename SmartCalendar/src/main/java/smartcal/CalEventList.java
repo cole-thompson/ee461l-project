@@ -40,6 +40,10 @@ public class CalEventList {
 		this.events = events;
 	}
 	
+	public void addEvent(CalEvent event) {
+		this.events.add(event);
+	}
+	
 	@Override
 	public String toString() {
 		String allEvents = "";

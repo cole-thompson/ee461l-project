@@ -143,12 +143,15 @@
  		
  		<tr>
  		<td class="w-50">
+ 		<form action="/social" name="add-or-remove" method="post"> 	
+ 		
 			<div class="input-group">	
 				<span class="input-group-addon" id="usernamelabel">Username</span>
 				<input name="friendname" class="form-control">
 			</div>
 			<button name="addfriend" class="form-control form-control-lg btn btn-success" type="submit">Add Friend</button>
 			<button name="removefriend" class="form-control form-control-lg btn btn-success" type="submit">Remove Friend</button>
+		</form>
 		<td>
  		</tr>
  		

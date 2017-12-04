@@ -57,12 +57,12 @@ public class FirstLoginServlet extends HttpServlet {
 			 for (User friend : f.getFriends()) {
 				 FriendsList friendList = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", friend).first().now();
 				 if (friendList != null) {
-					 friendList.removeFriend(friend);
+					 friendList.removeFriend(user);
 					 ObjectifyService.ofy().save().entity(friendList).now();
 				 }
 			 }
 			 ObjectifyService.ofy().delete().entity(f).now();
-			}
+		 }
 		 CalEventList e = ObjectifyService.ofy().load().type(CalEventList.class).filter("user", user).first().now();
 		 if (e != null) {
 			 for (CalEvent event : e.getEvents()) {

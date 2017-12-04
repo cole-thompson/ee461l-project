@@ -76,6 +76,7 @@ public class UserDisplayData {
 				}
 			}
 		}
+		System.out.println(user + "loaded events " + eventList);
 	}
 	
 	public ArrayList<CalEvent> getDisplayEvents(int day) {

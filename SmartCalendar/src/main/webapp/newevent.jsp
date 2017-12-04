@@ -295,11 +295,10 @@
 				       	
 				       		<div class="form-group">
 		  						<div class="input-group">
-									
+									<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Option</button>
 			  					</div>
 	  						</div>
 	  						
-				       		<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Option</button>
 				       	</form>
 	      				</td></tr></tbody>
 	       		</table>
@@ -316,11 +315,15 @@
 	       		
 	       		<%} %>
 	       		
-	       		<div class="row"><div class="col-md">
-	       			<form action="/newevent" name="finishInvitation" method="post"> 	
-				       		<button name="part2submit" class="form-control form-control-lg btn-lg btn-success" type="submit">Finish Invitation</button>
-				       	</form>
-	       		</div></div>      		
+	       		<!-- Finalize Event if you have an option -->
+	       		<%if (invitation.getOptions().size() > 0) {%>	
+		       		<div class="row"><div class="col-md">
+		       			<form action="/newevent" name="finishInvitation" method="post"> 	
+					       		<button name="part2submit" class="form-control form-control-lg btn-lg btn-success" type="submit">Finish Invitation</button>
+					       	</form>
+		       		</div></div>   
+	       		<%} %> 
+	       		  		
        		</div>
        	<%} } } %>
        	

@@ -64,7 +64,7 @@ public class FriendsList {
 	public String toString() {
 		String allFriends = "";
 		for(User u : friends) {
-			allFriends += user.getEmail() + ": " + user + "\n"; //sequential list of friends. Maybe not needed due to objectify stuff.
+			allFriends += u + "\n";
 		}
 		return allFriends;
 	}

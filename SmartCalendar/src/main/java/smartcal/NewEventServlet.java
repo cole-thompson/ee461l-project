@@ -189,10 +189,8 @@ public class NewEventServlet extends HttpServlet{
 		if (req.getParameter("part2submit") != null) {
 			System.out.println("Finishing invitation");
 	       	Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
-	       	//TODO send invitation to people
-	       	
-	       	
 	       	invitation.finishCreation(); 	
+	    	invitation.sendInvitation();
 	       	ObjectifyService.ofy().save().entity(invitation); 
     		pressed = true;
         }

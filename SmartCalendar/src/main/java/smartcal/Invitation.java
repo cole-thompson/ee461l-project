@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.appengine.api.users.User;
+import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -77,9 +78,21 @@ public class Invitation {
 		finished = true;
 	}
 	
+	public void sendInvitation() {
+		for (User u : friends) {
+			InvitationsList invitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", u).first().now();
+	       	if(invitations == null){
+	       		System.out.println(u + " didnt have an invitations list, creating it now");
+	       		invitations = new InvitationsList(u);
+	       		ObjectifyService.ofy().save().entity(invitations);
+	       	}else{
+	       		System.out.println("invitations list found: \n" + invitations);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
+	       	}
+		}
+	}
 	
 	
-	
+	//GETTERS AND SETTERS
 	
 	public Type getType() {
 		return type;

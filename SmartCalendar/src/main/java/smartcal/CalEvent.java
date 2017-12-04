@@ -53,7 +53,7 @@ public class CalEvent {
 		Calendar startCal = Calendar.getInstance();
 		startCal.setTime(startTime);
 		Calendar endCal = Calendar.getInstance();
-		startCal.setTime(endTime);
+		endCal.setTime(endTime);
 		
 		int startHour = startCal.get(Calendar.HOUR);
 		int startAmPm = startCal.getMaximum(Calendar.AM_PM);
@@ -71,19 +71,27 @@ public class CalEvent {
 		Calendar startCal = Calendar.getInstance();
 		startCal.setTime(startTime);
 		Calendar endCal = Calendar.getInstance();
-		startCal.setTime(endTime);
+		endCal.setTime(endTime);
 		
 		int startHour = startCal.get(Calendar.HOUR);
 		int startMinute = startCal.get(Calendar.MINUTE);
 		int startAmPm = startCal.getMaximum(Calendar.AM_PM);
+		if(startHour == 0) {
+			startHour = 12;
+		}
+		String startMinuteString = String.format("%02d", startMinute);
 		
 		int endHour = endCal.get(Calendar.HOUR);
 		int endMinute = endCal.get(Calendar.MINUTE);
 		int endAmPm = endCal.getMaximum(Calendar.AM_PM);
+		if(endHour == 0) {
+			endHour = 12;
+		}
+		String endMinuteString = String.format("%02d", endMinute);
 		
-		String s = startHour + ":" + startMinute + getAmPmString(startAmPm);
+		String s = startHour + ":" + startMinuteString + getAmPmString(startAmPm);
 		s += " - ";
-		s += endHour + ":" + endMinute + getAmPmString(endAmPm);
+		s += endHour + ":" + endMinuteString + getAmPmString(endAmPm);
 		return s;
 	}
 	

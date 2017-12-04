@@ -114,7 +114,8 @@ public class SocialServlet extends HttpServlet {
     				friendEventList.addEvent(event);
     				ObjectifyService.ofy().save().entity(friendEventList).now();
     			}
-    			ObjectifyService.ofy().delete().entity(currentUserInvitations).now();
+    			currentUserInvitations.removeInvitation(displayInvitation);
+    			ObjectifyService.ofy().save().entity(currentUserInvitations).now();
     		}	
     	}
     }

@@ -9,6 +9,8 @@
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="com.googlecode.objectify.ObjectifyService" %>
+<%@ page import="com.googlecode.objectify.Objectify" %>
+
 
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -99,7 +101,7 @@
        	else {
        		System.out.println(username + " found displayData");
        	}
-       	
+       	       	
        	//grabbing FriendsList for the current user
        	smartcal.FriendsList flist = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now();
        	if(flist == null){
@@ -109,7 +111,6 @@
        	}else{
        		System.out.println("friendslist found: \n" + flist);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
        	}
-       	
        	
        	
      	 //load the events for a user into the display object

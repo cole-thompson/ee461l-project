@@ -152,12 +152,14 @@
 									  		<label class="form-check-label">You have no friends.</label>
 										</div>
 		  							<%}
-		  							for (int i = 0; i < friends.size(); i++) { %>
+		  							for (int i = 0; i < friends.size(); i++) {
+		  								if (friends.get(i) != null) {%>											
 		  								<div class="form-control form-check">
 									  		<label class="form-check-label">
 										    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> <%=friends.get(i).getNickname()%>
 										  	</label>
 										</div>
+										<%}%>
 		  							<%}%>
 			  					</div>
 	  						</div>
@@ -210,11 +212,14 @@
 		  				if (friends.size() != 0) { %>
 					    <div class="form-group">
 		       				<div class="input-group">	
-				    			<span class="input-group-addon">Friends</span>
+				    			<span class="input-group-addon">People</span>
 				    			<div class="form-control">
 				    				<ul class="list-group">
-			  							<%for (int i = 0; i < friends.size(); i++) { %>
+			  							<%
+			  							for (int i = 0; i < friends.size(); i++) { 
+			  								if (friends.get(i) != null) {%>
 											<li class="list-group-item"> <%=friends.get(i).getNickname()%></li>
+											<%}%>
 										<%} %>
 		  							</ul>
 		  							</div>

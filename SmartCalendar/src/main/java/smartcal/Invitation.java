@@ -51,7 +51,7 @@ public class Invitation {
 	
 	public boolean setFriends(List<User> friends) {
 		if (stage == 1) {
-			friends.addAll(friends);
+			this.friends = friends;
 			return true;
 		}
 		else {
@@ -84,10 +84,11 @@ public class Invitation {
 	       	if(invitations == null){
 	       		System.out.println(u + " didnt have an invitations list, creating it now");
 	       		invitations = new InvitationsList(u);
-	       		ObjectifyService.ofy().save().entity(invitations);
 	       	}else{
-	       		System.out.println("invitations list found: \n" + invitations);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
+	       		System.out.println(u.getNickname() + " invitations list found: \n" + invitations);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
 	       	}
+	       	invitations.addInvitation(this);
+	       	ObjectifyService.ofy().save().entity(invitations);
 		}
 	}
 	

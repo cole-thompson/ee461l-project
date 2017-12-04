@@ -30,6 +30,7 @@ public class NewEventServlet extends HttpServlet{
         ObjectifyService.register(UserDisplayData.class);
         ObjectifyService.register(FriendsList.class);
         ObjectifyService.register(Invitation.class);
+        ObjectifyService.register(InvitationsList.class);
     }
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -50,7 +51,7 @@ public class NewEventServlet extends HttpServlet{
 		
        	if (checkForm1(req, user, flist)) {resp.sendRedirect("/newevent.jsp");}
        	else if (checkNewOption(req, user)) {resp.sendRedirect("/newevent.jsp");}
-       	else if (checkForm2(req, user)) {resp.sendRedirect("/calendar.jsp");}
+       	else if (checkForm2(req, user)) {resp.sendRedirect("/friends.jsp");}
        	
 		//System.out.println("worked");
 		
@@ -79,14 +80,18 @@ public class NewEventServlet extends HttpServlet{
 			Invitation invite = new Invitation(creator);
 			invite.setName(eventName);
 			
+			
 			for(int i = 0;  i < friends.size(); i++) {
 				String name = "friend" + i;
 				if(req.getParameter(name) != null) {
-					eventFriends.add(f.getFriends().get(i));
+					User friend = friends.get(i);
+					System.out.println("adding friend to invitation " + friend);
+					eventFriends.add(friend);
 				}
 			}
-			
+			eventFriends.add(creator);
 			invite.setFriends(eventFriends);
+			System.out.println("people in new event: " + eventFriends);
 			
 			if(eventType.equals("Generic")) {
 				System.out.println("Event Type: Generic");
@@ -137,7 +142,7 @@ public class NewEventServlet extends HttpServlet{
 				
 				String startDay = req.getParameter("startday");
 				if (startDay != null) {
-					System.out.println(startDay);
+					//System.out.println(startDay);
 					if (!option.getAllDay()) {
 						String startTime = req.getParameter("starttime");
 						if (startTime != null) {
@@ -155,7 +160,7 @@ public class NewEventServlet extends HttpServlet{
 				
 				String endDay = req.getParameter("endday");
 				if (endDay != null) {
-					System.out.println(endDay);
+					//System.out.println(endDay);
 					if(!option.getAllDay()) {						
 						String endTime = req.getParameter("endtime");
 						if (endTime != null) {

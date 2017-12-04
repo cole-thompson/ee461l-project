@@ -137,7 +137,7 @@ public class NewEventServlet extends HttpServlet{
 				
 				String startDay = req.getParameter("startday");
 				if (startDay != null) {
-					//System.out.println(startDay);
+					System.out.println(startDay);
 					if (!option.getAllDay()) {
 						String startTime = req.getParameter("starttime");
 						if (startTime != null) {
@@ -155,7 +155,7 @@ public class NewEventServlet extends HttpServlet{
 				
 				String endDay = req.getParameter("endday");
 				if (endDay != null) {
-					//System.out.println(endDay);
+					System.out.println(endDay);
 					if(!option.getAllDay()) {						
 						String endTime = req.getParameter("endtime");
 						if (endTime != null) {
@@ -206,7 +206,7 @@ public class NewEventServlet extends HttpServlet{
 				int y = Integer.parseInt(day.substring(0, 4));
 				int m = Integer.parseInt(day.substring(5, 7));
 				int d = Integer.parseInt(day.substring(8));
-				cal = new Date(y, m, d);
+				cal = new Date(y, m - 1, d);
 			}
 		}
 		catch (NumberFormatException e) {}
@@ -223,7 +223,7 @@ public class NewEventServlet extends HttpServlet{
 				int d = Integer.parseInt(day.substring(8));
 				int h = Integer.parseInt(time.substring(0, 2));
 				int min = Integer.parseInt(time.substring(3, 5));				
-				cal = new Date(y, m, d, h, min);
+				cal = new Date(y, m - 1, d, h, min);
 			}
 		}
 		catch (NumberFormatException e) {}

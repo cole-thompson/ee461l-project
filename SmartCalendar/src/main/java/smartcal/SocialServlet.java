@@ -113,6 +113,9 @@ public class SocialServlet extends HttpServlet {
     				CalEventList friendEventList = ObjectifyService.ofy().load().type(CalEventList.class).filter("user", u).first().now();
     				friendEventList.addEvent(event);
     				ObjectifyService.ofy().save().entity(friendEventList).now();
+    				InvitationsList friendInviteList = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", u).first().now();
+    				friendInviteList.getInvitations().remove(displayInvitation);
+    				ObjectifyService.ofy().save().entity(friendInviteList).now();
     			}
     			currentUserInvitations.removeInvitation(displayInvitation);
     			ObjectifyService.ofy().save().entity(currentUserInvitations).now();

@@ -24,7 +24,7 @@ public class FriendsList {
 		setFriends(new ArrayList<User>());
 	}
 
-	User getUser() {
+	public User getUser() {
 		return user;
 	}
 

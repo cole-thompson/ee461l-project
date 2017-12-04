@@ -9,6 +9,8 @@
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="com.googlecode.objectify.ObjectifyService" %>
+<%@ page import="com.googlecode.objectify.Objectify" %>
+
 
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -45,8 +47,9 @@
 			        	<a class="nav-link" href="#">Account</a>
 			      	</li>
 			      	<li class="nav-item">
-			        	<a class="nav-link" href="/friends.jsp">Friends</a>
+			        	<a class="nav-link" href="/friends.jsp">Social</a>
 			      	</li>
+			      	<!-- 
 			      	<li class="nav-item dropdown">
 			        	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
 			        	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -55,6 +58,7 @@
 				          	<a class="dropdown-item" href="#">Something else here</a>
 			        	</div>
 			      	</li>
+			      	 -->
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="/newevent.jsp">New Event</a>
 			      	</li>
@@ -78,8 +82,14 @@
 			<span class="navbar-text text-muted mr-3">Hello, ${fn:escapeXml(user.nickname)}! </span>
 			<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
 			<%
-	    }  
-		%>	
+			ObjectifyService.register(smartcal.UserAccount.class);
+			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+			if(accountData == null){
+				accountData = new smartcal.UserAccount(user, user.getNickname());
+				ObjectifyService.ofy().save().entity(accountData);
+				System.out.println("your username is now: " + accountData.getUsername());
+			}
+	    }%>	
 		
 		</div>	
 		</nav>
@@ -99,7 +109,7 @@
        	else {
        		System.out.println(username + " found displayData");
        	}
-       	
+       	       	
        	//grabbing FriendsList for the current user
        	smartcal.FriendsList flist = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now();
        	if(flist == null){
@@ -109,7 +119,6 @@
        	}else{
        		System.out.println("friendslist found: \n" + flist);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
        	}
-       	
        	
        	
      	 //load the events for a user into the display object

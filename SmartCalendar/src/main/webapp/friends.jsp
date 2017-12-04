@@ -15,7 +15,7 @@
 
 <html>
 	<head>
-	 	<title>Friends and Events</title>
+	 	<title>Social</title>
 	 	<!-- Required meta tags -->
 	 	<meta charset="utf-8">
 	 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -40,14 +40,15 @@
 		 	<div class="collapse navbar-collapse" id="navbarContent">
 			    <ul class="navbar-nav mr-auto">
 			    	<li class="nav-item active">
-			        	<a class="nav-link" href="calendar.jsp">Home <span class="sr-only">(current)</span></a>
+			        	<a class="nav-link" href="/calendar.jsp">Home <span class="sr-only">(current)</span></a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="#">Account</a>
 			      	</li>
 			      	<li class="nav-item">
-			        	<a class="nav-link" href="#">Friends</a>
+			        	<a class="nav-link" href="/friends.jsp">Social</a>
 			      	</li>
+			      	<!-- 
 			      	<li class="nav-item dropdown">
 			        	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
 			        	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -56,130 +57,105 @@
 				          	<a class="dropdown-item" href="#">Something else here</a>
 			        	</div>
 			      	</li>
-			    </ul> 	 
+			      	 -->
+			      	<li class="nav-item">
+			        	<a class="nav-link" href="/newevent.jsp">New Event</a>
+			      	</li>
+			    </ul>	 
 	 		</div>
  		</nav>
  		
  		
+ 		<!-- Initialization stuff i.e. registering userAccounts, pulling the full list of users into an account list, 
+ 			obtaining a reference to the currently logged in user  -->
+ 		<%UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+	    
+	    ObjectifyService.register(smartcal.UserAccount.class);
+ 		ObjectifyService.register(smartcal.FriendsList.class);
+	    List<smartcal.UserAccount> accounts = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).list(); // This is all the accounts in Objectify
+	    smartcal.UserAccount currentUserAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+	    smartcal.FriendsList mattFriends = new smartcal.FriendsList();
+	    smartcal.UserAccount someUser = currentUserAccount;
+	    /* if(currentUserAccount == null){
+	    	System.out.println("Something is very wrong, you don't seem to have account data, creating it now");
+	    	currentUserAccount = new smartcal.UserAccount(user, "goose");
+	    	ObjectifyService.ofy().save().entity(currentUserAccount);
+	    }else if(currentUserAccount.getUsername().equals("goose")){
+	    	//DEBUGGING STUFF, PLEASE TAKE OUT BEFORE DEPLOYMENT --------------------------------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	    	mattFriends = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now();
+	    	someUser = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).list().get(0);
+	    	if(mattFriends.getFriends().size() < 1){
+	    		mattFriends.addFriend(someUser.getUser());
+	    	}
+	    	System.out.println(mattFriends);
+	    	ObjectifyService.ofy().save().entity(mattFriends);
+	    } */
+	    %>
+ 		<!-- search invitiation in ofy, look for finished (filter for it) -->
+ 		
  		<!-- Tables -->
- 		<table class="w-100"> <!-- Parent table -->
- 		<tr>
- 		<td class="w-50" style="top:0"> <!-- Start table 1 -->
- 			<table class="table table-bordered table-light table-hover w-100">
-	 			<thead class="thead-dark col-md-6">
-						<tr><th>Friends</th></tr>
-				</thead>
- 			</table>
-	 		<div style="max-height: 500px;	height:500px;	overflow-y:auto">
+ 		<div class="container">
+ 		
+ 			<div class="row"><div class="col w-100">
+	 			<table class="table table-bordered table-light table-hover w-100">
+		 			<thead class="thead-dark col-md-6">
+							<tr><th class="w-50">Friends</th><th class="w-50">Invitations</th></tr>
+					</thead>
+	 			</table>
+	 		</div></div>
+	 		
+ 			<div class="row">
+ 			
+ 			<div class="col w-50"><div style="max-height: 500px;	height:500px;	overflow-y:auto">
 	 		<table class="table table-bordered table-light table-hover w-100">	
-				
-	           	
-	           	<tbody style="top:0">		<!-- Iterate through the table, place numbers in proper locations -->
+	           	<tbody style="top:0">
 	           	
 					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-	          	
+	          		<%List<User> currentUserFriends = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now().getFriends();
+	          		for(User friend : currentUserFriends){
+	          			smartcal.UserAccount friendAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", friend).first().now();
+	          			if(friendAccount == null){
+	          				System.out.println("friendAccount was null (this means that some friend on your friends list doesn't have an account??), breaking from loop");
+	          				break;
+	          			}
+          				String friendName = friendAccount.getUsername();%>
+	          		
+	          			<tr><td><p><%=(friendName) %>	</p></td></tr>
+	          		<%}%>
+	          		
 	          	</tbody>
 	          	
 			</table></div>
-		</td>
-		<td class="w-50" style="top:0"> <!-- Start table2 -->
-			<table class="table table-bordered table-light table-responsive-md table-hover w-100">
-	 			<thead class="thead-dark col-md-6">
-						<tr><th>Invites</th></tr>
-				</thead>
- 			</table>
-			<div style="max-height: 500px;	height:500px;	overflow-y:auto">
+			
+			<form action="/social" name="add-or-remove" method="post"> 	
+	 		
+				<div class="input-group">	
+					<span class="input-group-addon" id="usernamelabel">Username</span>
+					<input name="friendname" class="form-control">
+				</div>
+				<button name="addfriend" class="form-control form-control-lg btn btn-success" type="submit">Add Friend</button>
+				<button name="removefriend" class="form-control form-control-lg btn btn-success" type="submit">Remove Friend</button>
+			</form>
+			
+			</div>
+		
+		
+			<!-- Start table2 -->
+			<div class="col w-50"><div style="max-height: 500px;	height:500px;	overflow-y:auto">
 			<table class="table table-bordered table-light table-responsive-md table-hover w-100">
 				<tbody style="top:0">		<!-- Iterate through the table, place numbers in proper locations -->
-				
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
 					
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					<tr><td><p>bloop</p></td></tr>
-					
-					
+					<!-- THIS IS WHERE THE INVITATION PULLING LOOP WILL GO -->
 		          	
 	          	</tbody>
 	          	
 	 		</table>
 	 		</div>
- 		</td>
- 		</tr>
- 		</table> <!-- End of the parent table -->
- 		
+		
+			
+			</div>
+ 		</div>
+ 	</div>
  		
 	 </body>

@@ -396,18 +396,30 @@
 					boolean anythingToday = false;%>
 					<div class="list-group">
 			          	<%
+			          	List<smartcal.CalEvent> orderedCurrentEvents = new ArrayList<smartcal.CalEvent>();
+			          	orderedCurrentEvents = currentUserEvents.getEvents();
+			          	smartcal.CalEvent temp;
+			          	for(int i = 0; i < orderedCurrentEvents.size(); i++){
+			          		for(int j = 1; j < orderedCurrentEvents.size()-i; j++){
+			          			if( ((float)orderedCurrentEvents.get(j-1).getStartTime().getHours() + (float)orderedCurrentEvents.get(j-1).getStartTime().getMinutes()/60.0) > ((float)orderedCurrentEvents.get(j).getStartTime().getHours() + ((float)orderedCurrentEvents.get(j).getStartTime().getMinutes())/60.0) ){
+			          				temp = orderedCurrentEvents.get(j-1);
+			          				orderedCurrentEvents.set(j-1, orderedCurrentEvents.get(j));
+			          				orderedCurrentEvents.set(j, temp);
+			          			}
+			          		}
+			          	}
 			          	if(currentUserEvents.getEvents().size() < 1){%>
 		          			<div class="d-flex w-100 justify-content-between">
 								<h5 class="mb-1">No Events planned for today!</h5>
 				   			</div>
 			          	<%}
-			          	for(smartcal.CalEvent ev : currentUserEvents.getEvents()) {
+			          	for(smartcal.CalEvent ev : orderedCurrentEvents) {
 			          		if(ev.getStartTime().getDate() == currentDate && ev.getStartTime().getMonth() == currentMonth && ev.getStartTime().getYear() == currentYear){			          		
 			          		%> 
 			          		<div class="d-flex w-100 justify-content-between">
      							 <h5 class="mb-1">Name: <%=(ev.getName()) %></h5>
 						    </div>
-    						<p class="mb-1">Time: <%=(ev.getTimeString()) %></p> 
+    						<p class="mb-1">Time: <%=(ev.getTimeStringFull()) %></p> 
     						<p class="mb-1">Location: <%=(ev.getLocation()) %></p><%
 			          		}
 			          	}%>

@@ -31,6 +31,56 @@
 
   	<body class="bg-light">
   	
+  		<%
+		//Google sign-in initialization 
+		UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+  		
+  		ObjectifyService.register(smartcal.UserAccount.class);
+  		
+  		if (user == null) {
+  			%>
+  			<div class="container border border-primary p-3 m-3 bg-white">
+  				<div class="row"><div class="col">
+  					<h1>Welcome to <span class="text-primary">Smart Calendar!</span> Please Sign In</h1>
+  				</div></div>
+  				<div class="row"><div class="col">
+					<a class="btn btn-sm btn-success w-100" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
+				</div></div>
+			</div>
+			<%
+  		}
+  		else {
+			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+  		
+  			if (accountData == null) {
+				accountData = new smartcal.UserAccount(user, user.getNickname());
+				ObjectifyService.ofy().save().entity(accountData);
+				System.out.println("your username is now: " + accountData.getUsername());
+				%>
+				<div class="container border border-primary p-3 m-3 bg-white">
+	  				<div class="row"><div class="col">
+	  					<h1 class="">It's your first time using <span class="text-primary">Smart Calendar!</span></h1>
+	  				</div></div>
+	  				<div class="row"><div class="col">
+	  					<form action="/firstlogin" method="post">
+	  						<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->					    			
+					    			<span class="input-group-addon">Please select a nickname</span>
+					    			<input name="username" class="form-control">
+									<button name="setname" class="input-group-addon">Set Name</button>
+					    		</div>
+					    	</div>
+							
+						</form>
+					</div></div>
+				</div>
+				<%
+				
+  			}
+  			else {
+  				
+  		%>
   		<nav class="navbar navbar-expand-lg p-1 navbar-light bg-light sticky-top border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
   			<a class="navbar-brand" href="#">Smart Calendar</a>
   			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,8 +89,8 @@
 		 	
 		 	<div class="collapse navbar-collapse" id="navbarContent">
 			    <ul class="navbar-nav mr-auto">
-			    	<li class="nav-item active">
-			        	<a class="nav-link" href="/calendar.jsp">Home <span class="sr-only">(current)</span></a>
+			    	<li class="nav-item">
+			        	<a class="nav-link" href="/calendar.jsp">Home</a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="#">Account</a>
@@ -58,33 +108,15 @@
 			        	</div>
 			      	</li>
 			      	 -->
-			      	<li class="nav-item">
-			        	<a class="nav-link" href="/newevent.jsp">New Event</a>
+			      	<li class="nav-item active">
+			        	<a class="nav-link" href="/newevent.jsp">New Event<span class="sr-only">(current)</span></a>
 			      	</li>
 			    </ul>
-
-		<%
-		//Google sign-in initialization 
-	    UserService userService = UserServiceFactory.getUserService();
-	    User user = userService.getCurrentUser();
-	    String username = "";
-	    if (user == null) {
-			%>
-			<span class="navbar-text text-muted mr-3">Hello!</span>
-			<a class="btn btn-sm btn-outline-success" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
-			<%
-	    }
-	    else {
-	    	username = "" + user.getNickname();
-	      	pageContext.setAttribute("user", user);
-			%>
-			<span class="navbar-text text-muted mr-3">Hello, ${fn:escapeXml(user.nickname)}! </span>
-			<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
-			<%
-	    }  
-		%>	
-		
-		</div>	
+				
+				<span class="navbar-text text-muted mr-3">Hello, <%=(accountData.getUsername())%>! </span>
+				<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
+			
+			</div>	
 		</nav>
 	
 		<%
@@ -311,7 +343,7 @@
 				       	</form>
 	       		</div></div>      		
        		</div>
-       	<%} %>
+       	<%} } } %>
        	
        	<script>
 		 	document.getElementById('allday').onchange = function() {

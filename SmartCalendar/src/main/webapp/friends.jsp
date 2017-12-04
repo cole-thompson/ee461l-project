@@ -31,7 +31,57 @@
 	 <body>
 
 	 	<!-- Begin Navbar -->
-		<nav class="navbar navbar-expand-lg p-1 navbar-light bg-light sticky-top border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
+		<%
+		//Google sign-in initialization 
+		UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+  		
+  		ObjectifyService.register(smartcal.UserAccount.class);
+  		
+  		if (user == null) {
+  			%>
+  			<div class="container border border-primary p-3 m-3 bg-white">
+  				<div class="row"><div class="col">
+  					<h1>Welcome to <span class="text-primary">Smart Calendar!</span> Please Sign In</h1>
+  				</div></div>
+  				<div class="row"><div class="col">
+					<a class="btn btn-sm btn-success w-100" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
+				</div></div>
+			</div>
+			<%
+  		}
+  		else {
+			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+  		
+  			if (accountData == null) {
+				accountData = new smartcal.UserAccount(user, user.getNickname());
+				ObjectifyService.ofy().save().entity(accountData);
+				System.out.println("your username is now: " + accountData.getUsername());
+				%>
+				<div class="container border border-primary p-3 m-3 bg-white">
+	  				<div class="row"><div class="col">
+	  					<h1 class="">It's your first time using <span class="text-primary">Smart Calendar!</span></h1>
+	  				</div></div>
+	  				<div class="row"><div class="col">
+	  					<form action="/firstlogin" method="post">
+	  						<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->					    			
+					    			<span class="input-group-addon">Please select a nickname</span>
+					    			<input name="username" class="form-control">
+									<button name="setname" class="input-group-addon">Set Name</button>
+					    		</div>
+					    	</div>
+							
+						</form>
+					</div></div>
+				</div>
+				<%
+				
+  			}
+  			else {
+  				
+  		%>
+  		<nav class="navbar navbar-expand-lg p-1 navbar-light bg-light sticky-top border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
   			<a class="navbar-brand" href="#">Smart Calendar</a>
   			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 		    	<span class="navbar-toggler-icon"></span>
@@ -39,38 +89,30 @@
 		 	
 		 	<div class="collapse navbar-collapse" id="navbarContent">
 			    <ul class="navbar-nav mr-auto">
-			    	<li class="nav-item active">
-			        	<a class="nav-link" href="/calendar.jsp">Home <span class="sr-only">(current)</span></a>
+			    	<li class="nav-item">
+			        	<a class="nav-link" href="/calendar.jsp">Home</a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="#">Account</a>
 			      	</li>
 			      	<li class="nav-item">
-			        	<a class="nav-link" href="/friends.jsp">Social</a>
+			        	<a class="nav-link active" href="/friends.jsp">Social<span class="sr-only">(current)</span></a>
 			      	</li>
-			      	<!-- 
-			      	<li class="nav-item dropdown">
-			        	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-			        	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-				          	<a class="dropdown-item" href="#">Action</a>
-				          	<div class="dropdown-divider"></div>
-				          	<a class="dropdown-item" href="#">Something else here</a>
-			        	</div>
-			      	</li>
-			      	 -->
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="/newevent.jsp">New Event</a>
 			      	</li>
-			    </ul>	 
-	 		</div>
- 		</nav>
+			    </ul>
+				
+				<span class="navbar-text text-muted mr-3">Hello, <%=(accountData.getUsername())%>! </span>
+				<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
+			
+			</div>	
+		</nav>
  		
  		
  		<!-- Initialization stuff i.e. registering userAccounts, pulling the full list of users into an account list, 
  			obtaining a reference to the currently logged in user  -->
- 		<%UserService userService = UserServiceFactory.getUserService();
-	    User user = userService.getCurrentUser();
-	    
+ 		<%
 	    ObjectifyService.register(smartcal.UserAccount.class);
  		ObjectifyService.register(smartcal.FriendsList.class);
  		ObjectifyService.register(smartcal.InvitationsList.class);
@@ -171,7 +213,8 @@
 	 		</div>
 			</form></div>
 			
+ 			</div>
  		</div>
- 	</div>
  		
+ 		<%} }%>	
 	 </body>

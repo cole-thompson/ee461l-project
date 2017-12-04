@@ -196,7 +196,7 @@ public class NewEventServlet extends HttpServlet{
 	       	Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
 	       	invitation.finishCreation(); 	
 	    	invitation.sendInvitation();
-	       	ObjectifyService.ofy().save().entity(invitation); 
+	       	ObjectifyService.ofy().save().entity(invitation);
     		pressed = true;
         }
 		return pressed;

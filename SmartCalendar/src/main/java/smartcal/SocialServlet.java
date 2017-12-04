@@ -48,7 +48,17 @@ public class SocialServlet extends HttpServlet {
     		boolean worked = currentUserFriends.removeFriend(friendAccount.getUser());
     		ObjectifyService.ofy().save().entity(currentUserFriends);
     		System.out.println(worked);
+    	}else {
+    		InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
+    		for(int i = 0; i < currentUserInvitations.getInvitations().size(); i++) {
+    			if(req.getParameter("invitation" + i) != null){
+    				Invitation current = currentUserInvitations.getInvitations().get(i);
+    				currentUserInvitations.setDisplayedInvitation(current);
+    				resp.sendRedirect("/invitations.jsp");
+    			}
+    		}
     	}
+    	
     	
         resp.sendRedirect("/friends.jsp");
     }

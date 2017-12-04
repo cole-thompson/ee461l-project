@@ -2,12 +2,9 @@ package smartcal;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
@@ -21,6 +18,78 @@ public class MovieDatabase {
 	private List<Movie> movies;
 	
 	public List<Movie> getMovies() { return movies; }
+	
+	public int getNumMovies() {return movies.size();}
+	
+	public int getNumTheatresByMovieName(String movieName) {
+		int numTheaters = 0;
+		for(Movie m: movies) {
+			if(m.getTitle().equals(movieName)) {
+				List<String> theaters = new ArrayList<String>();
+				for(Showtime s: m.getShowtimes()) {
+					if(!theaters.contains(s.getTheater())) {
+						numTheaters++;
+						theaters.add(s.getTheater());
+					}
+				}
+				break;
+			}
+		}
+		
+		return numTheaters;
+	}
+	
+	public List<String> getMovieTitles() {
+		List<String> titles = new ArrayList<String>();
+		
+		for(Movie m : movies) {
+			titles.add(m.getTitle());
+		}
+		
+		return titles;
+	}
+	
+	public List<String> getTheatreNamesByMovieName(String movieName) {
+		List<String> theatreNames = new ArrayList<String>();
+		
+		for(Movie m: movies) {
+			if(m.getTitle().equals(movieName)) {
+				for(Showtime s : m.getShowtimes()) {
+					if(!theatreNames.contains(s.getTheater())) theatreNames.add(s.getTheater());
+				}
+			}
+		}
+		
+		return theatreNames;
+	}
+	
+	public int getNumShowtimesByMovieTheatre(String movie, String theatre) {
+		int numShowtimes = 0;
+		for(Movie m : movies) {
+			if(m.getTitle().equals(movie)) {
+				for(Showtime s : m.getShowtimes()) {
+					if(s.getTheater().equals(theatre)) numShowtimes++;
+				}
+				break;
+			}
+		}
+		return numShowtimes;
+	}
+	
+	public List<String> getShowtimesByMovieTheatre(String movie, String theatre) {
+		List<String> showtimes = new ArrayList<String>();
+		
+		for(Movie m : movies) {
+			if(m.getTitle().equals(movie)) {
+				for(Showtime s : m.getShowtimes()) {
+					if(s.getTheater().equals(theatre)) showtimes.add(s.getTime());
+				}
+			}
+		}
+		
+		return showtimes;
+	}
+	
 	
 	/* static public String makeMoviesRequest
 	 * this function sends requests to gracenote's website
@@ -52,35 +121,6 @@ public class MovieDatabase {
 		
 	}
 	
-	private String getTheatreName(JsonFactory fac, String theatreJson) throws IOException {
-		JsonParser parser = fac.createJsonParser(theatreJson);
-		while(parser.nextToken() != JsonToken.START_OBJECT) {}
-		parser.skipToKey("name");
-		return parser.getText();
-	}
-	
-	private List<Showtime> parseShowtimes(JsonFactory fac, String showtimes) throws IOException {
-		JsonParser parser = fac.createJsonParser(showtimes);
-		
-		List<Showtime> shows = new ArrayList<Showtime>();
-		
-		while(true) {
-			JsonToken token = parser.nextToken();
-			
-			if(token == null) break;
-			
-			if(token.equals(JsonToken.START_OBJECT)) {
-				//parse the theatre key to get the theater name
-				parser.skipToKey("theatre");
-				String name = getTheatreName(fac, parser.getText());
-				parser.skipToKey("dateTime");
-				String dateTime = parser.getText();
-				shows.add(new Showtime(name, dateTime));
-			}
-		}
-		
-		return shows;
-	}
 	
 	/*  MovieDatabse(String fullJson)
 	 *  builds a movie database by parsing the entire response json object into corresponding movie objects
@@ -116,7 +156,6 @@ public class MovieDatabase {
 					parser.skipToKey("theatre");
 					parser.skipToKey("name");
 					String name = parser.getText();
-					String cur = parser.getCurrentName();
 					while(parser.nextToken() != JsonToken.END_OBJECT) {}
 					parser.nextToken();
 					parser.skipToKey("dateTime");

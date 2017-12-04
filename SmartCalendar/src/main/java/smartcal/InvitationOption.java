@@ -16,23 +16,28 @@ public class InvitationOption {
 	private Date startTime;
 	private Date endTime;
 	private boolean allDay;
+	private List<User> availablePeople;
 	
 	public InvitationOption() {
 		setLocation("undecided");
 		setAllDay(true);
+		setAvailablePeople(new ArrayList<User>());
+		setStartTime(null);
+		setEndTime(null);
 	}
 	
 	public InvitationOption(String loc) {
+		this();
 		setLocation(loc);
-		setAllDay(true);
 	}
 	public InvitationOption(Date start, Date end) {
-		setLocation("undecided");
+		this();
 		setStartTime(start);
 		setEndTime(end);
 		setAllDay(false);
 	}
 	public InvitationOption(String loc, Date start, Date end) {
+		this();
 		setLocation(loc);
 		setStartTime(start);
 		setEndTime(end);
@@ -81,6 +86,21 @@ public class InvitationOption {
 	public void setAllDay(boolean allDay) {
 		this.allDay = allDay;
 	}
+
+	public List<User> getAvailablePeople() {
+		return availablePeople;
+	}
+
+	public void setAvailablePeople(List<User> availablePeople) {
+		this.availablePeople = availablePeople;
+	}
 	
+	public void addAvailablePerson(User availablePerson) {
+		this.availablePeople.add(availablePerson);
+	}
+	
+	public int numAvailablePeople() {
+		return this.availablePeople.size();
+	}
 	
 }

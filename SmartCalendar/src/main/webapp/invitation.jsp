@@ -51,13 +51,11 @@
 			<%
   		}
   		else {
-			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
-  		
-  			if (accountData == null) {
-				accountData = new smartcal.UserAccount(user, user.getNickname());
-				ObjectifyService.ofy().save().entity(accountData);
-				System.out.println("your username is now: " + accountData.getUsername());
-				%>
+	  		smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+	  		if (accountData == null) {
+			System.out.println("no account data found for: " + user.getNickname());
+			%>
+			
 				<div class="container border border-primary p-3 m-3 bg-white">
 	  				<div class="row"><div class="col">
 	  					<h1 class="">It's your first time using <span class="text-primary">Smart Calendar!</span></h1>
@@ -117,26 +115,102 @@
 		 
 		 InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(smartcal.InvitationsList.class).filter("user", user).first().now();
 		 smartcal.Invitation toDisplay = currentUserInvitations.getDisplayedInvitation();
+		 %>
 		 
 		 
-		 int i = 0;
-		 for(smartcal.InvitationOption op : toDisplay.getOptions()){
- 				String loc = op.getLocation();
- 				String time = op.getTimeString();
- 				i++;%>
- 				<form> 			
- 					<div class="form-control form-check">
-				  		<label class="form-check-label">
-						    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> Option <%=i %>
-						    	
-					  	</label>
-					  	<div><p><%=loc %></p></div>
-				    	<div><p><%=time %></p></div>
-					</div>
- 					
- 	 			</form>
-		<%}%>		
+		 
+		 <div class="container">
+		 
+		 <div class="row">
+	     	<div class="col-md"><h2><span class="text-secondary">Invitation: </span><span class="text-primary"><%=(toDisplay.getName())%></span></h2></div>
+	     	<div class="col-md"><h2><span class="text-secondary">created by </span><span class="text-primary"><%=(smartcal.UserAccount.getNameForUser(toDisplay.getCreator()))%></span></h2></div>
+	     </div>
+		 
+		 
+		 <div class="row"><div class="col-md">
+		 	<form>
+	     	<table class="table table-bordered table-light">
+	       		<thead class="thead-dark"><tr class="d-flex w-100">
+	      			<th class="w-100">Select Available Options</th>
+	      		</tr> </thead> 
+	    		
+	    		<tbody>
+		    		<tr><td>
+					<ul class="list-group">
+					 <% if (toDisplay.getOptions().size() == 0) { %>
+					 	<li class="list-group-item w-100"><span class="text-secondary">(None)</span></li>
+				 	 <%}
+					 int i = 0;
+					 for(smartcal.InvitationOption op : toDisplay.getOptions()){
+			 				String loc = op.getLocation();
+			 				String time = op.getTimeString();
+			 				i++;%>
+			 				<li class="list-group-item w-100">
+			 				<div class="form-group"> 			
+						  		<label class="form-check-label">
+								    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>">
+							  		<span class="text-secondary">Location: </span><%=loc %><br />
+						    		<%=time %>
+							  	</label>
+			 	 			</div>
+			 	 			</li>
+					<%}%>		
+					</ul>
+					</td></tr>
+					
+					<tr><td>
+						<button name="sendoptions" class="form-control form-control-lg btn-outline-success" type="submit">Send Availabilities</button>
+					</td></tr>
+				</tbody>	
+			</table>
+			</form>
+		</div></div>
 		
+		
+		<div class="row"><div class="col-md">
+	     	<table class="table table-bordered table-light">
+	       		<tr >
+	      			<th colspan="2" class="table-dark">Description</th>
+	      		</tr> 
+	    		<tr>
+		    		<td><ul class="list-group">
+		    		<li class="list-group-item"><span class="text-primary">Options</span></li>
+					 <% if (toDisplay.getOptions().size() == 0) { %>
+						 <li class="list-group-item"><span class="text-secondary">(None)</span></li>
+					 <%}
+					 for(smartcal.InvitationOption op : toDisplay.getOptions()){
+		 				String loc = op.getLocation();
+		 				String time = op.getTimeString();%>
+		 				<li class="list-group-item">
+					  		<p><span class="text-secondary">Location: </span><%=loc %></p>
+				    		<p><%=time %></p>
+				    		<p>
+				    			<span class="text-secondary">People Available (<%=(op.numAvailablePeople())%>): </span>
+				    			<%for (User u : op.getAvailablePeople()) {%>
+				    				<span class=""><%=(smartcal.UserAccount.getNameForUser(u))%>, </span>
+				    			<%} %>
+				    		</p>
+		 	 			</li>
+					<%}%>		
+					</ul></td>
+					
+					<td><ul class="list-group">
+					<li class="list-group-item">
+						<span class="text-primary">People </span>
+						<span class="text-secondary"><%=("(" + toDisplay.numPeopleVoted() + "/" + toDisplay.numPeople() + ") voted")%></span>
+					</li>
+					 <% for(User u : toDisplay.getFriends()){%>
+			 			<li class="list-group-item">
+			 				<span class=""><%=(smartcal.UserAccount.getNameForUser(u))%></span>
+			 			</li>
+					<%}%>		
+					</ul></td>
+				
+				</tr>
+			</table>
+		</div></div>
+		
+		</div>
 		<%} }%>	
 	 </body>
  </html>

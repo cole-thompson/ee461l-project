@@ -51,13 +51,11 @@
 			<%
   		}
   		else {
-			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
-  		
+  			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
   			if (accountData == null) {
-				accountData = new smartcal.UserAccount(user, user.getNickname());
-				ObjectifyService.ofy().save().entity(accountData);
-				System.out.println("your username is now: " + accountData.getUsername());
+				System.out.println("no account data found for: " + user.getNickname());
 				%>
+				
 				<div class="container border border-primary p-3 m-3 bg-white">
 	  				<div class="row"><div class="col">
 	  					<h1 class="">It's your first time using <span class="text-primary">Smart Calendar!</span></h1>
@@ -178,7 +176,7 @@
 		  								if (friends.get(i) != null) {%>											
 		  								<div class="form-control form-check">
 									  		<label class="form-check-label">
-										    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> <%=friends.get(i).getNickname()%>
+										    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> <%=smartcal.UserAccount.getNameForUser(friends.get(i))%>
 										  	</label>
 										</div>
 										<%}%>
@@ -218,7 +216,7 @@
 	  							<%
 	  							for (int i = 0; i < friends.size(); i++) { 
 	  								if (friends.get(i) != null) {%>
-									<li class="list-group-item w-100"> <%=friends.get(i).getNickname()%></li>
+									<li class="list-group-item w-100"> <%=smartcal.UserAccount.getNameForUser(friends.get(i))%></li>
 									<%}%>
 								<%} %>
   							</ul>

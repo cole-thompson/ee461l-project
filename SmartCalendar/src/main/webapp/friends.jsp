@@ -51,12 +51,11 @@
 			<%
   		}
   		else {
-			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
-  		
-  			if (accountData == null) {
-				accountData = new smartcal.UserAccount(user, user.getNickname());
-				ObjectifyService.ofy().save().entity(accountData);
-				System.out.println("your username is now: " + accountData.getUsername());
+	  		smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+	  		if (accountData == null) {
+			System.out.println("no account data found for: " + user.getNickname());
+			%>
+			
 				%>
 				<div class="container border border-primary p-3 m-3 bg-white">
 	  				<div class="row"><div class="col">

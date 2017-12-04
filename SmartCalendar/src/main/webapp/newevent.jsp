@@ -98,16 +98,6 @@
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="/friends.jsp">Social</a>
 			      	</li>
-			      	<!-- 
-			      	<li class="nav-item dropdown">
-			        	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-			        	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-				          	<a class="dropdown-item" href="#">Action</a>
-				          	<div class="dropdown-divider"></div>
-				          	<a class="dropdown-item" href="#">Something else here</a>
-			        	</div>
-			      	</li>
-			      	 -->
 			      	<li class="nav-item active">
 			        	<a class="nav-link" href="/newevent.jsp">New Event<span class="sr-only">(current)</span></a>
 			      	</li>
@@ -200,14 +190,8 @@
 	  					
 			       		</form>	
 				   </td></tr>
-				   <!-- look into checkboxes for type -->
-				   
-				   
 				   </tbody>	
 				</table>
-				
-				
-	       			
 	       		</div></div>
 	       	</div> 	
 	    
@@ -218,54 +202,38 @@
      	else if (invitation.getStarted()) { %>
        		<div class="container">
 	       		<div class="row"><div class="col-md">
-	       			<h2><span class="text-primary">New Event</span></h2>
+	       			<h2><span class="text-primary"><%=(invitation.getName())%></span></h2>
 	       		</div></div>
 	       		
 	       		<!-- Print info from stage 1 -->
 	       		<div class="row"><div class="col-md">
 	       		<table class="table table-bordered table-light">
 	       			<thead class="thead-dark"><tr class="d-flex w-100">
-	      		  			<th class="w-100">Name and Type</th>
+	      		  			<th class="w-100">People</th>
 	      			</tr> </thead> 
 	      			<tbody><tr><td>
-	      				<div class="form-group">
-		       				<div class="input-group">	
-				    			<span class="input-group-addon">Event Name</span>
-				    			<input readonly name="eventname" class="form-control bg-white" value="<%=(invitation.getName())%>">
-				    		</div>
-					    </div> 
-				    	<div class="form-group">
-		       				<div class="input-group">	
-				    			<span class="input-group-addon">Event Type</span>
-				    			<input readonly name="eventname" class="form-control bg-white" value="<%=(invitation.getTypeString())%>">
-				    		</div>
-					    </div>
 					    <% List<User> friends = invitation.getFriends();
 		  				if (friends.size() != 0) { %>
-					    <div class="form-group">
-		       				<div class="input-group">	
-				    			<span class="input-group-addon">People</span>
-				    			<div class="form-control">
-				    				<ul class="list-group">
-			  							<%
-			  							for (int i = 0; i < friends.size(); i++) { 
-			  								if (friends.get(i) != null) {%>
-											<li class="list-group-item"> <%=friends.get(i).getNickname()%></li>
-											<%}%>
-										<%} %>
-		  							</ul>
-		  							</div>
-				    			</div>
-					    	</div>
+		    				<ul class="list-group">
+	  							<%
+	  							for (int i = 0; i < friends.size(); i++) { 
+	  								if (friends.get(i) != null) {%>
+									<li class="list-group-item w-100"> <%=friends.get(i).getNickname()%></li>
+									<%}%>
+								<%} %>
+  							</ul>
 					    <%}%>				
 				   </td></tr></tbody>	
 				</table>
 				</div></div>
 				
+				<%if (invitation.getType() == smartcal.Invitation.Type.G) {%>
+				<!-- GENERIC TYPE -->
+				
 				<!-- List Existing Options -->
 				<% List<smartcal.InvitationOption> options = invitation.getOptions();
 				int i = 0;
-				if (options != null)  { %>
+				if (options != null && options.size() > 0)  { %>
 					<div class="row"><div class="col-md">
 	       			<table class="table table-bordered table-light">
 		       			<thead class="thead-dark"><tr class="d-flex w-100">
@@ -336,6 +304,17 @@
 	      				</td></tr></tbody>
 	       		</table>
 	       		</div></div> 
+	       		
+	       		<% } else if (invitation.getType() == smartcal.Invitation.Type.M) { %>
+	       		<!-- MOVIE TYPE -->
+	       		
+	       		
+	       		
+	       		
+	       		
+	       		
+	       		
+	       		<%} %>
 	       		
 	       		<div class="row"><div class="col-md">
 	       			<form action="/newevent" name="finishInvitation" method="post"> 	

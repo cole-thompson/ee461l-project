@@ -31,9 +31,59 @@
 	 </head>
 
   	<body class="bg-light">
-  	
+  		
+  		<%
+		//Google sign-in initialization 
+		UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+  		
+  		ObjectifyService.register(smartcal.UserAccount.class);
+  		
+  		if (user == null) {
+  			%>
+  			<div class="container border border-primary p-3 m-3 bg-white">
+  				<div class="row"><div class="col">
+  					<h1>Welcome to <span class="text-primary">Smart Calendar!</span> Please Sign In</h1>
+  				</div></div>
+  				<div class="row"><div class="col">
+					<a class="btn btn-sm btn-success w-100" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
+				</div></div>
+			</div>
+			<%
+  		}
+  		else {
+			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
+  			if (accountData == null) {
+				System.out.println("no account data found for: " + user.getNickname());
+				%>
+				
+				<div class="container border border-primary p-3 m-3 bg-white">
+	  				<div class="row"><div class="col">
+	  					<h1 class="">It's your first time using <span class="text-primary">Smart Calendar!</span></h1>
+	  				</div></div>
+	  				<div class="row"><div class="col">
+	  					<form action="/firstlogin" method="post">
+	  						<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->					    			
+					    			<span class="input-group-addon">Please select a nickname</span>
+					    			<input name="username" class="form-control">
+									<button name="setname" class="input-group-addon">Set Name</button>
+					    		</div>
+					    	</div>
+						</form>
+					</div></div>
+					<div class="row"><div class="col">
+						<a class="btn btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Google Sign Out</a>
+					</div></div>
+				</div>
+				<%
+				
+  			}
+  			else {
+  				
+  		%>
   		<nav class="navbar navbar-expand-lg p-1 navbar-light bg-light sticky-top border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
-  			<a class="navbar-brand" href="#">Smart Calendar</a>
+  			<a class="navbar-brand" href="/calendar.jsp">Smart Calendar</a>
   			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 		    	<span class="navbar-toggler-icon"></span>
 		 	</button>
@@ -44,7 +94,7 @@
 			        	<a class="nav-link" href="/calendar.jsp">Home <span class="sr-only">(current)</span></a>
 			      	</li>
 			      	<li class="nav-item">
-			        	<a class="nav-link" href="#">Account</a>
+			        	<a class="nav-link" href="/accounts.jsp">Account</a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="/friends.jsp">Social</a>
@@ -63,51 +113,29 @@
 			        	<a class="nav-link" href="/newevent.jsp">New Event</a>
 			      	</li>
 			    </ul>
-
-		<%
-		//Google sign-in initialization 
-	    UserService userService = UserServiceFactory.getUserService();
-	    User user = userService.getCurrentUser();
-	    String username = "";
-	    if (user == null) {
-			%>
-			<span class="navbar-text text-muted mr-3">Hello!</span>
-			<a class="btn btn-sm btn-outline-success" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
-			<%
-	    }
-	    else {
-	    	username = "" + user.getNickname();
-	      	pageContext.setAttribute("user", user);
-			%>
-			<span class="navbar-text text-muted mr-3">Hello, ${fn:escapeXml(user.nickname)}! </span>
-			<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
-			<%
-			ObjectifyService.register(smartcal.UserAccount.class);
-			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
-			if(accountData == null){
-				accountData = new smartcal.UserAccount(user, user.getNickname());
-				ObjectifyService.ofy().save().entity(accountData);
-				System.out.println("your username is now: " + accountData.getUsername());
-			}
-	    }%>	
-		
-		</div>	
+				
+				<span class="navbar-text text-muted mr-3">Hello, <%=(accountData.getUsername())%>! </span>
+				<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
+			
+			</div>	
 		</nav>
+	
+	
 	
 		<%
 		//main method initialization stuff
-		ObjectifyService.register(smartcal.CalEvent.class);
         ObjectifyService.register(smartcal.UserDisplayData.class);
         ObjectifyService.register(smartcal.FriendsList.class);
+        ObjectifyService.register(smartcal.CalEventList.class);
 				
 		//grab user display information from objectify
        	smartcal.UserDisplayData display = ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user", user).first().now();
        	if (display == null) {
-       		System.out.println(username + " found no displayData, creating new");
+       		System.out.println(user.getNickname() + " found no displayData, creating new");
        		display = new smartcal.UserDisplayData(user);
        	}
        	else {
-       		System.out.println(username + " found displayData");
+       		System.out.println(user.getNickname() + " found displayData");
        	}
        	       	
        	//grabbing FriendsList for the current user
@@ -117,7 +145,7 @@
        		flist = new smartcal.FriendsList(user);
        		ObjectifyService.ofy().save().entity(flist);
        	}else{
-       		System.out.println("friendslist found: \n" + flist);		// THIS STATEMENT IS TO DEBUG, PRINTS THE WHOLE FRIENDSLIST. CAN BE REMOVED
+       		System.out.println("friendslist found for " + accountData.getUsername() + ": " + flist);
        	}
        	
        	
@@ -269,7 +297,12 @@
 			            				}
 			            				else {
 			            					smartcal.CalEvent event = todaysEvents.get(e);
-			            					%><li class="list-group-item p-1"><small><%=(event.getTimeString() + " " + event.getName())%></small></li><%
+			            					if (event.isAllDay()) {
+			            						%><li class="list-group-item p-1"><small><%=(event.getName())%></small></li><%
+			            					}
+			            					else {
+			            						%><li class="list-group-item p-1"><small><%=(event.getTimeStringFull() + " " + event.getName())%></small></li><%
+			            					}
 			            				}
 			            			}
 			            			%></ul> <%
@@ -334,7 +367,12 @@
 					            				}
 					            				else {
 					            					smartcal.CalEvent event = todaysEvents.get(e);
-					            					%><li class="list-group-item p-2"><%=(event.getTimeStringFull() + " " + event.getName())%></li><%
+					            					if (event.isAllDay()) {
+					            						%><li class="list-group-item p-2"><%=(event.getName())%></li><%
+					            					}
+					            					else {
+					            						%><li class="list-group-item p-2"><%=(event.getTimeStringFull() + " " + event.getName())%></li><%
+					            					}
 					            				}
 					            			}
 					            			%></ul>								
@@ -352,32 +390,28 @@
 					<table class="table table-bordered table-light table-responsive-md">
 						<thead class="thead-dark">
 							<tr><th colspan="2" scope="col">Day View</th></tr>
-						</thead>
-		            	<tbody class="w-100">		<!-- Iterate through the table, place numbers in proper locations -->
-		            	<col width="130">
-		            	<col width="30">
-				          	<%int displayTime;%>
-				          	<%String timeSuffix; %>
-				          	<%int numHoursPerDay = 24;%>
-				          	<%for (int hour = 0; hour < numHoursPerDay; hour++) { %>
-				            	<tr style="text-align:center;height:10px"><td>
-				            	<%if(hour == 0) {%>
-				            		<%displayTime = 12; //unique behaviors of "0th" time instance and 12AM midnight%>
-				            		<%timeSuffix = "AM"; %>
-				            	<%}else if(hour > 12){%>				            		
-				            		<%displayTime = hour - 12;%>
-				            		<%timeSuffix = "PM"; %>
-			            		<%}else{ %>
-			            			<%displayTime = hour; %>
-			            			<%timeSuffix = "AM"; %>
-		            			<%} %>
-			            		<p><%=displayTime%> <%=timeSuffix%></p></td>	
-			            		<td><p>Event Name</p></td>	            		
-				            	</tr>
-				            	<%displayTime=0; %>
-				      	  	<%} %>
-			          	</tbody>
+						</thead>       				          	
 					</table>
+					<%smartcal.CalEventList currentUserEvents = ObjectifyService.ofy().load().type(smartcal.CalEventList.class).filter("user", user).first().now();
+					boolean anythingToday = false;%>
+					<div class="list-group">
+			          	<%
+			          	if(currentUserEvents.getEvents().size() < 1){%>
+		          			<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">No Events planned for today!</h5>
+				   			</div>
+			          	<%}
+			          	for(smartcal.CalEvent ev : currentUserEvents.getEvents()) {
+			          		if(ev.getStartTime().getDate() == currentDate && ev.getStartTime().getMonth() == currentMonth && ev.getStartTime().getYear() == currentYear){			          		
+			          		%> 
+			          		<div class="d-flex w-100 justify-content-between">
+     							 <h5 class="mb-1">Name: <%=(ev.getName()) %></h5>
+						    </div>
+    						<p class="mb-1">Time: <%=(ev.getTimeString()) %></p> 
+    						<p class="mb-1">Location: <%=(ev.getLocation()) %></p><%
+			          		}
+			          	}%>
+		          	</div>
 				</div>
 				
 			<%} %>
@@ -391,6 +425,8 @@
   	<!--  
   	<div class="row"> <div class="col-sm"> current year: <%=(currentYear)%></div></div>
 	-->	
+	
+	<%}	}%>
 	
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>

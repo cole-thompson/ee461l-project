@@ -12,7 +12,7 @@ import com.googlecode.objectify.annotation.Index;
 public class InvitationsList {
 	@Id Long id;
 	@Index private User user;
-	@Index private List<Invitation> invitations;
+	private List<Invitation> invitations;
 	private Invitation displayedInvitation;
 	
 	public InvitationsList() {
@@ -104,8 +104,12 @@ public class InvitationsList {
 					if(k < invitedFriends.size() - 1) {
 						invitedString += invitedFriends.get(k).getNickname() + ", ";
 					}
-					else {
+					else if(invitedFriends.get(k) == null){
+						System.out.println(invitedFriends);
+						return null;
+					}else{
 						invitedString += invitedFriends.get(k).getNickname();
+						
 					}
 				}
 			}

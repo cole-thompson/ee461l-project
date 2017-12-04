@@ -28,12 +28,14 @@ public class Invitation {
 	private String name;
 	
 	private List<InvitationOption> options;
+	private List<User> peopleVotedForOptions;
 
 	public Invitation() {
 		started = false;
 		finished = false;
 		options = new ArrayList<InvitationOption>();
 		friends = new ArrayList<User>();
+		peopleVotedForOptions = new ArrayList<User>();
 		type = Type.G;
 		
 		
@@ -91,6 +93,23 @@ public class Invitation {
 		}
 	}
 	
+	public void personVoted(User u) {
+		if (friends.contains(u)) {
+			peopleVotedForOptions.add(u);
+		}
+	}
+	
+	public boolean hasPersonVoted(User u) {
+		return peopleVotedForOptions.contains(u);
+	}
+	
+	public int numPeopleVoted() {
+		return peopleVotedForOptions.size();
+	}
+	
+	public int numPeople() {
+		return friends.size();
+	}
 	
 	//GETTERS AND SETTERS
 	

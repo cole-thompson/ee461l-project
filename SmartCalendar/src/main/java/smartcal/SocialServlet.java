@@ -20,11 +20,17 @@ public class SocialServlet extends HttpServlet {
     		FriendsList currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
     		String toAdd = req.getParameter("friendname");
     		UserAccount friendAccount = ObjectifyService.ofy().load().type(UserAccount.class).filter("username", toAdd).first().now();
+    		if(friendAccount == null) {
+    			System.out.println("Friend doesn't have an account??????");
+    		}
     		currentUserFriends.addFriend(friendAccount.getUser());
     	}else if(req.getParameter("removefriend") != null){
     		FriendsList currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
     		String toAdd = req.getParameter("friendname");
     		UserAccount friendAccount = ObjectifyService.ofy().load().type(UserAccount.class).filter("username", toAdd).first().now();
+    		if(friendAccount == null) {
+    			System.out.println("Friend shouldn't have ever made it on your list since they have no list");
+    		}
     		currentUserFriends.removeFriend(friendAccount.getUser());
     	}
     	

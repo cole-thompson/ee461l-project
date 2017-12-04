@@ -92,7 +92,7 @@
 			        	<a class="nav-link" href="/calendar.jsp">Home</a>
 			      	</li>
 			      	<li class="nav-item">
-			        	<a class="nav-link" href="#">Account</a>
+			        	<a class="nav-link" href="/accounts.jsp">Account</a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link active" href="/friends.jsp">Social<span class="sr-only">(current)</span></a>

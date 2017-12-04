@@ -92,7 +92,7 @@
 			        	<a class="nav-link" href="/calendar.jsp">Home <span class="sr-only">(current)</span></a>
 			      	</li>
 			      	<li class="nav-item">
-			        	<a class="nav-link" href="#">Account</a>
+			        	<a class="nav-link" href="/accounts.jsp">Account</a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="/friends.jsp">Social</a>
@@ -125,6 +125,7 @@
 		ObjectifyService.register(smartcal.CalEvent.class);
         ObjectifyService.register(smartcal.UserDisplayData.class);
         ObjectifyService.register(smartcal.FriendsList.class);
+        ObjectifyService.register(smartcal.CalEventList.class);
 				
 		//grab user display information from objectify
        	smartcal.UserDisplayData display = ObjectifyService.ofy().load().type(smartcal.UserDisplayData.class).filter("user", user).first().now();
@@ -379,10 +380,15 @@
 						<thead class="thead-dark">
 							<tr><th colspan="2" scope="col">Day View</th></tr>
 						</thead>
-		            	<tbody class="w-100">		<!-- Iterate through the table, place numbers in proper locations -->
+						
+						
+						
+		            	<!-- <tbody class="w-100">		
+		            	Iterate through the table, place numbers in proper locations
 		            	<col width="130">
 		            	<col width="30">
-				          	<%int displayTime;%>
+		          									<%-- 
+							<%int displayTime;%>
 				          	<%String timeSuffix; %>
 				          	<%int numHoursPerDay = 24;%>
 				          	<%for (int hour = 0; hour < numHoursPerDay; hour++) { %>
@@ -401,9 +407,31 @@
 			            		<td><p>Event Name</p></td>	            		
 				            	</tr>
 				            	<%displayTime=0; %>
-				      	  	<%} %>
-			          	</tbody>
+				      	  	<%} %> 					--%>
+			          	</tbody>	-->
+			          	
+			          	
+			          	
+			          	
+			          	
 					</table>
+					<%smartcal.CalEventList currentUserEvents = ObjectifyService.ofy().load().type(smartcal.CalEventList.class).filter("user", user).first().now();%>
+					<div class="list-group">
+			          	<%
+			          	if(currentUserEvents.getEvents().size() < 1){%>
+		          			<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">No Events planned for today!</h5>
+				   			</div>
+			          	<%}
+			          	for(smartcal.CalEvent ev : currentUserEvents.getEvents()) {
+			          		%> 
+			          		<div class="d-flex w-100 justify-content-between">
+     							 <h5 class="mb-1"><%=(ev.getName()) %></h5>
+						    </div>
+    						<p class="mb-1"><%=(ev.getTimeString()) %></p> 
+    						<p class="mb-1"><%=(ev.getLocation()) %></p><%
+			          	}%>
+		          	</div>
 				</div>
 				
 			<%} %>

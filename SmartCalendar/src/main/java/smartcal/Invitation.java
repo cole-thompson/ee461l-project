@@ -153,20 +153,10 @@ public class Invitation {
 		options.add(option);
 	}
 	
-	/*@Override
-	public boolean equals(Object o) {
-		if(!(o instanceof Invitation)) {
-			return false;
-		}
-		Invitation inv = (Invitation)o;
-		if(!this.getName().equals(inv.getName())) {
-			return false;
-		}else if(!this.getCreator()) {
-			
-		}
-		return true;
-		
-	}*/
+	public void removePerson(User u) {
+		friends.remove(u);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -219,5 +209,6 @@ public class Invitation {
 		if (type != other.type)
 			return false;
 		return true;
+
 	}
 }

@@ -47,6 +47,10 @@ public class CalEvent {
 		people.add(user);
 	}
 	
+	public void removeUser(User user) {
+		people.remove(user);
+	}
+	
 	/* Something to print on the GUI
 	 * meant for visualizing events that last <1 day */
 	public String getTimeString() {
@@ -114,6 +118,14 @@ public class CalEvent {
 	}
 	
 	/* GETTERS AND SETTERS */
+	
+	public List<User> getPeople() {
+		return people;
+	}
+
+	public void setPeople(List<User> people) {
+		this.people = people;
+	}
 	
 	public User getCreator() {
         return creator;

@@ -76,6 +76,12 @@
 			</div>	
 		</nav>
 
+		<div class="container">
+		<div class="row"><div class="col-md">
+       		<h2><span class="text-primary">Account</span></h2>
+       	</div></div>
+	       	
+	    <div class="row"><div class="col-md">   	
 		<table class="table">
 		  <thead class="thead-dark">
 		    <tr>
@@ -95,5 +101,7 @@
 		    </tr>
 		  </tbody>
 		</table>
+		</div></div>
 		
+		</div>
   	</body>

@@ -139,7 +139,10 @@
  		
  		<!-- Tables -->
  		<div class="container">
- 		
+ 			<div class="row"><div class="col-md">
+	       		<h2><span class="text-primary">Social</span></h2>
+	       	</div></div>
+ 			
  			<div class="row"><div class="col w-100">
 	 			<table class="table table-bordered table-light table-hover w-100">
 		 			<thead class="thead-dark col-md-6">

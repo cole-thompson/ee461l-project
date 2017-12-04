@@ -33,6 +33,7 @@ public class SocialServlet extends HttpServlet {
 	    		ObjectifyService.ofy().save().entity(currentUserFriends);
 	    		System.out.println(worked);
     		}
+    		resp.sendRedirect("/friends.jsp");
     	}else if(req.getParameter("removefriend") != null){
     		currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
     		String toRemove = req.getParameter("friendname");
@@ -48,6 +49,7 @@ public class SocialServlet extends HttpServlet {
     		boolean worked = currentUserFriends.removeFriend(friendAccount.getUser());
     		ObjectifyService.ofy().save().entity(currentUserFriends);
     		System.out.println(worked);
+    		resp.sendRedirect("/friends.jsp");
     	}else {
     		InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
     		for(int i = 0; i < currentUserInvitations.getInvitations().size(); i++) {
@@ -60,7 +62,7 @@ public class SocialServlet extends HttpServlet {
     	}
     	
     	
-        resp.sendRedirect("/friends.jsp");
+        
     }
 
 }

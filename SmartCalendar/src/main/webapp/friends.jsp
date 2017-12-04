@@ -144,8 +144,8 @@
 		
 		
 			<!-- Start table2 -->
-			<form action="/social" name="selectinvitation" method="post">	
-			<div class="col w-50"><div style="max-height: 500px;	height:500px;	overflow-y:auto">
+			<div class="col w-50"><form action="/social" name="selectinvitation" method="post">	
+			<div style="max-height: 500px;	height:500px;	overflow-y:auto">
 			<table class="table table-bordered table-light table-responsive-md table-hover w-100">
 				<tbody style="top:0">		
 	          		<%smartcal.InvitationsList currentUserInvitationsList = ObjectifyService.ofy().load().type(smartcal.InvitationsList.class).filter("user", user).first().now();
@@ -168,8 +168,8 @@
 	          	</tbody>
 	          	
 	 		</table>
-	 		</div></div>
-			</form>
+	 		</div>
+			</form></div>
 			
  		</div>
  	</div>

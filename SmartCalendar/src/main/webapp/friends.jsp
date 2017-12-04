@@ -144,13 +144,15 @@
 		
 		
 			<!-- Start table2 -->
-			<div class="col w-50"><div style="max-height: 500px;	height:500px;	overflow-y:auto">
+			<div class="col w-50"><form action="/social" name="selectinvitation" method="post">	
+			<div style="max-height: 500px;	height:500px;	overflow-y:auto">
 			<table class="table table-bordered table-light table-responsive-md table-hover w-100">
-				<tbody style="top:0">			
+				<tbody style="top:0">		
 	          		<%smartcal.InvitationsList currentUserInvitationsList = ObjectifyService.ofy().load().type(smartcal.InvitationsList.class).filter("user", user).first().now();
 	          		
 	          		if (currentUserInvitationsList != null) {
 		          		List<smartcal.Invitation> currentUserInvitations = currentUserInvitationsList.getInvitations();
+		          		int i = 0;
 		          		for(smartcal.Invitation inv : currentUserInvitations){ 
 		          			smartcal.UserAccount friendAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", inv.getCreator()).first().now();
 		          			if(friendAccount == null){
@@ -158,17 +160,17 @@
 		          				break;
 		          			}
 	          				String friendName = friendAccount.getUsername();%>
-		          			<tr><td><span class="text-primary"><%=(inv.getName())%></span><span class="text-secondary"><%=("\tfrom: " + friendName)%></span></p></td></tr>
-		          		<%}
+		          			<tr><td onclick='selectinvitation.submit();' name="invitation<%=(i)%>"><span class="text-primary"><%=(inv.getName())%></span><span class="text-secondary"><%=("\tfrom: " + friendName)%></span></p></td></tr>
+		          			<%i++;
+		          		}
 		          	}%>
 		          	
 	          	</tbody>
 	          	
 	 		</table>
 	 		</div>
-		
+			</form></div>
 			
-			</div>
  		</div>
  	</div>
  		

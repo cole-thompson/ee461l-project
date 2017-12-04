@@ -45,18 +45,14 @@
  				String loc = op.getLocation();
  				String time = op.getTimeString();
  				i++;%>
- 				<form> 
- 					<div class="form-group">	 			
- 	 					<div class="input-group">
- 					   		<input type="checkbox" id="start-time<%=(i) %>" name="start-time<%=(i) %>" value="startime<%=(i) %>"> 	 					
- 	 					</div> 					
- 					</div>
- 					
- 					
+ 				<form> 			
  					<div class="form-control form-check">
 				  		<label class="form-check-label">
 						    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> Option <%=i %>
+						    	
 					  	</label>
+					  	<div><p><%=loc %></p></div>
+				    	<div><p><%=time %></p></div>
 					</div>
  					
  	 			</form>

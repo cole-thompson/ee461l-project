@@ -4,12 +4,13 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServlet;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
 
-public class SocialServlet {
+public class SocialServlet extends HttpServlet {
 	
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //get the current user

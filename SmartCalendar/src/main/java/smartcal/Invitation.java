@@ -152,4 +152,8 @@ public class Invitation {
 	public void addOption(InvitationOption option) {
 		options.add(option);
 	}
+	
+	public void removePerson(User u) {
+		friends.remove(u);
+	}
 }

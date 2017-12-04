@@ -53,22 +53,47 @@ public class FirstLoginServlet extends HttpServlet {
 	 
 	 public void deleteAccount(User user) {
 		 FriendsList f = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
-		 if (f != null) {ObjectifyService.ofy().delete().entity(f).now();}
+		 if (f != null) {
+			 for (User friend : f.getFriends()) {
+				 FriendsList friendList = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", friend).first().now();
+				 if (friendList != null) {
+					 friendList.removeFriend(friend);
+					 ObjectifyService.ofy().save().entity(friendList).now();
+				 }
+			 }
+			 ObjectifyService.ofy().delete().entity(f).now();
+			}
 		 CalEventList e = ObjectifyService.ofy().load().type(CalEventList.class).filter("user", user).first().now();
-		 if (e != null) {ObjectifyService.ofy().delete().entity(e).now();}
+		 if (e != null) {
+			 for (CalEvent event : e.getEvents()) {
+				 List<User> people = event.getPeople();
+				 people.remove(user);
+				 for (User friend : people) {
+					 CalEventList fEventList = ObjectifyService.ofy().load().type(CalEventList.class).filter("user", friend).first().now();
+					 if (fEventList != null) { 
+						 for (CalEvent friendEvent: fEventList.getEvents()) {
+							 friendEvent.getPeople().remove(user);
+						 }
+						 ObjectifyService.ofy().save().entity(fEventList).now();
+					 
+					 }
+				 }
+			 }
+			 ObjectifyService.ofy().delete().entity(e).now();
+		 }
 		 InvitationsList i = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
-		 if (i != null) {ObjectifyService.ofy().delete().entity(i).now();}
+		 if (i != null) {
+			 for (Invitation invite : i.getInvitations()) {
+				 invite.removePerson(user);
+				 ObjectifyService.ofy().save().entity(invite).now();
+			 }
+			 ObjectifyService.ofy().delete().entity(i).now();
+		 }
+		 
 		 UserAccount a = ObjectifyService.ofy().load().type(UserAccount.class).filter("user", user).first().now();
 		 if (a != null) {ObjectifyService.ofy().delete().entity(a).now();}
 		 UserDisplayData d = ObjectifyService.ofy().load().type(UserDisplayData.class).filter("user", user).first().now();
 		 if (d != null) {ObjectifyService.ofy().delete().entity(d).now();}
-		 
-		 List<CalEvent> events = ObjectifyService.ofy().load().type(CalEvent.class).filter("creator", user).list();
-		 if (events!= null) {
-			 for (CalEvent event : events) {
-				 ObjectifyService.ofy().delete().entity(event).now();
-			 }
-		 }
 		 
 		 List<Invitation> invitations = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", user).list();
 		 if (invitations != null) {

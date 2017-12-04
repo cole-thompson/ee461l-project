@@ -297,7 +297,12 @@
 			            				}
 			            				else {
 			            					smartcal.CalEvent event = todaysEvents.get(e);
-			            					%><li class="list-group-item p-1"><small><%=(event.getTimeString() + " " + event.getName())%></small></li><%
+			            					if (event.isAllDay()) {
+			            						%><li class="list-group-item p-1"><small><%=(event.getName())%></small></li><%
+			            					}
+			            					else {
+			            						%><li class="list-group-item p-1"><small><%=(event.getTimeStringFull() + " " + event.getName())%></small></li><%
+			            					}
 			            				}
 			            			}
 			            			%></ul> <%
@@ -362,7 +367,12 @@
 					            				}
 					            				else {
 					            					smartcal.CalEvent event = todaysEvents.get(e);
-					            					%><li class="list-group-item p-2"><%=(event.getTimeStringFull() + " " + event.getName())%></li><%
+					            					if (event.isAllDay()) {
+					            						%><li class="list-group-item p-2"><%=(event.getName())%></li><%
+					            					}
+					            					else {
+					            						%><li class="list-group-item p-2"><%=(event.getTimeStringFull() + " " + event.getName())%></li><%
+					            					}
 					            				}
 					            			}
 					            			%></ul>								

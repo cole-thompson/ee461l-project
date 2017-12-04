@@ -12,10 +12,18 @@ import com.googlecode.objectify.ObjectifyService;
 
 public class SocialServlet extends HttpServlet {
 	
+	static {
+        ObjectifyService.register(CalEvent.class);
+        ObjectifyService.register(FriendsList.class);
+        ObjectifyService.register(Invitation.class);
+        ObjectifyService.register(InvitationsList.class);
+    }
+	
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //get the current user
     	User user = UserServiceFactory.getUserService().getCurrentUser();
     	FriendsList currentUserFriends;
+    	boolean clickedInvitation = false;
     	
     	if(req.getParameter("addfriend") != null){
     		currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
@@ -33,7 +41,6 @@ public class SocialServlet extends HttpServlet {
 	    		ObjectifyService.ofy().save().entity(currentUserFriends);
 	    		System.out.println(worked);
     		}
-    		resp.sendRedirect("/friends.jsp");
     	}else if(req.getParameter("removefriend") != null){
     		currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
     		String toRemove = req.getParameter("friendname");
@@ -49,19 +56,26 @@ public class SocialServlet extends HttpServlet {
     		boolean worked = currentUserFriends.removeFriend(friendAccount.getUser());
     		ObjectifyService.ofy().save().entity(currentUserFriends);
     		System.out.println(worked);
-    		resp.sendRedirect("/friends.jsp");
     	}else {
     		InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
     		for(int i = 0; i < currentUserInvitations.getInvitations().size(); i++) {
     			if(req.getParameter("invitation" + i) != null){
     				Invitation current = currentUserInvitations.getInvitations().get(i);
     				currentUserInvitations.setDisplayedInvitation(current);
-    				resp.sendRedirect("/invitations.jsp");
+    				clickedInvitation = true;
     			}
     		}
+    		
     	}
     	
+    	System.out.println("clickedInvitation: " + clickedInvitation);
     	
+    	if (clickedInvitation) {
+    		resp.sendRedirect("/invitations.jsp");
+    	}
+    	else {
+    		resp.sendRedirect("/friends.jsp");
+    	}
         
     }
 

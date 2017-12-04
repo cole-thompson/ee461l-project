@@ -160,7 +160,7 @@
 		          				break;
 		          			}
 	          				String friendName = friendAccount.getUsername();%>
-		          			<tr><td onclick='selectinvitation.submit();' name="invite<%=(i)%>"><span class="text-primary"><%=(inv.getName())%></span><span class="text-secondary"><%=("\tfrom: " + friendName)%></span></p></td></tr>
+		          			<tr><td onclick='selectinvitation.submit();' name="invitation<%=(i)%>"><span class="text-primary"><%=(inv.getName())%></span><span class="text-secondary"><%=("\tfrom: " + friendName)%></span></p></td></tr>
 		          			<%i++;
 		          		}
 		          	}%>

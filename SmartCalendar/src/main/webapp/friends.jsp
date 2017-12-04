@@ -40,14 +40,15 @@
 		 	<div class="collapse navbar-collapse" id="navbarContent">
 			    <ul class="navbar-nav mr-auto">
 			    	<li class="nav-item active">
-			        	<a class="nav-link" href="calendar.jsp">Home <span class="sr-only">(current)</span></a>
+			        	<a class="nav-link" href="/calendar.jsp">Home <span class="sr-only">(current)</span></a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="#">Account</a>
 			      	</li>
 			      	<li class="nav-item">
-			        	<a class="nav-link" href="#">Friends</a>
+			        	<a class="nav-link" href="/friends.jsp">Social</a>
 			      	</li>
+			      	<!-- 
 			      	<li class="nav-item dropdown">
 			        	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
 			        	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -56,7 +57,11 @@
 				          	<a class="dropdown-item" href="#">Something else here</a>
 			        	</div>
 			      	</li>
-			    </ul> 	 
+			      	 -->
+			      	<li class="nav-item">
+			        	<a class="nav-link" href="/newevent.jsp">New Event</a>
+			      	</li>
+			    </ul>	 
 	 		</div>
  		</nav>
  		
@@ -90,19 +95,21 @@
  		<!-- search invitiation in ofy, look for finished (filter for it) -->
  		
  		<!-- Tables -->
- 		<table class="w-100"> <!-- Parent table -->
- 		<tr>
- 		<td class="w-50" style="top:0"> <!-- Start table 1 -->
- 			<table class="table table-bordered table-light table-hover w-100">
-	 			<thead class="thead-dark col-md-6">
-						<tr><th>Friends</th></tr>
-				</thead>
- 			</table>
-	 		<div style="max-height: 500px;	height:500px;	overflow-y:auto">
+ 		<div class="container">
+ 		
+ 			<div class="row"><div class="col w-100">
+	 			<table class="table table-bordered table-light table-hover w-100">
+		 			<thead class="thead-dark col-md-6">
+							<tr><th class="w-50">Friends</th><th class="w-50">Invitations</th></tr>
+					</thead>
+	 			</table>
+	 		</div></div>
+	 		
+ 			<div class="row">
+ 			
+ 			<div class="col w-50"><div style="max-height: 500px;	height:500px;	overflow-y:auto">
 	 		<table class="table table-bordered table-light table-hover w-100">	
-				
-	           	
-	           	<tbody style="top:0">		<!-- Iterate through the table, place numbers in proper locations -->
+	           	<tbody style="top:0">
 	           	
 					<tr><td><p>bloop</p></td></tr>
 	          		<%List<User> currentUserFriends = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now().getFriends();
@@ -120,15 +127,22 @@
 	          	</tbody>
 	          	
 			</table></div>
-		</td>
+			
+			<form action="/social" name="add-or-remove" method="post"> 	
+	 		
+				<div class="input-group">	
+					<span class="input-group-addon" id="usernamelabel">Username</span>
+					<input name="friendname" class="form-control">
+				</div>
+				<button name="addfriend" class="form-control form-control-lg btn btn-success" type="submit">Add Friend</button>
+				<button name="removefriend" class="form-control form-control-lg btn btn-success" type="submit">Remove Friend</button>
+			</form>
+			
+			</div>
 		
-		<td class="w-50" style="top:0"> <!-- Start table2 -->
-			<table class="table table-bordered table-light table-responsive-md table-hover w-100">
-	 			<thead class="thead-dark col-md-6">
-						<tr><th>Invites</th></tr>
-				</thead>
- 			</table>
-			<div style="max-height: 500px;	height:500px;	overflow-y:auto">
+		
+			<!-- Start table2 -->
+			<div class="col w-50"><div style="max-height: 500px;	height:500px;	overflow-y:auto">
 			<table class="table table-bordered table-light table-responsive-md table-hover w-100">
 				<tbody style="top:0">		<!-- Iterate through the table, place numbers in proper locations -->
 					
@@ -138,24 +152,10 @@
 	          	
 	 		</table>
 	 		</div>
- 		</td>
- 		</tr>
- 		
- 		<tr>
- 		<td class="w-50">
- 		<form action="/social" name="add-or-remove" method="post"> 	
- 		
-			<div class="input-group">	
-				<span class="input-group-addon" id="usernamelabel">Username</span>
-				<input name="friendname" class="form-control">
+		
+			
 			</div>
-			<button name="addfriend" class="form-control form-control-lg btn btn-success" type="submit">Add Friend</button>
-			<button name="removefriend" class="form-control form-control-lg btn btn-success" type="submit">Remove Friend</button>
-		</form>
-		<td>
- 		</tr>
- 		
- 		</table> <!-- End of the parent table -->
- 		
+ 		</div>
+ 	</div>
  		
 	 </body>

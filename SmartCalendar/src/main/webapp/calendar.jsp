@@ -390,43 +390,10 @@
 					<table class="table table-bordered table-light table-responsive-md">
 						<thead class="thead-dark">
 							<tr><th colspan="2" scope="col">Day View</th></tr>
-						</thead>
-						
-						
-						
-		            	<!-- <tbody class="w-100">		
-		            	Iterate through the table, place numbers in proper locations
-		            	<col width="130">
-		            	<col width="30">
-		          									<%-- 
-							<%int displayTime;%>
-				          	<%String timeSuffix; %>
-				          	<%int numHoursPerDay = 24;%>
-				          	<%for (int hour = 0; hour < numHoursPerDay; hour++) { %>
-				            	<tr style="text-align:center;height:10px"><td>
-				            	<%if(hour == 0) {%>
-				            		<%displayTime = 12; //unique behaviors of "0th" time instance and 12AM midnight%>
-				            		<%timeSuffix = "AM"; %>
-				            	<%}else if(hour > 12){%>				            		
-				            		<%displayTime = hour - 12;%>
-				            		<%timeSuffix = "PM"; %>
-			            		<%}else{ %>
-			            			<%displayTime = hour; %>
-			            			<%timeSuffix = "AM"; %>
-		            			<%} %>
-			            		<p><%=displayTime%> <%=timeSuffix%></p></td>	
-			            		<td><p>Event Name</p></td>	            		
-				            	</tr>
-				            	<%displayTime=0; %>
-				      	  	<%} %> 					--%>
-			          	</tbody>	-->
-			          	
-			          	
-			          	
-			          	
-			          	
+						</thead>       				          	
 					</table>
-					<%smartcal.CalEventList currentUserEvents = ObjectifyService.ofy().load().type(smartcal.CalEventList.class).filter("user", user).first().now();%>
+					<%smartcal.CalEventList currentUserEvents = ObjectifyService.ofy().load().type(smartcal.CalEventList.class).filter("user", user).first().now();
+					boolean anythingToday = false;%>
 					<div class="list-group">
 			          	<%
 			          	if(currentUserEvents.getEvents().size() < 1){%>
@@ -435,12 +402,14 @@
 				   			</div>
 			          	<%}
 			          	for(smartcal.CalEvent ev : currentUserEvents.getEvents()) {
+			          		if(ev.getStartTime().getDate() == currentDate && ev.getStartTime().getMonth() == currentMonth && ev.getStartTime().getYear() == currentYear){			          		
 			          		%> 
 			          		<div class="d-flex w-100 justify-content-between">
-     							 <h5 class="mb-1"><%=(ev.getName()) %></h5>
+     							 <h5 class="mb-1">Name: <%=(ev.getName()) %></h5>
 						    </div>
-    						<p class="mb-1"><%=(ev.getTimeString()) %></p> 
-    						<p class="mb-1"><%=(ev.getLocation()) %></p><%
+    						<p class="mb-1">Time: <%=(ev.getTimeString()) %></p> 
+    						<p class="mb-1">Location: <%=(ev.getLocation()) %></p><%
+			          		}
 			          	}%>
 		          	</div>
 				</div>

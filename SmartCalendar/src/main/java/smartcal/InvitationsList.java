@@ -12,7 +12,7 @@ import com.googlecode.objectify.annotation.Index;
 public class InvitationsList {
 	@Id Long id;
 	@Index private User user;
-	@Index private List<Invitation> invitations;
+	private List<Invitation> invitations;
 	private Invitation displayedInvitation;
 	
 	public InvitationsList() {

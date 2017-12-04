@@ -262,6 +262,9 @@
 				</table>
 				</div></div>
 				
+				<%if (invitation.getType() == smartcal.Invitation.Type.G) {%>
+				<!-- GENERIC TYPE -->
+				
 				<!-- List Existing Options -->
 				<% List<smartcal.InvitationOption> options = invitation.getOptions();
 				int i = 0;
@@ -336,6 +339,17 @@
 	      				</td></tr></tbody>
 	       		</table>
 	       		</div></div> 
+	       		
+	       		<% } else if (invitation.getType() == smartcal.Invitation.Type.M) { %>
+	       		<!-- MOVIE TYPE -->
+	       		
+	       		
+	       		
+	       		
+	       		
+	       		
+	       		
+	       		<%} %>
 	       		
 	       		<div class="row"><div class="col-md">
 	       			<form action="/newevent" name="finishInvitation" method="post"> 	

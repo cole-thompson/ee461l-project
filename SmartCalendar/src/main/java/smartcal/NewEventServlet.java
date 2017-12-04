@@ -50,7 +50,8 @@ public class NewEventServlet extends HttpServlet{
        	//check all the different forms in newevent.jsp
 		
        	if (checkForm1(req, user, flist)) {resp.sendRedirect("/newevent.jsp");}
-       	else if (checkNewOption(req, user)) {resp.sendRedirect("/newevent.jsp");}
+       	else if (checkNewOptionG(req, user)) {resp.sendRedirect("/newevent.jsp");}
+       	else if (checkNewOptionM(req, user)) {resp.sendRedirect("/newevent.jsp");}
        	else if (checkForm2(req, user)) {resp.sendRedirect("/friends.jsp");}
        	
 		//System.out.println("worked");
@@ -115,78 +116,106 @@ public class NewEventServlet extends HttpServlet{
 	}
 	
 	//Stage2: Confirm invitation complete
-		private boolean checkNewOption(HttpServletRequest req, User creator) {
-			boolean pressed = false;
-			if (req.getParameter("newoption") != null) {
-		       	Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
-				if (invitation == null) {
-					return true;
-				}
+	private boolean checkNewOptionG(HttpServletRequest req, User creator) {
+		boolean pressed = false;
+		if (req.getParameter("newoption") != null) {
+	       	Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
+			if (invitation == null) {
+				return true;
+			}
 
-				InvitationOption option = new InvitationOption();
-				
-				String eventLoc = req.getParameter("location");
-				if (eventLoc != null) {
-					option.setLocation(eventLoc);
-				}
-				
-				Date startTimeCal = null;
-				Date endTimeCal = null;
-				
-				if (req.getParameter("allday") == null) {
-					option.setAllDay(false);
-				}
-				else {
-					option.setAllDay(true);
-				}
-				
-				String startDay = req.getParameter("startday");
-				if (startDay != null) {
-					//System.out.println(startDay);
-					if (!option.getAllDay()) {
-						String startTime = req.getParameter("starttime");
-						if (startTime != null) {
-							//System.out.println(startTime);
-							startTimeCal = dayTimeStringToCal(startDay, startTime);
-						}
-						else {
-							startTimeCal = dayStringToCal(startDay);
-						}
+			InvitationOption option = new InvitationOption();
+			
+			String eventLoc = req.getParameter("location");
+			if (eventLoc != null) {
+				option.setLocation(eventLoc);
+			}
+			
+			Date startTimeCal = null;
+			Date endTimeCal = null;
+			
+			if (req.getParameter("allday") == null) {
+				option.setAllDay(false);
+			}
+			else {
+				option.setAllDay(true);
+			}
+			
+			String startDay = req.getParameter("startday");
+			if (startDay != null) {
+				//System.out.println(startDay);
+				if (!option.getAllDay()) {
+					String startTime = req.getParameter("starttime");
+					if (startTime != null) {
+						//System.out.println(startTime);
+						startTimeCal = dayTimeStringToCal(startDay, startTime);
 					}
 					else {
 						startTimeCal = dayStringToCal(startDay);
 					}
 				}
-				
-				String endDay = req.getParameter("endday");
-				if (endDay != null) {
-					//System.out.println(endDay);
-					if(!option.getAllDay()) {						
-						String endTime = req.getParameter("endtime");
-						if (endTime != null) {
-							//System.out.println(endTime);
-							endTimeCal = dayTimeStringToCal(endDay, endTime);
-						}
-						else {
-							endTimeCal = dayStringToCal(endDay);
-						}
+				else {
+					startTimeCal = dayStringToCal(startDay);
+				}
+			}
+			
+			String endDay = req.getParameter("endday");
+			if (endDay != null) {
+				//System.out.println(endDay);
+				if(!option.getAllDay()) {						
+					String endTime = req.getParameter("endtime");
+					if (endTime != null) {
+						//System.out.println(endTime);
+						endTimeCal = dayTimeStringToCal(endDay, endTime);
 					}
 					else {
 						endTimeCal = dayStringToCal(endDay);
 					}
 				}
-				
-				option.setStartTime(startTimeCal);
-				option.setEndTime(endTimeCal);
-				
-				System.out.println("NEW EVENT location: " + eventLoc + "time: " + option.getTimeString() + " allday: " + option.getAllDay());
+				else {
+					endTimeCal = dayStringToCal(endDay);
+				}
+			}
+			
+			option.setStartTime(startTimeCal);
+			option.setEndTime(endTimeCal);
+			
+			System.out.println("NEW GENERIC OPTION location: " + eventLoc + "time: " + option.getTimeString() + " allday: " + option.getAllDay());
 
-				invitation.addOption(option);
-				ObjectifyService.ofy().save().entity(invitation); 
-				pressed = true;
-	        }
-			return pressed;
-		}
+			invitation.addOption(option);
+			ObjectifyService.ofy().save().entity(invitation); 
+			pressed = true;
+        }
+		return pressed;
+	}
+	
+	private boolean checkNewOptionM(HttpServletRequest req, User creator) {
+		boolean pressed = false;
+		if (req.getParameter("newoption") != null) {
+	       	Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
+			if (invitation == null) {
+				return true;
+			}
+
+			//Change to Movie Option class
+			InvitationOption option = new InvitationOption();
+			
+			//get info from form elements, create option, add to invitation
+			
+			
+			
+			
+			
+			
+			
+			System.out.println("NEW MOVIE OPTION location: " + option.getLocation() + "time: " + option.getTimeString());
+
+			invitation.addOption(option);
+			ObjectifyService.ofy().save().entity(invitation); 
+			pressed = true;
+        }
+		return pressed;
+	}
 	
 	//Stage2: Confirm invitation complete
 	private boolean checkForm2(HttpServletRequest req, User creator) {

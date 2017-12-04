@@ -84,8 +84,22 @@ public class FirstLoginServlet extends HttpServlet {
 		 InvitationsList i = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
 		 if (i != null) {
 			 for (Invitation invite : i.getInvitations()) {
-				 invite.removePerson(user);
-				 ObjectifyService.ofy().save().entity(invite).now();
+				 List<User> people = invite.getFriends();
+				 people.remove(user);
+				 for (User friend : people) {
+					 InvitationsList fInviteList = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", friend).first().now();
+					 if (fInviteList != null) { 
+						 for (Invitation friendInvite: fInviteList.getInvitations()) {
+							 if (friendInvite.getCreator().equals(user)) {
+								 fInviteList.getInvitations().remove(friendInvite);
+							 }
+							 else {
+								 friendInvite.getFriends().remove(user);
+							 }
+						 }
+						 ObjectifyService.ofy().save().entity(fInviteList).now();
+					 }
+				 }
 			 }
 			 ObjectifyService.ofy().delete().entity(i).now();
 		 }

@@ -69,8 +69,10 @@
 									<button name="setname" class="input-group-addon">Set Name</button>
 					    		</div>
 					    	</div>
-							
 						</form>
+					</div></div>
+					<div class="row"><div class="col">
+						<a class="btn btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Google Sign Out</a>
 					</div></div>
 				</div>
 				<%

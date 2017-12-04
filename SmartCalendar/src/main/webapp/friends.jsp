@@ -70,8 +70,10 @@
 									<button name="setname" class="input-group-addon">Set Name</button>
 					    		</div>
 					    	</div>
-							
 						</form>
+					</div></div>
+					<div class="row"><div class="col">
+						<a class="btn btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Google Sign Out</a>
 					</div></div>
 				</div>
 				<%
@@ -179,8 +181,10 @@
 					<span class="input-group-addon" id="usernamelabel">Username</span>
 					<input name="friendname" class="form-control">
 				</div>
-				<button name="addfriend" class="form-control form-control-lg btn btn-success" type="submit">Add Friend</button>
-				<button name="removefriend" class="form-control form-control-lg btn btn-success" type="submit">Remove Friend</button>
+				<div class="input-group">	
+					<button name="addfriend" class="form-control form-control-lg btn btn-success" type="submit">Add Friend</button>
+					<button name="removefriend" class="form-control form-control-lg btn btn-danger" type="submit">Remove Friend</button>
+				</div>
 			</form>
 			
 			</div>

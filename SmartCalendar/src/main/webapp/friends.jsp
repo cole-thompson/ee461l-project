@@ -113,7 +113,6 @@
 	 		<table class="table table-bordered table-light table-hover w-100">	
 	           	<tbody style="top:0">
 	           	
-					<tr><td><p>bloop</p></td></tr>
 	          		<%List<User> currentUserFriends = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now().getFriends();
 	          		for(User friend : currentUserFriends){
 	          			smartcal.UserAccount friendAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", friend).first().now();
@@ -145,29 +144,24 @@
 		
 			<!-- Start table2 -->
 			<div class="col w-50"><form action="/social" name="selectinvitation" method="post">	
-			<div style="max-height: 500px;	height:500px;	overflow-y:auto">
-			<table class="table table-bordered table-light table-responsive-md table-hover w-100">
-				<tbody style="top:0">		
-	          		<%smartcal.InvitationsList currentUserInvitationsList = ObjectifyService.ofy().load().type(smartcal.InvitationsList.class).filter("user", user).first().now();
-	          		
-	          		if (currentUserInvitationsList != null) {
-		          		List<smartcal.Invitation> currentUserInvitations = currentUserInvitationsList.getInvitations();
-		          		int i = 0;
-		          		for(smartcal.Invitation inv : currentUserInvitations){ 
-		          			smartcal.UserAccount friendAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", inv.getCreator()).first().now();
-		          			if(friendAccount == null){
-		          				System.out.println("friendAccount was null (this means that some friend on your friends list doesn't have an account??), breaking from loop");
-		          				break;
-		          			}
-	          				String friendName = friendAccount.getUsername();%>
-		          			<tr><td onclick='selectinvitation.submit();' name="invitation<%=(i)%>"><span class="text-primary"><%=(inv.getName())%></span><span class="text-secondary"><%=("\tfrom: " + friendName)%></span></p></td></tr>
-		          			<%i++;
-		          		}
-		          	}%>
-		          	
-	          	</tbody>
-	          	
-	 		</table>
+			<div class="list-group" style="max-height: 500px;	height:500px;	overflow-y:auto">
+		  		<%smartcal.InvitationsList currentUserInvitationsList = ObjectifyService.ofy().load().type(smartcal.InvitationsList.class).filter("user", user).first().now();
+          		
+          		if (currentUserInvitationsList != null) {
+	          		List<smartcal.Invitation> currentUserInvitations = currentUserInvitationsList.getInvitations();
+	          		int i = 0;
+	          		for(smartcal.Invitation inv : currentUserInvitations){ 
+	          			smartcal.UserAccount friendAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", inv.getCreator()).first().now();
+	          			if(friendAccount == null){
+	          				System.out.println("friendAccount was null (this means that some friend on your friends list doesn't have an account??), breaking from loop");
+	          				break;
+	          			}
+          				String friendName = friendAccount.getUsername();%>
+	          			<button class="list-group-item list-group-item-action" name="invitation<%=(i)%>" type="submit"><%=(inv.getName())%><%=("\tfrom: " + friendName)%></button>
+	          			<%i++;
+	          		}
+	          	}%>
+		    
 	 		</div>
 			</form></div>
 			

@@ -70,10 +70,10 @@ public class SocialServlet extends HttpServlet {
     	
     	System.out.println("clickedInvitation: " + clickedInvitation);
     	
-    	if (clickedInvitation) {
-    		resp.sendRedirect("/invitations.jsp");
-    	}
-    	else {
+    	if(clickedInvitation) {
+    		System.out.println("redirection to invitation");
+    		resp.sendRedirect("/invitation.jsp");
+    	}else {
     		resp.sendRedirect("/friends.jsp");
     	}
         

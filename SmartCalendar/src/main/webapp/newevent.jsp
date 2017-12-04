@@ -183,7 +183,7 @@
 	    
 	    <!-- STAGE 2 -->
      	<%} 
-     	else if (invitation.getStage() == 2) { %>
+     	else if (invitation.getStarted()) { %>
        		<div class="container">
 	       		<div class="row"><div class="col-md">
 	       			<h2><span class="text-primary">New Event</span></h2>
@@ -225,7 +225,6 @@
 		  							</div>
 				    			</div>
 					    	</div>
-					    </div>
 					    <%}%>				
 				   </td></tr></tbody>	
 				</table>

@@ -15,6 +15,9 @@ import com.google.api.client.json.jackson.JacksonFactory;
 
 public class MovieDatabase {
 	
+	private final String baseUrl = "http://data.tmsapi.com/v1.1/movies/showings?";
+	private final String apiKey = "styt25a56dg574x5x29yaws4"; 
+	
 	private List<Movie> movies;
 	
 	public List<Movie> getMovies() { return movies; }
@@ -89,25 +92,42 @@ public class MovieDatabase {
 		
 		return showtimes;
 	}
+	private void makeRadiusRequest(String date, String zip, String radius) {
+		String requestUrl = String.format("%sstartDate=%s&zip=%s&radius=%s&api_key=%s", baseUrl, date, zip, radius, apiKey);
+		makeMoviesRequest(requestUrl);
+	}
+	private void makeRequest(String date, String zip, int days) {
+		String requestUrl = String.format("%sstartDate=%s&numDays=%d&zip=%s&api_key=%s", baseUrl, date, days, zip, apiKey);
+		makeMoviesRequest(requestUrl);
+	}
+	
+	private void makeRequest(String date, String zip, int days, int radius) {
+		String requestUrl = String.format("%sstartDate=%s&numDays=%d&zip=%s&radius=%d&api_key=%s", baseUrl, date, days, zip, radius, apiKey);
+		makeMoviesRequest(requestUrl);
+	}
+	
+	private void makeRequest(String date, String zip) {
+		String requestUrl = String.format("%sstartDate=%s&zip=%s&api_key=%s", baseUrl, date, zip, apiKey);
+		makeMoviesRequest(requestUrl);
+	}
 	
 	
 	/* static public String makeMoviesRequest
 	 * this function sends requests to gracenote's website
 	 * inputs: dateZip (String) -- contains date and zip formatted "YYYY-MM-DD" and zip formatted "XXXXX"
 	 */
-	private void makeMoviesRequest(String date, String zip) {
-		String baseUrl = "http://data.tmsapi.com/v1.1/movies/showings?";
-		String apiKey = "styt25a56dg574x5x29yaws4"; 
+	private void makeMoviesRequest(String url) {
+		
 		//these are required by gracenote to send requests for movies	
 		
 		try {
 			//we're building this string http://data.tmsapi.com/v1.1/movies/showings?startDate=<date>&zip=<zip>&api_key=<styt25a56dg574x5x29yaws4>
 			//to send to gracenote to get our results
-			String requestUrl = String.format("%sstartDate=%s&zip=%s&api_key=%s", baseUrl, date, zip, apiKey);
+			
 			
 			URLFetchService urlfetchservice = URLFetchServiceFactory.getURLFetchService(); //app engine's HTTP request service
 			
-			HTTPResponse response = urlfetchservice.fetch(new URL(requestUrl));
+			HTTPResponse response = urlfetchservice.fetch(new URL(url));
 			
 			//we need to format the response to add a proper key for the movie listings so google json parser can correctly place it into the database fields
 			getMovies(new String(response.getContent()));
@@ -122,7 +142,7 @@ public class MovieDatabase {
 	}
 	
 	
-	/*  MovieDatabse(String fullJson)
+	/*  MovieDatabase(String fullJson)
 	 *  builds a movie database by parsing the entire response json object into corresponding movie objects
 	*/
 	public List<Movie> getMovies(String fullJson) throws IOException {
@@ -176,6 +196,18 @@ public class MovieDatabase {
 	public MovieDatabase() {}
 	
 	public MovieDatabase(String date, String zip) {
-		makeMoviesRequest(date, zip);
+		makeRequest(date, zip);
+	}
+	
+	public MovieDatabase(String date, String zip, int days, int radius) {
+		makeRequest(date, zip, days, radius);
+	}
+	
+	public MovieDatabase(String date, String zip, int days) {
+		makeRequest(date, zip, days);
+	}
+	
+	public MovieDatabase(String date, String zip, String radius) {
+		makeRadiusRequest(date, zip, radius);
 	}
 }

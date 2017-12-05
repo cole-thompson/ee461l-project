@@ -31,21 +31,13 @@ public class MovieOption extends InvitationOption {
 		String starttime = showtime.getTime();
 		String date = showtime.getDate();
 		Date startdate = dayTimeStringToDate(date, starttime);
-		
-		Date enddate = (Date) startdate.clone();
 
-		int hours = startdate.getHours();
-		
-		hours +=3;
-		
-		if(hours >= 24) {
-			hours -= 24;
-			enddate.setDate(enddate.getDate()+1);
-			enddate.setHours(hours);
-		} else { enddate.setHours(hours); }
+		Calendar c = Calendar.getInstance();
+		c.setTime(startdate);
+		c.add(Calendar.HOUR_OF_DAY, 3);
 		
 		setStartTime(startdate);
-		setEndTime(enddate);
+		setEndTime(c.getTime());
 	}
 	
 	

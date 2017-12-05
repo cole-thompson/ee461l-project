@@ -217,7 +217,8 @@ public class NewEventServlet extends HttpServlet{
 				try {
 					int mid = showtimeString.indexOf("-");
 					movieNum = Integer.parseInt(showtimeString.substring(1, mid));
-					stNum = Integer.parseInt(showtimeString.substring(mid + 2, mid));
+					stNum = Integer.parseInt(showtimeString.substring(mid + 2));
+					System.out.println("new option: found showtime");
 				} catch (NumberFormatException | IndexOutOfBoundsException e) {
 					movieNum = 0;
 					stNum = 0;

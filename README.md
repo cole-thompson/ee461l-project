@@ -10,6 +10,7 @@ Clone github repo and open Eclipse. File>New>Google App Engine project. Select t
 ## Movies
 Movie data is gathered from the Gracenote API
 
+## Screenshots
 ![Screenshot](screenshots/cal1.png)
 ![Screenshot](screenshots/cal2.png)
 ![Screenshot](screenshots/cal3.png)

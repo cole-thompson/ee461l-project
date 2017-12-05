@@ -55,48 +55,72 @@ public class CalEvent {
 	 * meant for visualizing events that last <1 day */
 	public String getTimeString() {
 		Calendar startCal = Calendar.getInstance();
-		startCal.setTime(startTime);
 		Calendar endCal = Calendar.getInstance();
-		endCal.setTime(endTime);
 		
-		int startHour = startCal.get(Calendar.HOUR);
-		int startAmPm = startCal.getMaximum(Calendar.AM_PM);
-		
-		int endHour = endCal.get(Calendar.HOUR);
-		int endAmPm = endCal.getMaximum(Calendar.AM_PM);
-		
-		String s = startHour + getAmPmString(startAmPm);
-		s += "-";
-		s += endHour + getAmPmString(endAmPm);
-		return s;
-	}
-	
-	public String getTimeStringFull() {
-		Calendar startCal = Calendar.getInstance();
 		startCal.setTime(startTime);
-		Calendar endCal = Calendar.getInstance();
-		endCal.setTime(endTime);
-		
+
 		int startHour = startCal.get(Calendar.HOUR);
-		int startMinute = startCal.get(Calendar.MINUTE);
-		int startAmPm = startCal.getMaximum(Calendar.AM_PM);
 		if(startHour == 0) {
 			startHour = 12;
 		}
-		String startMinuteString = String.format("%02d", startMinute);
+		int startAmPm = startCal.getMaximum(Calendar.AM_PM);
+		if(endTime != null) {
+			endCal.setTime(endTime);
 		
-		int endHour = endCal.get(Calendar.HOUR);
-		int endMinute = endCal.get(Calendar.MINUTE);
-		int endAmPm = endCal.getMaximum(Calendar.AM_PM);
-		if(endHour == 0) {
-			endHour = 12;
+			int endHour = endCal.get(Calendar.HOUR);
+			if(endHour == 0) {
+				endHour = 12;
+			}
+			int endAmPm = endCal.getMaximum(Calendar.AM_PM);
+			
+			String s = startHour + getAmPmString(startAmPm);
+			s += "-";
+			s += endHour + getAmPmString(endAmPm);
+			return s;
+		}else {
+			String s = startHour + getAmPmString(startAmPm);
+			s += "- ?" + getAmPmString(startAmPm);
+			return s;
 		}
-		String endMinuteString = String.format("%02d", endMinute);
+	}
+	
+	/*int startHour = startCal.get(Calendar.HOUR);
+	int startMinute = startCal.get(Calendar.MINUTE);
+	int startAmPm = startCal.getMaximum(Calendar.AM_PM);*/
+	
+	public String getTimeStringFull() {
+		Calendar startCal = Calendar.getInstance();
+		Calendar endCal = Calendar.getInstance();
 		
-		String s = startHour + ":" + startMinuteString + getAmPmString(startAmPm);
-		s += " - ";
-		s += endHour + ":" + endMinuteString + getAmPmString(endAmPm);
-		return s;
+		startCal.setTime(startTime);
+
+		int startHour = startCal.get(Calendar.HOUR);
+		if(startHour == 0) {
+			startHour = 12;
+		}
+		int startMinute = startCal.get(Calendar.MINUTE);
+		String startMinuteString = String.format("%02d", startMinute);
+		int startAmPm = startCal.getMaximum(Calendar.AM_PM);
+		if(endTime != null) {
+			endCal.setTime(endTime);
+		
+			int endHour = endCal.get(Calendar.HOUR);
+			if(endHour == 0) {
+				endHour = 12;
+			}
+			int endMinute = endCal.get(Calendar.MINUTE);
+			String endMinuteString = String.format("%02d", endMinute);
+			int endAmPm = endCal.getMaximum(Calendar.AM_PM);
+			
+			String s = startHour + ":" + startMinuteString + getAmPmString(startAmPm);
+			s += "-";
+			s += endHour + ":" + endMinuteString + getAmPmString(endAmPm);
+			return s;
+		}else {
+			String s = startHour + ":" + startMinuteString + getAmPmString(startAmPm);
+			s += "- --:--" + getAmPmString(startAmPm);
+			return s;
+		}
 	}
 	
 	private String getAmPmString(int ampm) {

@@ -309,7 +309,8 @@
 		       		<!-- List Existing Movie Options -->
 					<% List<smartcal.MovieOption> options = invitation.getMovieOptions();
 					int i = 0;
-					if (options != null && options.size() > 0)  { %>
+					// check if > 1 because there will be a partially-finished option at least
+					if (options != null && options.size() > 1)  { %>
 						<div class="row"><div class="col-md">
 		       			<table class="table table-bordered table-light">
 			       			<thead class="thead-dark"><tr class="d-flex w-100">
@@ -463,7 +464,10 @@
 	       			size = invitation.getOptions().size();
 	       		}
 	       		else if (invitation.getType() == smartcal.Invitation.Type.M) {
-	       			size = invitation.getMovieOptions().size();
+	       			size = 0;
+	       			for (smartcal.MovieOption o : invitation.getMovieOptions()) {
+	       				if (o.hasFinished()) {size++;}
+	       			}
 	       		}
 	       		
 	       		if (size > 0) {%>	

@@ -354,7 +354,7 @@
 						<div class="row"><div class="col-md">
 			       		<table class="table table-bordered table-light">
 			       			<thead class="thead-dark"><tr class="d-flex w-100">
-			      		  			<th class="w-100">Search for Movie Showtimes</th>
+			      		  			<th class="w-100">Search for Movie Showtimes (Note: API limits us to 50 calls/day)</th>
 			      			</tr> </thead> 
 			      			<tbody><tr><td>  
 						       	<form action="/newevent" method="post"> 	

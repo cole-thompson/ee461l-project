@@ -256,6 +256,7 @@ public class NewEventServlet extends HttpServlet{
 				}
 				String startDay = req.getParameter("startday");
 				String endDay = req.getParameter("endday");
+				System.out.println("MOVIE SEARCH PARAMETERS start: " + startDay + " end:" + endDay + " zip:" + zip + " radius: " + radius);
 				option.searchMovies(zip, radius, startDay, endDay);
 				option.setSearched(true);
 				invitation.addOption(option);

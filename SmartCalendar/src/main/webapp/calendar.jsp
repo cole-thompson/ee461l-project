@@ -275,6 +275,7 @@
 			            		}
 			            		else { %><td width="14%"><% }
 			            	
+			            		//only print stuff if you are between first and last day of month in grid
 			            		if ((day < numDays) && !(week == 0 && dayOfWeek < firstDayOfWeek)) { %>
 			            			<%day++;%>
 			            			<%=(day)%>		<!-- This is where day number is printed, might need some styling-->

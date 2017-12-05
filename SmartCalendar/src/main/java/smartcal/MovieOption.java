@@ -1,5 +1,6 @@
 package smartcal;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -10,61 +11,48 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 @Entity
-public class MovieOption {
-	@Id Long id;
-	@Index UserAccount creator;
-
-	private String location;
-	private Calendar startTime;
-	private Calendar endTime;
-	private boolean allDay;
+public class MovieOption extends InvitationOption {
 	
-	public MovieOption(String loc) {
-		setLocation(loc);
-		setAllDay(true);
-	}
-	public MovieOption(Calendar start, Calendar end) {
-		setLocation("undecided");
-		setStartTime(start);
-		setEndTime(end);
-	}
-	public MovieOption(String loc, Calendar start, Calendar end) {
-		setLocation(loc);
-		setStartTime(start);
-		setEndTime(end);
+	private Movie movie;
+	private Showtime showtime;
+	
+	public MovieOption() {
+		super();
+		setAllDay(false);
+		this.movie = null;
 	}
 	
-	//Getters and Setters
-
-	public String getLocation() {
-		return location;
+	public MovieOption(Movie movie) {
+		this();
+		this.movie = movie;
+	}
+	
+	public void setOption(Movie movie, Showtime showtime) {
+		setMovie(movie);
+		setShowtime(showtime);
+		setLocation(showtime.getTheater());
+		setOptionName(movie.getTitle());
+		String starttime = showtime.getTime();
+		String date = showtime.getDate();
+		setStartTime(dayTimeStringToDate(date, starttime));
+	}
+	
+	
+	
+	public Movie getMovie() {
+		return movie;
+	}
+	
+	private void setMovie(Movie movie) {
+		this.movie = movie;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public Showtime getShowtime() {
+		return showtime;
 	}
 
-	public Calendar getStartTime() {
-		return startTime;
+	private void setShowtime(Showtime showtime) {
+		this.showtime = showtime;
 	}
-
-	public void setStartTime(Calendar startTime) {
-		this.startTime = startTime;
-	}
-
-	public Calendar getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Calendar endTime) {
-		this.endTime = endTime;
-	}
-
-	public boolean isAllDay() {
-		return allDay;
-	}
-
-	public void setAllDay(boolean allDay) {
-		this.allDay = allDay;
-	}	
+	
 }

@@ -151,14 +151,14 @@ public class NewEventServlet extends HttpServlet{
 					String startTime = req.getParameter("starttime");
 					if (startTime != null) {
 						//System.out.println(startTime);
-						startTimeCal = dayTimeStringToCal(startDay, startTime);
+						startTimeCal = InvitationOption.dayTimeStringToDate(startDay, startTime);
 					}
 					else {
-						startTimeCal = dayStringToCal(startDay);
+						startTimeCal = InvitationOption.dayStringToDate(startDay);
 					}
 				}
 				else {
-					startTimeCal = dayStringToCal(startDay);
+					startTimeCal = InvitationOption.dayStringToDate(startDay);
 				}
 			}
 			
@@ -169,14 +169,14 @@ public class NewEventServlet extends HttpServlet{
 					String endTime = req.getParameter("endtime");
 					if (endTime != null) {
 						//System.out.println(endTime);
-						endTimeCal = dayTimeStringToCal(endDay, endTime);
+						endTimeCal = InvitationOption.dayTimeStringToDate(endDay, endTime);
 					}
 					else {
-						endTimeCal = dayStringToCal(endDay);
+						endTimeCal = InvitationOption.dayStringToDate(endDay);
 					}
 				}
 				else {
-					endTimeCal = dayStringToCal(endDay);
+					endTimeCal =InvitationOption.dayStringToDate(endDay);
 				}
 			}
 			
@@ -234,35 +234,4 @@ public class NewEventServlet extends HttpServlet{
 		return pressed;
 	}
 	
-	private Date dayStringToCal(String day) {
-		Date cal = null;
-		try {
-			if (day.length() == 10) {
-				int y = Integer.parseInt(day.substring(0, 4));
-				int m = Integer.parseInt(day.substring(5, 7));
-				int d = Integer.parseInt(day.substring(8));
-				cal = new Date(y, m - 1, d);
-			}
-		}
-		catch (NumberFormatException e) {}
-		
-		return cal;
-	}
-	
-	private Date dayTimeStringToCal(String day, String time) {
-		Date cal = null;
-		try {
-			if (day.length() == 10 && time.length() == 5) {
-				int y = Integer.parseInt(day.substring(0, 4));
-				int m = Integer.parseInt(day.substring(5, 7));
-				int d = Integer.parseInt(day.substring(8));
-				int h = Integer.parseInt(time.substring(0, 2));
-				int min = Integer.parseInt(time.substring(3, 5));				
-				cal = new Date(y, m - 1, d, h, min);
-			}
-		}
-		catch (NumberFormatException e) {}
-		
-		return cal;
-	}
 }

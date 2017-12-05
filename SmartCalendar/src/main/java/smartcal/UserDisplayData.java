@@ -62,10 +62,10 @@ public class UserDisplayData {
 		List<CalEvent> events = eventList.getEvents();
 		for (CalEvent event : events) {
 			Date dayDate = event.getStartTime();
-			Calendar day = Calendar.getInstance();
-			day.setTime(dayDate);
-			if (day.get(Calendar.MONTH) == displayMonth) {
-				int date = day.get(Calendar.DATE);
+			
+			System.out.println("Loading display events. eventmonth:" + dayDate.getMonth() + " displaymonth:" +  displayMonth + "eventyear:" +  dayDate.getYear() + " displayyear:" +  displayYear);
+			if (dayDate.getMonth() == displayMonth && dayDate.getYear() == displayYear) {
+				int date = dayDate.getDate();
 				if (getDisplayView() == 2) {
 					if (date == displayDate) {
 						addDisplayEvent(date, event);

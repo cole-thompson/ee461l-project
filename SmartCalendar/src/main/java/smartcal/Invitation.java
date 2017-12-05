@@ -173,7 +173,7 @@ public class Invitation {
 		return this.movieOptions;		
 	}
 	
-	public void setOptions(ArrayList<MovieOption> movieOptions) {
+	public void setMovieOptions(List<MovieOption> movieOptions) {
 		this.movieOptions = movieOptions;		
 	}
 	

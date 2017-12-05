@@ -93,7 +93,7 @@
 			        	<a class="nav-link" href="/calendar.jsp">Home</a>
 			      	</li>
 			      	<li class="nav-item">
-			        	<a class="nav-link" href="/account.jsp">Account</a>
+			        	<a class="nav-link" href="/accounts.jsp">Account</a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="/friends.jsp">Social</a>

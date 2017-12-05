@@ -141,9 +141,22 @@
  		
  		<!-- Tables -->
  		<div class="container">
- 			<div class="row"><div class="col-md">
-	       		<h2><span class="text-primary">Social</span></h2>
-	       	</div></div>
+ 			<div class="row mt-2 mb-3">
+ 				<div class="col col-md-auto">
+	       			<h2><span class="text-primary">Social</span></h2>
+	       		</div>
+	       		
+	       		<div class="col">
+	 			<form action="/social" name="add-or-remove" method="post"> 	
+					<div class="input-group">	
+						<span class="input-group-addon" id="usernamelabel">Username</span>
+						<input name="friendname" class="form-control">
+						<button name="addfriend" class="form-control form-control-lg btn btn-success" type="submit">Add Friend</button>
+						<button name="removefriend" class="form-control form-control-lg btn btn-danger" type="submit">Remove Friend</button>
+					</div>
+				</form>
+				</div>
+	       	</div>
  			
  			<div class="row"><div class="col w-100">
 	 			<table class="table table-bordered table-light table-hover w-100">
@@ -155,11 +168,13 @@
 	 		
  			<div class="row">
  			
- 			<div class="col w-50"><div style="max-height: 500px;	height:500px;	overflow-y:auto">
+ 			<div class="col w-50"><div style="max-height: 500px;	overflow-y:auto">
 	 		<table class="table table-bordered table-light table-hover w-100">	
 	           	<tbody style="top:0">
-	           	
 	          		<%List<User> currentUserFriends = ObjectifyService.ofy().load().type(smartcal.FriendsList.class).filter("user", user).first().now().getFriends();
+	          		if (currentUserFriends != null && currentUserFriends.size() == 0) {
+	          			%><tr><td><p class="text-muted">(No Friends)</p></td></tr><%
+	          		}
 	          		for(User friend : currentUserFriends){
 	          			smartcal.UserAccount friendAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", friend).first().now();
 	          			if(friendAccount == null){
@@ -172,31 +187,19 @@
 	          		<%}%>
 	          		
 	          	</tbody>
-	          	
 			</table></div>
-			
-			<form action="/social" name="add-or-remove" method="post"> 	
-	 		
-				<div class="input-group">	
-					<span class="input-group-addon" id="usernamelabel">Username</span>
-					<input name="friendname" class="form-control">
-				</div>
-				<div class="input-group">	
-					<button name="addfriend" class="form-control form-control-lg btn btn-success" type="submit">Add Friend</button>
-					<button name="removefriend" class="form-control form-control-lg btn btn-danger" type="submit">Remove Friend</button>
-				</div>
-			</form>
-			
 			</div>
 		
 		
 			<!-- Start table2 -->
 			<div class="col w-50"><form action="/social" name="selectinvitation" method="post">	
-			<div class="list-group" style="max-height: 500px;	height:500px;	overflow-y:auto">
+			<div class="list-group" style="max-height: 500px; overflow-y:auto">
 		  		<%smartcal.InvitationsList currentUserInvitationsList = ObjectifyService.ofy().load().type(smartcal.InvitationsList.class).filter("user", user).first().now();
-          		
           		if (currentUserInvitationsList != null) {
-	          		List<smartcal.Invitation> currentUserInvitations = currentUserInvitationsList.getInvitations();
+          			List<smartcal.Invitation> currentUserInvitations = currentUserInvitationsList.getInvitations();
+          			if (currentUserInvitations.size() == 0) {
+              			%><button class="list-group-item list-group-item-action text-muted" type="button">(No Invitations)</button><%
+              		}
 	          		int i = 0;
 	          		for(smartcal.Invitation inv : currentUserInvitations){ 
 	          			smartcal.UserAccount friendAccount = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", inv.getCreator()).first().now();
@@ -214,6 +217,9 @@
 			</form></div>
 			
  			</div>
+ 			
+ 			
+			
  		</div>
  		
  		<%} }%>	

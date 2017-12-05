@@ -287,7 +287,7 @@
 			            			for (int e = 0; e < numEventsToDisplay; e++) {
 			            				//invisible elements help keep sizing constant
 			            				if (e >= numEvents) {
-			            					System.out.println("Invisible Events");
+			            					//System.out.println("Invisible Events");
 			            					%> <li class="list-group-item invisible"></li> <%
 			            				}
 			            				else if (numEvents > numEventsToDisplay && e == numEventsToDisplay - 1) {

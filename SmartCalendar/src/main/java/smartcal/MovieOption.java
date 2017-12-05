@@ -17,6 +17,7 @@ public class MovieOption extends InvitationOption {
 	private boolean searched;
 	private boolean finished;
 	private List<Movie> searchResults;
+	private MovieDatabase mdb;
 	
 	public MovieOption() {
 		super();
@@ -41,7 +42,13 @@ public class MovieOption extends InvitationOption {
 		//TODO
 		
 		Date start = dayStringToDate(startDay);
-		//searchResults.add(new Movie());
+		Date end = dayStringToDate(startDay);
+		
+		int days = (int) ( (end.getTime() - start.getTime()) / (1000*60*60*24) );
+		
+		mdb = new MovieDatabase(startDay, Integer.toString(zip), days, radius);
+		
+		searchResults = mdb.getMovies();
 	}
 	
 	

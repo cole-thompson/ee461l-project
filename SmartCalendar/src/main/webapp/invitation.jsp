@@ -247,7 +247,7 @@
 						 if (getInvitationSize(toDisplay) == 0) { %>
 						 <li class="list-group-item"><span class="text-secondary">(None)</span></li>
 					 	<%}
-						 for(smartcal.InvitationOption op : movieOptions){%>
+						 for(smartcal.MovieOption op : movieOptions){%>
 				 				<li class="list-group-item">
 				 					<p><span class="text-secondary">Movie: </span><%=(op.getOptionName())%></p>
 								  	<p><span class="text-secondary">Theater: </span><%=(op.getLocation())%></p>

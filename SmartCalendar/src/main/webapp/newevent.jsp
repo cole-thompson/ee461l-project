@@ -390,10 +390,12 @@
 					else if (option.hasSearched()) { %>
 		       			<!-- Select Movie Option -->
 						<div class="row"><div class="col-md">
-			       		<table class="table table-responsive table-bordered table-light">
+						<table class="table table-bordered table-light mb-0">
 			       			<thead class="thead-dark"><tr class="d-flex w-100">
 			      		  			<th class="w-100">Select a Movie and Showtime</th>
 			      			</tr> </thead> 
+			      		</table>
+			       		<table class="table table-responsive table-bordered table-light mt-0">
 			      			<tbody> 
 			      				<tr><td>  
 							       	<div class="form-group form-group-lg"><div class="input-group">
@@ -409,15 +411,21 @@
 			  								smartcal.Movie movie = movies.get(i);
 			  								if (movie != null) {%>	
 			  								<div class="card text-center" style="width: 15rem;">
+			  									<%if(movie.getImgUrl() != null) {%>
+			  									<div class="card-head">
+							       					<!-- <img src="NoMovieImage.png" alt="No Movie Image Found" style="max-width:100%; max-height:100%;"> -->
+							        				<img src="<%=(movie.getImgUrl())%>" alt="<%=(movie.getTitle())%>" style="max-width:100%; max-height:100%;">
+							         				</div>
+							         			<%} %>
+				  								
 											  	<div class="card-body">
 												    <h4 class="card-title"><%=(movie.getTitle())%></h4>
 												    <!-- <p class="card-text">Info</p>  -->
 											  	</div>
 											  	
-												    <button class="card-footer btn btn-outline text-primary" type="button" data-toggle="collapse" data-target="#moviecard<%=(i)%>" aria-expanded="false">
-												    	<small>View Showtimes</small>
-												    </button>
-												    
+											    <button class="card-footer btn btn-outline text-primary" type="button" data-toggle="collapse" data-target="#moviecard<%=(i)%>" aria-expanded="false">
+											    	<small>View Showtimes</small>
+											    </button>
 											 </div>										
 			  								
 											<%}%>

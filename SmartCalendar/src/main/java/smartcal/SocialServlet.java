@@ -24,7 +24,6 @@ public class SocialServlet extends HttpServlet {
         //get the current user
     	User user = UserServiceFactory.getUserService().getCurrentUser();
     	FriendsList currentUserFriends;
-    	boolean clickedInvitation = false;
     	
     	if(req.getParameter("addfriend") != null){
     		currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
@@ -42,6 +41,7 @@ public class SocialServlet extends HttpServlet {
 	    		ObjectifyService.ofy().save().entity(currentUserFriends);
 	    		System.out.println(worked);
     		}
+    		resp.sendRedirect("/friends.jsp");
     	}else if(req.getParameter("removefriend") != null){
     		currentUserFriends = ObjectifyService.ofy().load().type(FriendsList.class).filter("user", user).first().now();
     		String toRemove = req.getParameter("friendname");
@@ -57,40 +57,42 @@ public class SocialServlet extends HttpServlet {
     		boolean worked = currentUserFriends.removeFriend(friendAccount.getUser());
     		ObjectifyService.ofy().save().entity(currentUserFriends);
     		System.out.println(worked);
+    		resp.sendRedirect("/friends.jsp");
     	}else if (req.getParameter("sendoptions") != null) {
-    		clickedInvitation = true;
-    		sendOptionVote(req, user);
+    		if (sendOptionVote(req, user)) {
+    			resp.sendRedirect("/invitation.jsp");
+    		}
+    		else {
+    			resp.sendRedirect("/friends.jsp");
+    		}
     	}else if (req.getParameter("finalizeinvitation") != null) {
     		finalizeInvitation(req, user);
+    		resp.sendRedirect("/calendar.jsp");
     	}else {
     		InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
     		for(int i = 0; i < currentUserInvitations.getInvitations().size(); i++) {
     			if(req.getParameter("invitation" + i) != null){
     				Invitation current = currentUserInvitations.getInvitations().get(i);
     				currentUserInvitations.setDisplayedInvitation(current);
-    				clickedInvitation = true;
+    				resp.sendRedirect("/invitation.jsp");
+    				System.out.println("clickedInvitation: " + i);
     				ObjectifyService.ofy().save().entity(currentUserInvitations);
     			}
     		}
     		
     	}
-    	
-    	System.out.println("clickedInvitation: " + clickedInvitation);
-    	
-    	if(clickedInvitation) {
-    		System.out.println("redirection to invitation");
-    		resp.sendRedirect("/invitation.jsp");
-    	}else {
-    		resp.sendRedirect("/friends.jsp");
-    	}
 
     }
     
-    public void sendOptionVote(HttpServletRequest req, User user) {
+    public boolean sendOptionVote(HttpServletRequest req, User user) {
     	InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
     	int index = currentUserInvitations.getInvitations().indexOf(currentUserInvitations.getDisplayedInvitation());
+    	System.out.println("logging a vote from " + user.getNickname() + " invitation found index=" + index);
+    	if (index == -1) {
+    		return false;
+    	}
     	Invitation displayInvitation = currentUserInvitations.getInvitations().get(index);
-    	System.out.println("logging a vote from " + user.getNickname());
+    	
     	if (!displayInvitation.hasPersonVoted(user)) {
     		if (displayInvitation.getType() == Invitation.Type.G) {
 		    	List<InvitationOption> options = displayInvitation.getOptions();
@@ -115,14 +117,15 @@ public class SocialServlet extends HttpServlet {
     			List<MovieOption> options = displayInvitation.getMovieOptions();
 		    	for (int i = 0; i < options.size(); i++) {
 		    		if (req.getParameter("option" + i) != null) {
+		    			System.out.println("voting for option " + options);
 		    			options.get(i).addAvailablePerson(user);
 		    			for (User u : displayInvitation.getFriends()) {
 		    				if (!user.equals(u)) {
 			    		    	InvitationsList invs = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", u).first().now();
 			    		    	int invIndex = invs.getInvitations().indexOf(displayInvitation);
 			    		    	invs.getInvitations().get(invIndex).personVoted(user);
-			    		    	int optIndex = invs.getInvitations().get(invIndex).getOptions().indexOf(options.get(i));
-			    		    	invs.getInvitations().get(invIndex).getOptions().get(optIndex).addAvailablePerson(user);
+			    		    	int optIndex = invs.getInvitations().get(invIndex).getMovieOptions().indexOf(options.get(i));
+			    		    	invs.getInvitations().get(invIndex).getMovieOptions().get(optIndex).addAvailablePerson(user);
 			    		    	ObjectifyService.ofy().save().entity(invs).now();
 		    				}
 		    			}
@@ -133,7 +136,7 @@ public class SocialServlet extends HttpServlet {
     		displayInvitation.personVoted(user);
     		ObjectifyService.ofy().save().entity(currentUserInvitations).now();
     	}
-    	
+    	return true;
     }
     
     public void finalizeInvitation(HttpServletRequest req, User user) {

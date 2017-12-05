@@ -145,7 +145,7 @@ public class CalEvent {
 		CalEvent event = new CalEvent(invitation.getCreator(), option.getStartTime(), option.getEndTime());
 		event.setLocation(option.getLocation());
 		event.setAllDay(option.getAllDay());
-		event.setName(invitation.getName() + ": " + option.getOptionName());
+		event.setName(invitation.getName() + " " + option.getOptionName());
 		return event;
 	}
 	

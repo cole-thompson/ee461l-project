@@ -32,16 +32,14 @@ public class MovieOption extends InvitationOption {
 		setMovie(movie);
 	}
 	
-	public void setOption(Movie movie, Showtime showtime) {
-		setMovie(movie);
+	public void setOption(Showtime showtime) {
 		setShowtime(showtime);
 		setLocation(showtime.getTheater());
-		setOptionName(movie.getTitle());
 		String starttime = showtime.getTime();
 		String date = showtime.getDate();
 		Date startdate = dayTimeStringToDate(date, starttime);
 		Date enddate = (Date) startdate.clone();
-		int newMinutes = startdate.getMinutes() + movie.getRunMinutes();
+		int newMinutes = startdate.getMinutes() + showtime.getRunMinutes();
 		int hours = startdate.getHours();
 		boolean newDate = false;
 		if(newMinutes >= 60) {

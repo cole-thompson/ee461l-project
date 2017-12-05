@@ -11,7 +11,6 @@ import com.google.appengine.api.users.User;
 
 public class InvitationOption {
 
-	
 	private String location;
 	private Date startTime;
 	private Date endTime;
@@ -51,7 +50,9 @@ public class InvitationOption {
 		if (allDay) {
 			length = 10;
 		}
-		return getStartTime().toString().substring(0, length) + " to " + getEndTime().toString().substring(0, length);
+		String s = ((getStartTime() == null)?"":getStartTime().toString().substring(0, length));
+		s += ((getEndTime() == null)?"":(" to " + getEndTime().toString().substring(0, length)));
+		return s;
 		
 	}
 	
@@ -143,5 +144,51 @@ public class InvitationOption {
 		catch (NumberFormatException e) {}
 		
 		return cal;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (allDay ? 1231 : 1237);
+		result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((optionName == null) ? 0 : optionName.hashCode());
+		result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InvitationOption other = (InvitationOption) obj;
+		if (allDay != other.allDay)
+			return false;
+		if (endTime == null) {
+			if (other.endTime != null)
+				return false;
+		} else if (!endTime.equals(other.endTime))
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
+		if (optionName == null) {
+			if (other.optionName != null)
+				return false;
+		} else if (!optionName.equals(other.optionName))
+			return false;
+		if (startTime == null) {
+			if (other.startTime != null)
+				return false;
+		} else if (!startTime.equals(other.startTime))
+			return false;
+		return true;
 	}
 }

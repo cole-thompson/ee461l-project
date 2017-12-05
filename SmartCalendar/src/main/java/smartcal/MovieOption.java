@@ -5,39 +5,33 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.google.appengine.api.users.User;
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
-
 
 public class MovieOption extends InvitationOption {
-	
-	private Movie movie;
+
 	private Showtime showtime;
 	private boolean searched;
+	private boolean finished;
 	private List<Movie> searchResults;
 	private MovieDatabase mdb;
 	
 	public MovieOption() {
 		super();
 		setAllDay(false);
-		setMovie(null);
 		setSearched(false);
+		setFinished(false);
 		setSearchResults(new ArrayList<Movie>());
 	}
 	
-	public MovieOption(Movie movie) {
-		this();
-		setMovie(movie);
-	}
 	
 	public void setOption(Showtime showtime) {
 		setShowtime(showtime);
 		setLocation(showtime.getTheater());
+		setOptionName(showtime.getMovieTitle());
+		
 		String starttime = showtime.getTime();
 		String date = showtime.getDate();
 		Date startdate = dayTimeStringToDate(date, starttime);
+		/*
 		Date enddate = (Date) startdate.clone();
 		int newMinutes = startdate.getMinutes() + showtime.getRunMinutes();
 		int hours = startdate.getHours();
@@ -59,15 +53,13 @@ public class MovieOption extends InvitationOption {
 		} 
 		
 		enddate.setHours(hours);
-		
+		*/
 		setStartTime(startdate);
-		setEndTime(enddate);
+		//setEndTime(enddate);
 	}
 	
 	
 	public void searchMovies(int zip, int radius, String startDay, String endDay) {
-		//TODO
-		
 		Date start = dayStringToDate(startDay);
 		Date end = dayStringToDate(startDay);
 		
@@ -79,14 +71,6 @@ public class MovieOption extends InvitationOption {
 	}
 	
 	
-	public Movie getMovie() {
-		return movie;
-	}
-	
-	private void setMovie(Movie movie) {
-		this.movie = movie;
-	}
-
 	public Showtime getShowtime() {
 		return showtime;
 	}
@@ -110,5 +94,44 @@ public class MovieOption extends InvitationOption {
 	public void setSearchResults(List<Movie> searchResults) {
 		this.searchResults = searchResults;
 	}
+
+	public boolean hasFinished() {
+		return finished;
+	}
+
+	public void setFinished(boolean finished) {
+		this.finished = finished;
+	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (finished ? 1231 : 1237);
+		result = prime * result + (searched ? 1231 : 1237);
+		result = prime * result + ((showtime == null) ? 0 : showtime.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MovieOption other = (MovieOption) obj;
+		if (finished != other.finished)
+			return false;
+		if (searched != other.searched)
+			return false;
+		if (showtime == null) {
+			if (other.showtime != null)
+				return false;
+		} else if (!showtime.equals(other.showtime))
+			return false;
+		return true;
+	}
 }

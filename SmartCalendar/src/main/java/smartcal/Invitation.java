@@ -113,6 +113,24 @@ public class Invitation {
 		return friends.size();
 	}
 	
+	public MovieOption findMovieOptionNotFinished() {
+		for (MovieOption opt : getMovieOptions()) {
+			if (!opt.hasFinished()) {
+				return opt;
+			}
+		}
+		return null;
+	}
+	
+	public MovieOption findMovieOptionNotSearched() {
+		for (MovieOption opt : getMovieOptions()) {
+			if (!opt.hasSearched()) {
+				return opt;
+			}
+		}
+		return null;
+	}
+	
 	//GETTERS AND SETTERS
 	
 	public Type getType() {
@@ -161,6 +179,10 @@ public class Invitation {
 	
 	public void addOption(InvitationOption option) {
 		options.add(option);
+	}
+	
+	public void addOption(MovieOption option) {
+		movieOptions.add(option);
 	}
 	
 	public void removePerson(User u) {

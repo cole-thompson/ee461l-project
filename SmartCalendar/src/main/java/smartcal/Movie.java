@@ -1,5 +1,6 @@
 package smartcal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Movie {
@@ -20,6 +21,12 @@ public class Movie {
 		
 		public List<Showtime> getShowtimes() { return showtimes; }
 		
+		public Movie() {
+			this.title = "";
+			this.showtimes = new ArrayList<Showtime>();
+		}
+		
+
 		public Movie(String title, String runTime, List<Showtime> showtimes) {
 			this.title = title;
 			this.showtimes = showtimes;

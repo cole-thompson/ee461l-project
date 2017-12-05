@@ -88,22 +88,36 @@ public class SocialServlet extends HttpServlet {
     
     public void sendOptionVote(HttpServletRequest req, User user) {
     	InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
-    	Invitation displayInvitation = currentUserInvitations.getDisplayedInvitation();
+    	int index = currentUserInvitations.getInvitations().indexOf(currentUserInvitations.getDisplayedInvitation());
+    	Invitation displayInvitation = currentUserInvitations.getInvitations().get(index);
+    	
     	if (!displayInvitation.hasPersonVoted(user)) {
-	    	List<InvitationOption> options = displayInvitation.getOptions();
-	    	for (int i = 0; i < options.size(); i++) {
-	    		if (req.getParameter("option" + i) != null) {
-	    			options.get(i).addAvailablePerson(user);
-	    		}
-	    	}
-	    	displayInvitation.personVoted(user);
-	    	ObjectifyService.ofy().save().entity(currentUserInvitations).now();
+    		if (displayInvitation.getType() == Invitation.Type.G) {
+		    	List<InvitationOption> options = displayInvitation.getOptions();
+		    	for (int i = 0; i < options.size(); i++) {
+		    		if (req.getParameter("option" + i) != null) {
+		    			options.get(i).addAvailablePerson(user);
+		    		}
+		    	}
+    		}
+    		else if (displayInvitation.getType() == Invitation.Type.M) {
+    			List<MovieOption> options = displayInvitation.getMovieOptions();
+		    	for (int i = 0; i < options.size(); i++) {
+		    		if (req.getParameter("option" + i) != null) {
+		    			options.get(i).addAvailablePerson(user);
+		    		}
+		    	}
+    		}
+    		displayInvitation.personVoted(user);
+    		ObjectifyService.ofy().save().entity(currentUserInvitations).now();
     	}
+    	
     }
     
     public void finalizeInvitation(HttpServletRequest req, User user) {
     	InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
-    	Invitation displayInvitation = currentUserInvitations.getDisplayedInvitation();
+    	int index = currentUserInvitations.getInvitations().indexOf(currentUserInvitations.getDisplayedInvitation());
+    	Invitation displayInvitation = currentUserInvitations.getInvitations().get(index);
     	List<InvitationOption> options = displayInvitation.getOptions();
     	for (int i = 0; i < options.size(); i++) {
     		if (req.getParameter("option" + i) != null) {

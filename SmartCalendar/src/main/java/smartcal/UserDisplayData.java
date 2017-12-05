@@ -63,7 +63,7 @@ public class UserDisplayData {
 		for (CalEvent event : events) {
 			Date dayDate = event.getStartTime();
 			
-			System.out.println("Loading display events. eventmonth:" + dayDate.getMonth() + " displaymonth:" +  displayMonth + "eventyear:" +  dayDate.getYear() + " displayyear:" +  displayYear);
+			//System.out.println("Loading display events. eventmonth:" + dayDate.getMonth() + " displaymonth:" +  displayMonth + "eventyear:" +  dayDate.getYear() + " displayyear:" +  displayYear);
 			if (dayDate.getMonth() == displayMonth && dayDate.getYear() == displayYear) {
 				int date = dayDate.getDate();
 				if (getDisplayView() == 2) {

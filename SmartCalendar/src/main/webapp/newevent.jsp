@@ -408,14 +408,16 @@
 			  							for (i = 0; i < movies.size(); i++) {
 			  								smartcal.Movie movie = movies.get(i);
 			  								if (movie != null) {%>	
-			  								<div class="card" style="width: 15rem;">
+			  								<div class="card text-center" style="width: 15rem;">
 											  	<div class="card-body">
 												    <h4 class="card-title"><%=(movie.getTitle())%></h4>
-												    <p class="card-text">Info</p>
-												    <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#moviecard<%=(i)%>" aria-expanded="false">
-												    	<span>View Showtimes</span>
-												    </button>
+												    <!-- <p class="card-text">Info</p>  -->
 											  	</div>
+											  	
+												    <button class="card-footer btn btn-outline text-primary" type="button" data-toggle="collapse" data-target="#moviecard<%=(i)%>" aria-expanded="false">
+												    	<small>View Showtimes</small>
+												    </button>
+												    
 											 </div>										
 			  								
 											<%}%>
@@ -441,7 +443,7 @@
 										<div class="form-control form-check">
 								  		<label class="form-check-label">
 									    <input class="form-check-input" type="radio" name="showtimes" value="m<%=(mNum)%>-t<%=(sNum)%>" value="movieoption<%=(i)%>">
-									    <%=(showtime.getTheater() + " at " + showtime.getTime())%>
+									    <strong><%=(showtime.getTheater())%></strong><span class="text-muted"><%=("\t  " + showtime.getDate() + ", at " + showtime.getTime())%></span>
 									  	</label>
 									</div>
 									<% } %>	

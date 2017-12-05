@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<!DOCTYPE html>
 <html>
    <head><title>Fandango Test</title></head>
    
@@ -12,10 +12,11 @@
         for(smartcal.Movie m : g.getMovies()) {
         		if(m.getImgUrl() == null) {
         			%>
-        			<img src="NoMovieImage.png">
-        		<% } else {
-        			
-        		}
+        			<img src="NoMovieImage.png" alt="No Movie Image Found" width="500" height="377">
+        		<% } else { 
+        			out.println(m.getImgUrl());%>
+        			<img src="<%=m.getImgUrl()%>" alt="<%=m.getTitle()%>" width="500" height="377">
+        		<%}
         }
       %>
    </body>

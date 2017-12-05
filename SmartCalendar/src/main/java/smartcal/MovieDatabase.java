@@ -19,7 +19,7 @@ public class MovieDatabase {
 	private final String apiKey = "mtve7zepqf8ctr9bupb7cbzs"; 
 	private final String imgApiKey = "01d1cc7ad34031e1841237b9c246a391";
 	private final String baseImgUrl = "https://api.themoviedb.org/3/search/movie?api_key=01d1cc7ad34031e1841237b9c246a391&query=";
-	private final String baseImgLink = "https://image.tmdb.org/t/p/w500/";
+	private final String baseImgLink = "https://image.tmdb.org/t/p/w500";
 	private List<Movie> movies;
 	
 	public List<Movie> getMovies() { return movies; }
@@ -153,22 +153,28 @@ public class MovieDatabase {
 			HTTPResponse response = urlfetchservice.fetch(new URL(baseImgUrl + queryString));
 			
 			String json = new String(response.getContent());
+			json = json.replace("\n", "").replace("\r", "");
+			System.out.println(json);
+
+			//assume it returned a valid JSON object
+			JsonFactory factory = new JacksonFactory();
+			JsonParser parser = factory.createJsonParser(json);
 			
-			if(json.length() > 1) {
-				//assume it returned a valid JSON object
-				JsonFactory factory = new JacksonFactory();
-				JsonParser parser = factory.createJsonParser(json);
+			if(parser.nextToken() == JsonToken.START_OBJECT) {
+				//go to postfield
 				
-				if(parser.nextToken() == JsonToken.START_OBJECT) {
-					//go to postfield
-					
+				parser.skipToKey("total_results");
+				int numResults = Integer.parseInt(parser.getText());
+				if(numResults > 0) {
+					//go to results
+					parser.nextToken();
+					parser.skipToKey("results");
+					while(parser.nextToken() != JsonToken.START_OBJECT) {}
 					parser.skipToKey("poster_path");
-					res = parser.getText();
-					res = baseImgLink + res;
+					res = baseImgLink + parser.getText();
 				}
-				
 			}
-		} 
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -202,7 +208,7 @@ public class MovieDatabase {
 				String title = parser.getText();
 				
 				//trying to get an image
-				//String imgUrl = getImageUrl(title);
+				String imgUrl = getImageUrl(title);
 				
 				parser.nextToken();
 				
@@ -227,7 +233,7 @@ public class MovieDatabase {
 					showtimes.add(new Showtime(name, dateTime, title));
 					if(t.equals(JsonToken.END_ARRAY)) break; else { multiTime = true; }
 				}
-				movies.add(new Movie(title, showtimes, null));
+				movies.add(new Movie(title, showtimes, imgUrl));
 			}
 		}
 		

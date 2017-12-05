@@ -196,7 +196,6 @@
 	       	</div> 	
 	    
 	    
-	    
 	    <!-- STAGE 2 -->
      	<%} 
      	else if (invitation.getStarted()) { %>
@@ -317,8 +316,9 @@
 			      		  			<th class="w-100">Options</th>
 			      			</tr> </thead> 
 			      			<tbody><tr><td>  
-			      				<% for (smartcal.InvitationOption option : options) {
-								i++; %>
+			      				<% for (smartcal.MovieOption option : options) {
+								i++; 
+								if (option.hasFinished()) {%>
 			      				<div class="form-group">
 				       				<div class="input-group">
 				       					<span class="input-group-addon"><%=(i)%></span>
@@ -327,10 +327,10 @@
 				       					<span class="input-group-addon">Theater</span>
 					    				<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getLocation())%>">
 						    			<span class="input-group-addon">Time</span>
-						    			<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getTimeString())%>">
+						    			<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getStartTime().toString())%>">
 						    		</div>
 						    	</div>
-						    	<%} %>
+						    	<%} }%>
 							</td></tr></tbody>
 						</table>
 						</div></div>
@@ -386,18 +386,16 @@
 					else if (option.hasSearched()) { %>
 		       			<!-- Select Movie Option -->
 						<div class="row"><div class="col-md">
-			       		<table class="table table-bordered table-light">
+			       		<table class="table table-responsive table-bordered table-light">
 			       			<thead class="thead-dark"><tr class="d-flex w-100">
 			      		  			<th class="w-100">Select a Movie and Showtime</th>
 			      			</tr> </thead> 
 			      			<tbody> 
-			      				<form action="/newevent" method="post">
 			      				<tr><td>  
 							       	<div class="form-group form-group-lg"><div class="input-group">
-										<span class="input-group-addon"><label>Movies</label></span>
 			  							<% List<smartcal.Movie> movies = option.getSearchResults();
 			  							if (movies.size() == 0) { %>
-											<div class="card">
+											<div class="card" style="width: 20rem;">
 											  	<div class="card-body">
 												    <h4 class="card-title">No Movies Found.</h4>
 											  	</div>
@@ -406,12 +404,12 @@
 			  							for (i = 0; i < movies.size(); i++) {
 			  								smartcal.Movie movie = movies.get(i);
 			  								if (movie != null) {%>	
-			  								<div class="card">
+			  								<div class="card" style="width: 15rem;">
 											  	<div class="card-body">
 												    <h4 class="card-title"><%=(movie.getTitle())%></h4>
 												    <p class="card-text">Info</p>
 												    <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#moviecard<%=(i)%>" aria-expanded="false">
-												    	<span class="text-primary">View Showtimes</span>
+												    	<span>View Showtimes</span>
 												    </button>
 											  	</div>
 											 </div>										
@@ -420,38 +418,39 @@
 			  							<%}%>
 				  					</div></div>
 				  				</td></tr>
-				  				
-				  				<tr><td>
-				  				<div class="form-group form-group-lg">
-				  				<% int mNum = 0;
-				  				for (mNum = 0; mNum < movies.size(); mNum++) {	 %>
-				  				<div class="collapse" id="moviecard<%=(mNum)%>">							
-									<div class="card card-body">
-										<% smartcal.Movie m = movies.get(i);
-										List<smartcal.Showtime> showtimes = m.getShowtimes();
-										int sNum = 0;
-										for (sNum = 0; sNum < showtimes.size(); sNum++)	{ %>
-											<div class="form-control form-check">
-									  		<label class="form-check-label">
-										    <input class="form-check-input" type="radio" name="showtimes" value="m<%=(mNum)%>-t<%=(sNum)%>" value="movieoption<%=(i)%>"> 
-										  	</label>
-										</div>
-										<% } %>	
-									</div>
-								</div>
-				  				<% } %>
-				  				</div>	
-				  				</td></tr>	
-				  										       		
-					       		<tr><td><div class="form-group">
-			  						<div class="input-group">
-										<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Showtime Option</button>
-				  					</div>
-		  						</div></td></tr>
-			  						
-						       	</form>
 			      				</tbody>	
 			       		</table>
+			       		
+			       		<form action="/newevent" method="post">
+			       		<div class="form-group form-group-lg">
+			  				<% int mNum = 0;
+			  				for (mNum = 0; mNum < movies.size(); mNum++) {	 %>
+			  				<div class="collapse" id="moviecard<%=(mNum)%>" style="max-height: 20em; overflow-y:auto">							
+								<div class="card card-body">
+									<% smartcal.Movie m = movies.get(mNum);
+									%><h4><%=(m.getTitle())%></h4><%
+									List<smartcal.Showtime> showtimes = m.getShowtimes();
+									int sNum = 0;
+									for (sNum = 0; sNum < showtimes.size(); sNum++)	{ 
+										smartcal.Showtime showtime = showtimes.get(sNum);
+										%>
+										<div class="form-control form-check">
+								  		<label class="form-check-label">
+									    <input class="form-check-input" type="radio" name="showtimes" value="m<%=(mNum)%>-t<%=(sNum)%>" value="movieoption<%=(i)%>">
+									    <%=(showtime.getTheater() + " at " + showtime.getTime())%>
+									  	</label>
+									</div>
+									<% } %>	
+								</div>
+							</div>
+			  				<% } %>
+				  		</div>	
+				  		
+			       		<div class="input-group">
+							<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Showtime Option</button>
+				  		</div>
+				  		
+			       		</form>
 			       		</div></div>
 		       		
 		       		<%} %>
@@ -459,7 +458,15 @@
 	       		<%} %>
 	       		
 	       		<!-- Finalize Event if you have an option -->
-	       		<%if (invitation.getOptions().size() > 0) {%>	
+	       		<% int size = 0;
+	       		if (invitation.getType() == smartcal.Invitation.Type.G) {
+	       			size = invitation.getOptions().size();
+	       		}
+	       		else if (invitation.getType() == smartcal.Invitation.Type.M) {
+	       			size = invitation.getMovieOptions().size();
+	       		}
+	       		
+	       		if (size > 0) {%>	
 		       		<div class="row"><div class="col-md">
 		       			<form action="/newevent" name="finishInvitation" method="post"> 	
 					       		<button name="part2submit" class="form-control form-control-lg btn-lg btn-success" type="submit">Finish Invitation</button>

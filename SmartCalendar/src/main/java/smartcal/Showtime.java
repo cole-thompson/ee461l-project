@@ -21,6 +21,14 @@ public class Showtime {
 		
 		public String getDate() { return date; }
 		
+		public Showtime() {
+			this.theater = "";
+			this.dateTime = "";
+			this.movieTitle = "";
+			this.time = "";
+			this.date = "";
+		}
+		
 		public Showtime(String theater, String dateTime, String movieTitle) {
 			this.theater = theater;
 			this.dateTime = dateTime;

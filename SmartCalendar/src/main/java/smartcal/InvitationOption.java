@@ -50,7 +50,9 @@ public class InvitationOption {
 		if (allDay) {
 			length = 10;
 		}
-		return getStartTime().toString().substring(0, length) + " to " + getEndTime().toString().substring(0, length);
+		String s = ((getStartTime() == null)?"":getStartTime().toString().substring(0, length));
+		s += ((getEndTime() == null)?"":(" to " + getEndTime().toString().substring(0, length)));
+		return s;
 		
 	}
 	

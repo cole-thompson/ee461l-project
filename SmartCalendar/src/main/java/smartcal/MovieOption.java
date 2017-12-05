@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import com.google.appengine.api.users.User;
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
-
 
 public class MovieOption extends InvitationOption {
 
@@ -39,8 +34,6 @@ public class MovieOption extends InvitationOption {
 	
 	
 	public void searchMovies(int zip, int radius, String startDay, String endDay) {
-		//TODO
-		
 		Date start = dayStringToDate(startDay);
 		Date end = dayStringToDate(startDay);
 		

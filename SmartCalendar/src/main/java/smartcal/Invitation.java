@@ -181,6 +181,10 @@ public class Invitation {
 		options.add(option);
 	}
 	
+	public void addOption(MovieOption option) {
+		movieOptions.add(option);
+	}
+	
 	public void removePerson(User u) {
 		friends.remove(u);
 	}

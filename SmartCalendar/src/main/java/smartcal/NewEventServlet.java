@@ -126,6 +126,9 @@ public class NewEventServlet extends HttpServlet{
 			if (invitation == null) {
 				return true;
 			}
+			else if (invitation.getType() != Invitation.Type.G) {
+				return false;
+			}
 
 			InvitationOption option = new InvitationOption();
 			
@@ -183,7 +186,7 @@ public class NewEventServlet extends HttpServlet{
 			option.setStartTime(startTimeCal);
 			option.setEndTime(endTimeCal);
 			
-			System.out.println("NEW GENERIC OPTION location: " + eventLoc + "time: " + option.getTimeString() + " allday: " + option.getAllDay());
+			System.out.println("NEW GENERIC OPTION location: " + eventLoc + "time: " + option.getStartTime() + " allday: " + option.getAllDay());
 
 			invitation.addOption(option);
 			ObjectifyService.ofy().save().entity(invitation); 
@@ -195,13 +198,18 @@ public class NewEventServlet extends HttpServlet{
 	private boolean checkNewOptionM(HttpServletRequest req, User creator) {
 		boolean pressed = false;
 		if (req.getParameter("newoption") != null) {
+			System.out.println("Adding a new movie option");
 	       	Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
 			if (invitation == null) {
 				return true;
 			}
+			else if (invitation.getType() != Invitation.Type.M) {
+				return false;
+			}
 			
 			String showtimeString = "";
 			if ((showtimeString = req.getParameter("showtimes")) != null) {
+				System.out.println("A showtime was selected: " + showtimeString);
 				MovieOption option = invitation.findMovieOptionNotFinished();
 				List<Movie> movies = option.getSearchResults();
 				int movieNum = 0;
@@ -219,21 +227,23 @@ public class NewEventServlet extends HttpServlet{
 				option.setOption(st);
 				option.setFinished(true);
 				ObjectifyService.ofy().save().entity(invitation); 
-				System.out.println("NEW MOVIE OPTION location: " + option.getLocation() + "time: " + option.getTimeString());
+				System.out.println("NEW MOVIE OPTION location: " + option.getLocation() + "time: " + option.getStartTime());
 			}
 
 			ObjectifyService.ofy().save().entity(invitation); 
 			pressed = true;
         }
 		else if (req.getParameter("searchmovies") != null) {
+			System.out.println("Searching for movies");
 			Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
 			if (invitation == null) {
 				return true;
 			}
 			
-			MovieOption option = invitation.findMovieOptionNotSearched();
+			MovieOption option = new MovieOption();
+			System.out.println("option in search" + option);
 			
-			if (option != null) {
+			
 				int zip = 0;
 				int radius = 0;
 				try {
@@ -247,9 +257,11 @@ public class NewEventServlet extends HttpServlet{
 				String endDay = req.getParameter("endday");
 				option.searchMovies(zip, radius, startDay, endDay);
 				option.setSearched(true);
+				invitation.addOption(option);
+				System.out.println("Movies Found: " + option.getSearchResults());
 				ObjectifyService.ofy().save().entity(invitation); 
 				
-			}
+			
 			
 			pressed = true;
 		}

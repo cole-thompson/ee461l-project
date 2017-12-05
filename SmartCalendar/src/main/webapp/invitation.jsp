@@ -82,6 +82,19 @@
   				
   				
   		%>
+  		
+  		<%! public int getInvitationSize(smartcal.Invitation invitation) {
+	    	int size = 0;
+	    	if (invitation.getType() == smartcal.Invitation.Type.G) {
+       			size = invitation.getOptions().size();
+       		}
+	    	else if (invitation.getType() == smartcal.Invitation.Type.M) {
+       			size = invitation.getMovieOptions().size();
+       		}
+	    	return size;
+	    
+	    } %>
+	    
   		<nav class="navbar navbar-expand-lg p-1 navbar-light bg-light sticky-top border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
   			<a class="navbar-brand" href="/calendar.jsp">Smart Calendar</a>
   			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,25 +151,45 @@
 	    		<tbody>
 		    		<tr><td>
 					<ul class="list-group">
-					 <% if (toDisplay.getOptions().size() == 0) { %>
+					 <% if (getInvitationSize(toDisplay) == 0) { %>
 					 	<li class="list-group-item w-100"><span class="text-secondary">(None)</span></li>
 				 	 <%}
 					 int i = 0;
-					 for(smartcal.InvitationOption op : toDisplay.getOptions()){
-			 				String loc = op.getLocation();
-			 				String time = op.getTimeString();
-			 				%>
-			 				<li class="list-group-item w-100">
-			 				<div class="form-group"> 			
-						  		<label class="form-check-label">
-								    <input class="form-check-input" type="checkbox" name="option<%=(i)%>" value="option<%=(i)%>">
-							  		<span class="text-secondary">Location: </span><%=loc %><br />
-						    		<%=time %>
-							  	</label>
-			 	 			</div>
-			 	 			</li>
-					<%i++;
-					}%>		
+					 if (toDisplay.getType() == smartcal.Invitation.Type.G) {
+						 List<smartcal.InvitationOption> options = toDisplay.getOptions();
+						 for(smartcal.InvitationOption op : options){
+				 				String loc = op.getLocation();
+				 				String time = op.getTimeString();
+				 				%>
+				 				<li class="list-group-item w-100">
+				 				<div class="form-group"> 			
+							  		<label class="form-check-label">
+									    <input class="form-check-input" type="checkbox" name="option<%=(i)%>" value="option<%=(i)%>">
+								  		<span class="text-secondary">Location: </span><%=loc %><br />
+							    		<%=time %>
+								  	</label>
+				 	 			</div>
+				 	 			</li>
+						<%i++;
+						}
+					 }
+					 else if (toDisplay.getType() == smartcal.Invitation.Type.M) {
+						 List<smartcal.MovieOption> options = toDisplay.getMovieOptions();
+						 for(smartcal.InvitationOption op : options){%>
+				 				<li class="list-group-item w-100">
+				 				<div class="form-group"> 			
+							  		<label class="form-check-label">
+									    <input class="form-check-input" type="checkbox" name="option<%=(i)%>" value="option<%=(i)%>">
+									    <span class="text-secondary">Movie: </span><%=(op.getOptionName())%><br />
+								  		<span class="text-secondary">Theater: </span><%=(op.getLocation())%><br />
+							    		<%=(op.getStartTime().toString())%>
+								  	</label>
+				 	 			</div>
+				 	 			</li>
+						<%i++;
+						}
+					 }%>
+					 	
 					</ul>
 					</td></tr>
 					
@@ -184,28 +217,59 @@
 	    		<tr>
 		    		<td><ul class="list-group">
 		    		<li class="list-group-item"><span class="text-primary">Options</span></li>
-					 <% if (toDisplay.getOptions().size() == 0) { %>
+		    		<% if (toDisplay.getType() == smartcal.Invitation.Type.G) {
+		    			List<smartcal.InvitationOption> options = toDisplay.getOptions();
+		    			if (getInvitationSize(toDisplay) == 0) { %>
 						 <li class="list-group-item"><span class="text-secondary">(None)</span></li>
-					 <%}
-					 for(smartcal.InvitationOption op : toDisplay.getOptions()){
-		 				String loc = op.getLocation();
-		 				String time = op.getTimeString();%>
-		 				<li class="list-group-item">
-					  		<p><span class="text-secondary">Location: </span><%=loc %></p>
-				    		<p><span class="text-secondary">When: </span><%=time %></p>
-				    		<p>
-				    			<span class="text-secondary">People Available (<%=(op.numAvailablePeople())%>): </span>
-				    			<%List<User> availablePeople = op.getAvailablePeople();
-				    			for (int i = 0; i < availablePeople.size(); i++) {
-				    				User u = availablePeople.get(i);%>
-				    				<span class="">
-				    					<%=(smartcal.UserAccount.getNameForUser(u))%>
-				    					<%if (i < availablePeople.size() - 1) { %><%=(", ")%><% } %>
-				    				</span>
-				    			<%} %>
-				    		</p>
-		 	 			</li>
-					<%}%>		
+					 	<%}
+						 for(smartcal.InvitationOption op : options){
+				 				String loc = op.getLocation();
+				 				String time = op.getTimeString();%>
+				 				<li class="list-group-item">
+							  		<p><span class="text-secondary">Location: </span><%=loc %></p>
+						    		<p><span class="text-secondary">When: </span><%=time %></p>
+						    		<p>
+						    			<span class="text-secondary">People Available (<%=(op.numAvailablePeople())%>): </span>
+						    			<%List<User> availablePeople = op.getAvailablePeople();
+						    			for (int i = 0; i < availablePeople.size(); i++) {
+						    				User u = availablePeople.get(i);%>
+						    				<span class="">
+						    					<%=(smartcal.UserAccount.getNameForUser(u))%>
+						    					<%if (i < availablePeople.size() - 1) { %><%=(", ")%><% } %>
+						    				</span>
+						    			<%} %>
+						    		</p>
+				 	 			</li>
+						<%}
+					 }
+					 else if (toDisplay.getType() == smartcal.Invitation.Type.M) {
+						 List<smartcal.MovieOption> movieOptions = toDisplay.getMovieOptions();
+						 if (getInvitationSize(toDisplay) == 0) { %>
+						 <li class="list-group-item"><span class="text-secondary">(None)</span></li>
+					 	<%}
+						 for(smartcal.InvitationOption op : movieOptions){%>
+				 				<li class="list-group-item">
+				 					<p><span class="text-secondary">Movie: </span><%=(op.getOptionName())%></p>
+								  	<p><span class="text-secondary">Theater: </span><%=(op.getLocation())%></p>
+							    	<p><%=(op.getStartTime().toString())%></p>
+						    		<p>
+						    			<span class="text-secondary">People Available (<%=(op.numAvailablePeople())%>): </span>
+						    			<%List<User> availablePeople = op.getAvailablePeople();
+						    			for (int i = 0; i < availablePeople.size(); i++) {
+						    				User u = availablePeople.get(i);%>
+						    				<span class="">
+						    					<%=(smartcal.UserAccount.getNameForUser(u))%>
+						    					<%if (i < availablePeople.size() - 1) { %><%=(", ")%><% } %>
+						    				</span>
+						    			<%} %>
+						    		</p>
+				 	 			</li>
+						<%}%>
+						 
+					<% }%>
+					 
+					 
+					 		
 					</ul></td>
 					
 					<td><ul class="list-group">
@@ -239,25 +303,45 @@
 	    		<tbody>
 		    		<tr><td>
 					<ul class="list-group">
-					 <% if (toDisplay.getOptions().size() == 0) { %>
+					 <% if (getInvitationSize(toDisplay) == 0) { %>
 					 	<li class="list-group-item w-100"><span class="text-secondary">(None)</span></li>
 				 	 <%}
 					 int i = 0;
-					 for(smartcal.InvitationOption op : toDisplay.getOptions()){
-			 				String loc = op.getLocation();
-			 				String time = op.getTimeString();
-			 				%>
-			 				<li class="list-group-item w-100">
-			 				<div class="form-group"> 			
-						  		<label class="form-check-label">
-								    <input class="form-check-input" type="checkbox" name="option<%=(i)%>" value="option<%=(i)%>">
-							  		<span class="text-secondary">Location: </span><%=loc %><br />
-						    		<%=time %>
-							  	</label>
-			 	 			</div>
-			 	 			</li>
-					<%i++;
-					}%>		
+					 if (toDisplay.getType() == smartcal.Invitation.Type.G) {
+						 List<smartcal.InvitationOption> options = toDisplay.getOptions();
+						 for(smartcal.InvitationOption op : options){
+				 				String loc = op.getLocation();
+				 				String time = op.getTimeString();
+				 				%>
+				 				<li class="list-group-item w-100">
+				 				<div class="form-group"> 			
+							  		<label class="form-check-label">
+									    <input class="form-check-input" type="checkbox" name="option<%=(i)%>" value="option<%=(i)%>">
+								  		<span class="text-secondary">Location: </span><%=loc %><br />
+							    		<%=time %>
+								  	</label>
+				 	 			</div>
+				 	 			</li>
+						<%i++;
+						}
+					 }
+					 else if (toDisplay.getType() == smartcal.Invitation.Type.M){
+						 List<smartcal.MovieOption> options = toDisplay.getMovieOptions();
+						 for(smartcal.InvitationOption op : options){%>
+				 				<li class="list-group-item w-100">
+				 				<div class="form-group"> 			
+							  		<label class="form-check-label">
+									    <input class="form-check-input" type="checkbox" name="option<%=(i)%>" value="option<%=(i)%>">
+									    <span class="text-secondary">Movie: </span><%=(op.getOptionName())%><br />
+								  		<span class="text-secondary">Theater: </span><%=(op.getLocation())%><br />
+							    		<%=(op.getStartTime().toString())%>
+								  	</label>
+				 	 			</div>
+				 	 			</li>
+						<%i++;
+						}
+					 }%>
+						
 					</ul>
 					</td></tr>
 					

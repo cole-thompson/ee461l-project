@@ -39,17 +39,14 @@ public class Showtime {
 			this.date = "";
 		}
 		
-		public Showtime(String theater, String dateTime, String movieTitle, String runTime) {
+		public Showtime(String theater, String dateTime, String movieTitle) {
 
 			this.theater = theater;
 			this.dateTime = dateTime;
 			this.movieTitle = movieTitle;
 			time = dateTime.substring(dateTime.indexOf('T')+1);
 			date = dateTime.substring(0, dateTime.indexOf('T'));
-			int hours = Integer.parseInt(runTime.substring(runTime.indexOf('T') + 1, runTime.indexOf('H')));
-			int minutes = Integer.parseInt(runTime.substring(runTime.indexOf('H') + 1), runTime.indexOf('M'));
-			runHours = hours;
-			runMinutes = minutes;
+
 		}
 		
 		@Override

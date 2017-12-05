@@ -33,26 +33,16 @@ public class MovieOption extends InvitationOption {
 		Date startdate = dayTimeStringToDate(date, starttime);
 		
 		Date enddate = (Date) startdate.clone();
-		int newMinutes = startdate.getMinutes() + showtime.getRunMinutes();
+
 		int hours = startdate.getHours();
-		boolean newDate = false;
-		if(newMinutes >= 60) {
-			hours+=1;
-			newMinutes -= 60; 
-		} 
-		enddate.setMinutes(newMinutes);
-		hours += showtime.getRunHours();
+		
+		hours +=3;
 		
 		if(hours >= 24) {
-			hours -=24;
-			newDate = true;
-		}
-		
-		if(newDate) {
+			hours -= 24;
 			enddate.setDate(enddate.getDate()+1);
-		} 
-		
-		enddate.setHours(hours);
+			enddate.setHours(hours);
+		} else { enddate.setHours(hours); }
 		
 		setStartTime(startdate);
 		setEndTime(enddate);

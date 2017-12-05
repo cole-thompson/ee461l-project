@@ -165,10 +165,7 @@ public class MovieDatabase {
 				parser.skipToKey("title");
 				String title = parser.getText();
 				parser.nextToken();
-				//get runtime
-				parser.skipToKey("runTime");
-				String runTime = parser.getText();
-				parser.nextToken();
+				
 				//showtimes array
 				ArrayList<Showtime> showtimes = new ArrayList<Showtime>();
 				parser.skipToKey("showtimes");
@@ -187,10 +184,10 @@ public class MovieDatabase {
 					while(parser.nextToken() != JsonToken.END_OBJECT) {}	
 					JsonToken t = parser.nextToken();
 					//make new showtime obj and add it to the list
-					showtimes.add(new Showtime(name, dateTime, title, runTime));
+					showtimes.add(new Showtime(name, dateTime, title));
 					if(t.equals(JsonToken.END_ARRAY)) break; else { multiTime = true; }
 				}
-				movies.add(new Movie(title, runTime, showtimes));
+				movies.add(new Movie(title, showtimes));
 			}
 		}
 		

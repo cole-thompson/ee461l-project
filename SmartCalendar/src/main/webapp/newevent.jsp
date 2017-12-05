@@ -31,66 +31,16 @@
 
   	<body class="bg-light">
   	
-  		<%
-		//Google sign-in initialization 
-		UserService userService = UserServiceFactory.getUserService();
-	    User user = userService.getCurrentUser();
-  		
-  		ObjectifyService.register(smartcal.UserAccount.class);
-  		
-  		if (user == null) {
-  			%>
-  			<div class="container border border-primary p-3 m-3 bg-white">
-  				<div class="row"><div class="col">
-  					<h1>Welcome to <span class="text-primary">Smart Calendar!</span> Please Sign In</h1>
-  				</div></div>
-  				<div class="row"><div class="col">
-					<a class="btn btn-sm btn-success w-100" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
-				</div></div>
-			</div>
-			<%
-  		}
-  		else {
-  			smartcal.UserAccount accountData = ObjectifyService.ofy().load().type(smartcal.UserAccount.class).filter("user", user).first().now();
-  			if (accountData == null) {
-				System.out.println("no account data found for: " + user.getNickname());
-				%>
-				
-				<div class="container border border-primary p-3 m-3 bg-white">
-	  				<div class="row"><div class="col">
-	  					<h1 class="">It's your first time using <span class="text-primary">Smart Calendar!</span></h1>
-	  				</div></div>
-	  				<div class="row"><div class="col">
-	  					<form action="/firstlogin" method="post">
-	  						<div class="form-group">
-			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->					    			
-					    			<span class="input-group-addon">Please select a nickname</span>
-					    			<input name="username" class="form-control">
-									<button name="setname" class="input-group-addon">Set Name</button>
-					    		</div>
-					    	</div>
-						</form>
-					</div></div>
-					<div class="row"><div class="col">
-						<a class="btn btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Google Sign Out</a>
-					</div></div>
-				</div>
-				<%
-				
-  			}
-  			else {
-  				
-  		%>
   		<nav class="navbar navbar-expand-lg p-1 navbar-light bg-light sticky-top border border-top-0 border-left-0 border-right-0 border-primary" border-width="thick">
-  			<a class="navbar-brand" href="/calendar.jsp">Smart Calendar</a>
+  			<a class="navbar-brand" href="#">Smart Calendar</a>
   			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
 		    	<span class="navbar-toggler-icon"></span>
 		 	</button>
 		 	
 		 	<div class="collapse navbar-collapse" id="navbarContent">
 			    <ul class="navbar-nav mr-auto">
-			    	<li class="nav-item">
-			        	<a class="nav-link" href="/calendar.jsp">Home</a>
+			    	<li class="nav-item active">
+			        	<a class="nav-link" href="/calendar.jsp">Home <span class="sr-only">(current)</span></a>
 			      	</li>
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="#">Account</a>
@@ -98,15 +48,43 @@
 			      	<li class="nav-item">
 			        	<a class="nav-link" href="/friends.jsp">Social</a>
 			      	</li>
-			      	<li class="nav-item active">
-			        	<a class="nav-link" href="/newevent.jsp">New Event<span class="sr-only">(current)</span></a>
+			      	<!-- 
+			      	<li class="nav-item dropdown">
+			        	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+			        	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+				          	<a class="dropdown-item" href="#">Action</a>
+				          	<div class="dropdown-divider"></div>
+				          	<a class="dropdown-item" href="#">Something else here</a>
+			        	</div>
+			      	</li>
+			      	 -->
+			      	<li class="nav-item">
+			        	<a class="nav-link" href="/newevent.jsp">New Event</a>
 			      	</li>
 			    </ul>
-				
-				<span class="navbar-text text-muted mr-3">Hello, <%=(accountData.getUsername())%>! </span>
-				<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
-			
-			</div>	
+
+		<%
+		//Google sign-in initialization 
+	    UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+	    String username = "";
+	    if (user == null) {
+			%>
+			<span class="navbar-text text-muted mr-3">Hello!</span>
+			<a class="btn btn-sm btn-outline-success" href="<%=(userService.createLoginURL(request.getRequestURI()))%>" role="button">Sign in</a>
+			<%
+	    }
+	    else {
+	    	username = "" + user.getNickname();
+	      	pageContext.setAttribute("user", user);
+			%>
+			<span class="navbar-text text-muted mr-3">Hello, ${fn:escapeXml(user.nickname)}! </span>
+			<a class="btn btn-sm btn-outline-danger" href="<%=(userService.createLogoutURL(request.getRequestURI()))%>">Sign Out</a>
+			<%
+	    }  
+		%>	
+		
+		</div>	
 		</nav>
 	
 		<%
@@ -178,7 +156,7 @@
 		  								if (friends.get(i) != null) {%>											
 		  								<div class="form-control form-check">
 									  		<label class="form-check-label">
-										    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> <%=smartcal.UserAccount.getNameForUser(friends.get(i))%>
+										    <input class="form-check-input" type="checkbox" name="friend<%=(i)%>" value="friend<%=(i)%>"> <%=friends.get(i).getNickname()%>
 										  	</label>
 										</div>
 										<%}%>
@@ -188,12 +166,19 @@
 	  						
 	  						<button name="part1submit" class="form-control form-control-lg btn btn-success" type="submit">Start Invitation</button>
 	  					
-			       		</form>	
+			       		</f		orm>	
 				   </td></tr>
+				   <!-- look into checkboxes for type -->
+				   
+				   
 				   </tbody>	
 				</table>
+				
+				
+	       			
 	       		</div></div>
 	       	</div> 	
+	    
 	    
 	    
 	    <!-- STAGE 2 -->
@@ -201,38 +186,54 @@
      	else if (invitation.getStarted()) { %>
        		<div class="container">
 	       		<div class="row"><div class="col-md">
-	       			<h2><span class="text-primary"><%=(invitation.getName())%></span></h2>
+	       			<h2><span class="text-primary">New Event</span></h2>
 	       		</div></div>
 	       		
 	       		<!-- Print info from stage 1 -->
 	       		<div class="row"><div class="col-md">
 	       		<table class="table table-bordered table-light">
 	       			<thead class="thead-dark"><tr class="d-flex w-100">
-	      		  			<th class="w-100">People</th>
+	      		  			<th class="w-100">Name and Type</th>
 	      			</tr> </thead> 
 	      			<tbody><tr><td>
+	      				<div class="form-group">
+		       				<div class="input-group">	
+				    			<span class="input-group-addon">Event Name</span>
+				    			<input readonly name="eventname" class="form-control bg-white" value="<%=(invitation.getName())%>">
+				    		</div>
+					    </div> 
+				    	<div class="form-group">
+		       				<div class="input-group">	
+				    			<span class="input-group-addon">Event Type</span>
+				    			<input readonly name="eventname" class="form-control bg-white" value="<%=(invitation.getTypeString())%>">
+				    		</div>
+					    </div>
 					    <% List<User> friends = invitation.getFriends();
 		  				if (friends.size() != 0) { %>
-		    				<ul class="list-group">
-	  							<%
-	  							for (int i = 0; i < friends.size(); i++) { 
-	  								if (friends.get(i) != null) {%>
-									<li class="list-group-item w-100"> <%=smartcal.UserAccount.getNameForUser(friends.get(i))%></li>
-									<%}%>
-								<%} %>
-  							</ul>
+					    <div class="form-group">
+		       				<div class="input-group">	
+				    			<span class="input-group-addon">People</span>
+				    			<div class="form-control">
+				    				<ul class="list-group">
+			  							<%
+			  							for (int i = 0; i < friends.size(); i++) { 
+			  								if (friends.get(i) != null) {%>
+											<li class="list-group-item"> <%=friends.get(i).getNickname()%></li>
+											<%}%>
+										<%} %>
+		  							</ul>
+		  							</div>
+				    			</div>
+					    	</div>
 					    <%}%>				
 				   </td></tr></tbody>	
 				</table>
 				</div></div>
 				
-				<%if (invitation.getType() == smartcal.Invitation.Type.G) {%>
-				<!-- GENERIC TYPE -->
-				
 				<!-- List Existing Options -->
 				<% List<smartcal.InvitationOption> options = invitation.getOptions();
 				int i = 0;
-				if (options != null && options.size() > 0)  { %>
+				if (options != null)  { %>
 					<div class="row"><div class="col-md">
 	       			<table class="table table-bordered table-light">
 		       			<thead class="thead-dark"><tr class="d-flex w-100">
@@ -265,13 +266,13 @@
 	      			<tbody><tr><td>  
 				       	<form action="/newevent" name="stage2" method="post"> 	
 				       		<div class="form-group">
-			       				<div class="input-group">	
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
 					    			<span class="input-group-addon">Location</span>
 					    			<input name="location" class="form-control">
 					    		</div>
 					    	</div>
 					    	<div class="form-group">
-			       				<div class="input-group">	
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
 					    			<span class="input-group-addon">Start Day</span>
 					    			<input type="date" name="startday" class="form-control">
 					    			<span class="input-group-addon">End Day</span>
@@ -284,7 +285,7 @@
 					    		</div>
 					    	</div>
 				       		<div class="form-group">
-			       				<div class="input-group">	
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
 					    			<span class="input-group-addon">Start Time</span>
 					    			<input type="time" id="starttime" name="starttime" class="form-control">
 					    			<span class="input-group-addon">End Time</span>
@@ -294,188 +295,23 @@
 				       	
 				       		<div class="form-group">
 		  						<div class="input-group">
-									<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Option</button>
+									
 			  					</div>
 	  						</div>
 	  						
+				       		<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Option</button>
 				       	</form>
 	      				</td></tr></tbody>
 	       		</table>
 	       		</div></div> 
 	       		
-	       		<% } else if (invitation.getType() == smartcal.Invitation.Type.M) { %>
-		       		<!-- MOVIE TYPE -->
-		       		
-		       		<!-- List Existing Movie Options -->
-					<% List<smartcal.MovieOption> options = invitation.getMovieOptions();
-					int i = 0;
-					if (options != null && options.size() > 0)  { %>
-						<div class="row"><div class="col-md">
-		       			<table class="table table-bordered table-light">
-			       			<thead class="thead-dark"><tr class="d-flex w-100">
-			      		  			<th class="w-100">Options</th>
-			      			</tr> </thead> 
-			      			<tbody><tr><td>  
-			      				<% for (smartcal.MovieOption option : options) {
-								i++; 
-								if (option.hasFinished()) {%>
-			      				<div class="form-group">
-				       				<div class="input-group">
-				       					<span class="input-group-addon"><%=(i)%></span>
-				       					<span class="input-group-addon">Movie</span>
-					    				<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getOptionName())%>">
-				       					<span class="input-group-addon">Theater</span>
-					    				<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getLocation())%>">
-						    			<span class="input-group-addon">Time</span>
-						    			<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getStartTime().toString())%>">
-						    		</div>
-						    	</div>
-						    	<%} }%>
-							</td></tr></tbody>
-						</table>
-						</div></div>
-					<%} 
-					
-					
-					//Check if there is a movie search in progress
-					smartcal.MovieOption option = invitation.findMovieOptionNotFinished();
-					if (option == null) {
-						System.out.println("no unfinished movie options");
-					}else {
-						System.out.println("Movie option unfinished: finished-" + option.hasFinished() + " searched-" + option.hasSearched());
-					}
-					
-					if (option == null) { %>
-			       		<!-- Begin Search For Movies -->
-						<div class="row"><div class="col-md">
-			       		<table class="table table-bordered table-light">
-			       			<thead class="thead-dark"><tr class="d-flex w-100">
-			      		  			<th class="w-100">Search for Movie Showtimes</th>
-			      			</tr> </thead> 
-			      			<tbody><tr><td>  
-						       	<form action="/newevent" method="post"> 	
-							    	<div class="form-group">
-					       				<div class="input-group">	
-							    			<span class="input-group-addon">Zip Code</span>
-							    			<input type="number" min="10000" max="99999" name="zipcode" class="form-control">
-							    			<span class="input-group-addon">Radius (mi)</span>
-							    			<input type="number" min="1" max="100" name="zipradius" class="form-control">
-							    		</div>
-							    	</div>
-							    	<div class="form-group">
-					       				<div class="input-group">	
-					       					<span class="input-group-addon">Search Days</span>
-							    			<span class="input-group-addon">Start</span>
-							    			<input type="date" name="startday" class="form-control">
-							    			<span class="input-group-addon">End</span>
-							    			<input type="date" name="endday" class="form-control">
-							    		</div>
-							    	</div>
-						       		
-						       		<div class="form-group">
-				  						<div class="input-group">
-											<button name="searchmovies" class="form-control form-control-lg btn-outline" type="submit">Search Movies</button>
-					  					</div>
-			  						</div>
-			  						
-						       	</form>
-			      				</td></tr></tbody>
-			       		</table>
-			       		</div></div> 
-			       	<% }
-					else if (option.hasSearched()) { %>
-		       			<!-- Select Movie Option -->
-						<div class="row"><div class="col-md">
-			       		<table class="table table-responsive table-bordered table-light">
-			       			<thead class="thead-dark"><tr class="d-flex w-100">
-			      		  			<th class="w-100">Select a Movie and Showtime</th>
-			      			</tr> </thead> 
-			      			<tbody> 
-			      				<tr><td>  
-							       	<div class="form-group form-group-lg"><div class="input-group">
-			  							<% List<smartcal.Movie> movies = option.getSearchResults();
-			  							if (movies.size() == 0) { %>
-											<div class="card" style="width: 20rem;">
-											  	<div class="card-body">
-												    <h4 class="card-title">No Movies Found.</h4>
-											  	</div>
-											 </div>
-			  							<%}
-			  							for (i = 0; i < movies.size(); i++) {
-			  								smartcal.Movie movie = movies.get(i);
-			  								if (movie != null) {%>	
-			  								<div class="card" style="width: 15rem;">
-											  	<div class="card-body">
-												    <h4 class="card-title"><%=(movie.getTitle())%></h4>
-												    <p class="card-text">Info</p>
-												    <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#moviecard<%=(i)%>" aria-expanded="false">
-												    	<span>View Showtimes</span>
-												    </button>
-											  	</div>
-											 </div>										
-			  								
-											<%}%>
-			  							<%}%>
-				  					</div></div>
-				  				</td></tr>
-			      				</tbody>	
-			       		</table>
-			       		
-			       		<form action="/newevent" method="post">
-			       		<div class="form-group form-group-lg">
-			  				<% int mNum = 0;
-			  				for (mNum = 0; mNum < movies.size(); mNum++) {	 %>
-			  				<div class="collapse" id="moviecard<%=(mNum)%>" style="max-height: 20em; overflow-y:auto">							
-								<div class="card card-body">
-									<% smartcal.Movie m = movies.get(mNum);
-									%><h4><%=(m.getTitle())%></h4><%
-									List<smartcal.Showtime> showtimes = m.getShowtimes();
-									int sNum = 0;
-									for (sNum = 0; sNum < showtimes.size(); sNum++)	{ 
-										smartcal.Showtime showtime = showtimes.get(sNum);
-										%>
-										<div class="form-control form-check">
-								  		<label class="form-check-label">
-									    <input class="form-check-input" type="radio" name="showtimes" value="m<%=(mNum)%>-t<%=(sNum)%>" value="movieoption<%=(i)%>">
-									    <%=(showtime.getTheater() + " at " + showtime.getTime())%>
-									  	</label>
-									</div>
-									<% } %>	
-								</div>
-							</div>
-			  				<% } %>
-				  		</div>	
-				  		
-			       		<div class="input-group">
-							<button name="newoption" class="form-control form-control-lg btn-outline" type="submit">Add Showtime Option</button>
-				  		</div>
-				  		
-			       		</form>
-			       		</div></div>
-		       		
-		       		<%} %>
-		       		
-	       		<%} %>
-	       		
-	       		<!-- Finalize Event if you have an option -->
-	       		<% int size = 0;
-	       		if (invitation.getType() == smartcal.Invitation.Type.G) {
-	       			size = invitation.getOptions().size();
-	       		}
-	       		else if (invitation.getType() == smartcal.Invitation.Type.M) {
-	       			size = invitation.getMovieOptions().size();
-	       		}
-	       		
-	       		if (size > 0) {%>	
-		       		<div class="row"><div class="col-md">
-		       			<form action="/newevent" name="finishInvitation" method="post"> 	
-					       		<button name="part2submit" class="form-control form-control-lg btn-lg btn-success" type="submit">Finish Invitation</button>
-					       	</form>
-		       		</div></div>   
-	       		<%} %> 
-	       		  		
+	       		<div class="row"><div class="col-md">
+	       			<form action="/newevent" name="finishInvitation" method="post"> 	
+				       		<button name="part2submit" class="form-control form-control-lg btn-lg btn-success" type="submit">Finish Invitation</button>
+				       	</form>
+	       		</div></div>      		
        		</div>
-       	<%} } } %>
+       	<%} %>
        	
        	<script>
 		 	document.getElementById('allday').onchange = function() {

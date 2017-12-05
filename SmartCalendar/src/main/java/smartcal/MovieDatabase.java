@@ -187,7 +187,7 @@ public class MovieDatabase {
 					while(parser.nextToken() != JsonToken.END_OBJECT) {}	
 					JsonToken t = parser.nextToken();
 					//make new showtime obj and add it to the list
-					showtimes.add(new Showtime(name, dateTime, title));
+					showtimes.add(new Showtime(name, dateTime, title, runTime));
 					if(t.equals(JsonToken.END_ARRAY)) break; else { multiTime = true; }
 				}
 				movies.add(new Movie(title, runTime, showtimes));

@@ -1,6 +1,6 @@
 package smartcal;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -45,7 +45,7 @@ public class MovieOption extends InvitationOption {
 	public void searchMovies(int zip, int radius, String startDay, String endDay) {
 		//TODO
 		
-		
+		Date start = dayStringToDate(startDay);
 		//searchResults.add(new Movie());
 	}
 	

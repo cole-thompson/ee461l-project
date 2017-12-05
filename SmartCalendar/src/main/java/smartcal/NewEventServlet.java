@@ -199,24 +199,51 @@ public class NewEventServlet extends HttpServlet{
 			if (invitation == null) {
 				return true;
 			}
+			
+			MovieOption option;
+			//look through options
+			
+			
+			//System.out.println("NEW MOVIE OPTION location: " + option.getLocation() + "time: " + option.getTimeString());
 
-			//Change to Movie Option class
-			InvitationOption option = new InvitationOption();
-			
-			//get info from form elements, create option, add to invitation
-			
-			
-			
-			
-			
-			
-			
-			System.out.println("NEW MOVIE OPTION location: " + option.getLocation() + "time: " + option.getTimeString());
-
-			invitation.addOption(option);
+			//invitation.addOption(option);
 			ObjectifyService.ofy().save().entity(invitation); 
 			pressed = true;
         }
+		else if (req.getParameter("searchmovies") != null) {
+			Invitation invitation = ObjectifyService.ofy().load().type(Invitation.class).filter("creator", creator).filter("finished", false).first().now();
+			if (invitation == null) {
+				return true;
+			}
+			
+			MovieOption option = new MovieOption();
+			boolean searching = false;
+			for (MovieOption opt : invitation.getMovieOptions()) {
+				if (!opt.hasSearched()) {
+					option = opt;
+					searching = true;
+				}
+			}
+			
+			if (searching) {
+				int zip = 0;
+				int radius = 0;
+				try {
+					zip = Integer.parseInt(req.getParameter("zipcode"));
+					radius = Integer.parseInt(req.getParameter("zipradius"));
+				}
+				catch (NumberFormatException e) {
+					
+				}
+				String startDay = req.getParameter("startday");
+				String endDay = req.getParameter("endday");
+				option.searchMovies(zip, radius, startDay, endDay);
+				
+				ObjectifyService.ofy().save().entity(invitation); 
+			}
+			
+			pressed = true;
+		}
 		return pressed;
 	}
 	

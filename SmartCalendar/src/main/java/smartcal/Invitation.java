@@ -28,12 +28,14 @@ public class Invitation {
 	private String name;
 	
 	private List<InvitationOption> options;
+	private List<MovieOption> movieOptions;
 	private List<User> peopleVotedForOptions;
 
 	public Invitation() {
 		started = false;
 		finished = false;
 		options = new ArrayList<InvitationOption>();
+		movieOptions = new ArrayList<MovieOption>();
 		friends = new ArrayList<User>();
 		peopleVotedForOptions = new ArrayList<User>();
 		type = Type.G;
@@ -149,6 +151,14 @@ public class Invitation {
 		this.options = options;
 	}
 	
+	public List<MovieOption> getMovieOptions() {
+		return this.movieOptions;		
+	}
+	
+	public void setOptions(ArrayList<MovieOption> movieOptions) {
+		this.movieOptions = movieOptions;		
+	}
+	
 	public void addOption(InvitationOption option) {
 		options.add(option);
 	}
@@ -211,4 +221,5 @@ public class Invitation {
 		return true;
 
 	}
+	
 }

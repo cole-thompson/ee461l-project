@@ -238,12 +238,12 @@
 	    
 
 
-			
+		<%display.loadDisplayEvents(); %>	
 	    <!-- Calendar View tables - Tab contents for month/week/day views -->
 		<div class="row m-1">
 		
 		<div class="col-xl tab-content" id="calendarViewContent">
-			<%display.loadDisplayEvents(); %>
+			
 			<!-- Month View Tab -->
 			<%if (displayView == 0)  {%>
 		  		<div id="monthView" role="tabpanel">

@@ -10,21 +10,25 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
-@Entity
+
 public class MovieOption extends InvitationOption {
 	
 	private Movie movie;
 	private Showtime showtime;
+	private boolean searched;
+	private List<Movie> searchResults;
 	
 	public MovieOption() {
 		super();
 		setAllDay(false);
-		this.movie = null;
+		setMovie(null);
+		setSearched(false);
+		setSearchResults(new ArrayList<Movie>());
 	}
 	
 	public MovieOption(Movie movie) {
 		this();
-		this.movie = movie;
+		setMovie(movie);
 	}
 	
 	public void setOption(Movie movie, Showtime showtime) {
@@ -37,6 +41,13 @@ public class MovieOption extends InvitationOption {
 		setStartTime(dayTimeStringToDate(date, starttime));
 	}
 	
+	
+	public void searchMovies(int zip, int radius, String startDay, String endDay) {
+		//TODO
+		
+		
+		//searchResults.add(new Movie());
+	}
 	
 	
 	public Movie getMovie() {
@@ -53,6 +64,22 @@ public class MovieOption extends InvitationOption {
 
 	private void setShowtime(Showtime showtime) {
 		this.showtime = showtime;
+	}
+
+	public boolean hasSearched() {
+		return searched;
+	}
+
+	public void setSearched(boolean searched) {
+		this.searched = searched;
+	}
+
+	public List<Movie> getSearchResults() {
+		return searchResults;
+	}
+
+	public void setSearchResults(List<Movie> searchResults) {
+		this.searchResults = searchResults;
 	}
 	
 }

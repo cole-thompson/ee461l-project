@@ -307,8 +307,71 @@
 	       		<% } else if (invitation.getType() == smartcal.Invitation.Type.M) { %>
 	       		<!-- MOVIE TYPE -->
 	       		
+	       		<!-- List Existing Movie Options -->
+				<% List<smartcal.InvitationOption> options = invitation.getOptions();
+				int i = 0;
+				if (options != null && options.size() > 0)  { %>
+					<div class="row"><div class="col-md">
+	       			<table class="table table-bordered table-light">
+		       			<thead class="thead-dark"><tr class="d-flex w-100">
+		      		  			<th class="w-100">Options</th>
+		      			</tr> </thead> 
+		      			<tbody><tr><td>  
+		      				<% for (smartcal.InvitationOption option : options) {
+							i++; %>
+		      				<div class="form-group">
+			       				<div class="input-group">
+			       					<span class="input-group-addon"><%=(i)%></span>
+			       					<span class="input-group-addon">Movie</span>
+				    				<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getOptionName())%>">
+			       					<span class="input-group-addon">Theater</span>
+				    				<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getLocation())%>">
+					    			<span class="input-group-addon">Time</span>
+					    			<input readonly name="eventname" class="form-control bg-white" value="<%=(option.getTimeString())%>">
+					    		</div>
+					    	</div>
+					    	<%} %>
+						</td></tr></tbody>
+					</table>
+					</div></div>
+				<%} %>
 	       		
-	       		
+	       		<!-- Add New Movie Option -->
+				<div class="row"><div class="col-md">
+	       		<table class="table table-bordered table-light">
+	       			<thead class="thead-dark"><tr class="d-flex w-100">
+	      		  			<th class="w-100">Search for Movie Showtimes</th>
+	      			</tr> </thead> 
+	      			<tbody><tr><td>  
+				       	<form action="/newevent" name="stage2" method="post"> 	
+					    	<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+					    			<span class="input-group-addon">Zip Code</span>
+					    			<input type="number" min="10000" max="99999" name="zipcode" class="form-control">
+					    			<span class="input-group-addon">Radius (mi)</span>
+					    			<input type="number" min="1" max="100" name="zipradius" class="form-control">
+					    		</div>
+					    	</div>
+					    	<div class="form-group">
+			       				<div class="input-group">	<!-- form groups style inputs like our month/year switcher -->
+			       					<span class="input-group-addon">Search Days</span>
+					    			<span class="input-group-addon">Start</span>
+					    			<input type="date" name="startday" class="form-control">
+					    			<span class="input-group-addon">End</span>
+					    			<input type="date" name="endday" class="form-control">
+					    		</div>
+					    	</div>
+				       		
+				       		<div class="form-group">
+		  						<div class="input-group">
+									<button name="searchmovies" class="form-control form-control-lg btn-outline" type="submit">Search Movies</button>
+			  					</div>
+	  						</div>
+	  						
+				       	</form>
+	      				</td></tr></tbody>
+	       		</table>
+	       		</div></div> 
 	       		
 	       		
 	       		

@@ -16,8 +16,10 @@ import com.google.api.client.json.jackson.JacksonFactory;
 public class MovieDatabase {
 	
 	private final String baseUrl = "http://data.tmsapi.com/v1.1/movies/showings?";
-	private final String apiKey = "styt25a56dg574x5x29yaws4"; 
-	
+	private final String apiKey = "mtve7zepqf8ctr9bupb7cbzs"; 
+	private final String imgApiKey = "01d1cc7ad34031e1841237b9c246a391";
+	private final String baseImgUrl = "https://api.themoviedb.org/3/search/movie?api_key=01d1cc7ad34031e1841237b9c246a391&query=";
+	private final String baseImgLink = "https://image.tmdb.org/t/p/w500/";
 	private List<Movie> movies;
 	
 	public List<Movie> getMovies() { return movies; }
@@ -141,6 +143,40 @@ public class MovieDatabase {
 		
 	}
 	
+	public String getImageUrl(String title) {
+		String res = null;
+		String queryString = title.replace(' ', '+');
+		
+		try {
+			//gonna try to get these damn images eh? let's make the URL
+			URLFetchService urlfetchservice = URLFetchServiceFactory.getURLFetchService(); //app engine's HTTP request service
+			HTTPResponse response = urlfetchservice.fetch(new URL(baseImgUrl + queryString));
+			
+			String json = new String(response.getContent());
+			
+			if(json.length() > 1) {
+				//assume it returned a valid JSON object
+				JsonFactory factory = new JacksonFactory();
+				JsonParser parser = factory.createJsonParser(json);
+				
+				if(parser.nextToken() == JsonToken.START_OBJECT) {
+					//go to postfield
+					
+					parser.skipToKey("poster_path");
+					res = parser.getText();
+					res = baseImgLink + res;
+				}
+				
+			}
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		return res;
+	}
+	
 	
 	/*  MovieDatabase(String fullJson)
 	 *  builds a movie database by parsing the entire response json object into corresponding movie objects
@@ -164,6 +200,10 @@ public class MovieDatabase {
 				//get title string
 				parser.skipToKey("title");
 				String title = parser.getText();
+				
+				//trying to get an image
+				//String imgUrl = getImageUrl(title);
+				
 				parser.nextToken();
 				
 				//showtimes array
@@ -187,7 +227,7 @@ public class MovieDatabase {
 					showtimes.add(new Showtime(name, dateTime, title));
 					if(t.equals(JsonToken.END_ARRAY)) break; else { multiTime = true; }
 				}
-				movies.add(new Movie(title, showtimes));
+				movies.add(new Movie(title, showtimes, null));
 			}
 		}
 		

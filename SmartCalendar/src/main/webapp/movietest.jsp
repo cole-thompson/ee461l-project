@@ -9,14 +9,7 @@
       	String date = "2017-12-06";
     		String zip = "78705";
       	smartcal.MovieDatabase g = new smartcal.MovieDatabase(date, zip);
-        for(smartcal.Movie m : g.getMovies()) {
-        		if(m.getImgUrl() == null) {
-        			%>
-        			<img src="NoMovieImage.png">
-        		<% } else {
-        			
-        		}
-        }
+        out.println(g.toString());
       %>
    </body>
 </html>

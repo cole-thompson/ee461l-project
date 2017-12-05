@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Movie {
+	
+		private String imgUrl;
+		
+		public String getImgUrl() { return imgUrl; }
 		
 		private String title;
 	
@@ -18,9 +22,10 @@ public class Movie {
 			this.showtimes = new ArrayList<Showtime>();
 		}
 		
-		public Movie(String title, List<Showtime> showtimes) {
+		public Movie(String title, List<Showtime> showtimes, String imgUrl) {
 			this.title = title;
 			this.showtimes = showtimes;
+			this.imgUrl = imgUrl;
 		}
 		
 		@Override

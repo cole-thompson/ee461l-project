@@ -100,7 +100,7 @@ public class CalEvent {
 		}
 		int startMinute = startCal.get(Calendar.MINUTE);
 		String startMinuteString = String.format("%02d", startMinute);
-		int startAmPm = startCal.getMaximum(Calendar.AM_PM);
+		int startAmPm = startCal.get(Calendar.AM_PM);
 		if(endTime != null) {
 			endCal.setTime(endTime);
 		
@@ -110,7 +110,7 @@ public class CalEvent {
 			}
 			int endMinute = endCal.get(Calendar.MINUTE);
 			String endMinuteString = String.format("%02d", endMinute);
-			int endAmPm = endCal.getMaximum(Calendar.AM_PM);
+			int endAmPm = endCal.get(Calendar.AM_PM);
 			
 			String s = startHour + ":" + startMinuteString + getAmPmString(startAmPm);
 			s += "-";

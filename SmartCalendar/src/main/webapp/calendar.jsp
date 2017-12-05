@@ -148,10 +148,7 @@
        		System.out.println("friendslist found for " + accountData.getUsername() + ": " + flist);
        	}
        	
-       	
-     	 //load the events for a user into the display object
-	    display.loadDisplayEvents();
-       	
+       	       	
      	//View tab - Month(0), Week(1), or Day(2) view
      	int displayView = display.getDisplayView(); 
      			
@@ -246,7 +243,7 @@
 		<div class="row m-1">
 		
 		<div class="col-xl tab-content" id="calendarViewContent">
-			
+			<%display.loadDisplayEvents(); %>
 			<!-- Month View Tab -->
 			<%if (displayView == 0)  {%>
 		  		<div id="monthView" role="tabpanel">
@@ -290,14 +287,16 @@
 			            			for (int e = 0; e < numEventsToDisplay; e++) {
 			            				//invisible elements help keep sizing constant
 			            				if (e >= numEvents) {
+			            					System.out.println("Invisible Events");
 			            					%> <li class="list-group-item invisible"></li> <%
 			            				}
-			            				else if (numEvents > numEventsToDisplay && e == numEvents - 2) {
+			            				else if (numEvents > numEventsToDisplay && e == numEventsToDisplay - 1) {
 			            					//if there are more events than can be shown, indicate that there are more
-			            					%> <li class="list-group-item">(more events)</li> <%
+			            					%> <li class="list-group-item p-1">(more events)</li> <%
 			            				}
 			            				else {
 			            					smartcal.CalEvent event = todaysEvents.get(e);
+			            					System.out.println("Actual Events: " + event.getName());
 			            					if (event.isAllDay()) {
 			            						%><li class="list-group-item p-1"><small><%=(event.getName())%></small></li><%
 			            					}

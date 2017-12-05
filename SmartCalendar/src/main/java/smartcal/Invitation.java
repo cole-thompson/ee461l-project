@@ -113,6 +113,24 @@ public class Invitation {
 		return friends.size();
 	}
 	
+	public MovieOption findMovieOptionNotFinished() {
+		for (MovieOption opt : getMovieOptions()) {
+			if (!opt.hasFinished()) {
+				return opt;
+			}
+		}
+		return null;
+	}
+	
+	public MovieOption findMovieOptionNotSearched() {
+		for (MovieOption opt : getMovieOptions()) {
+			if (!opt.hasSearched()) {
+				return opt;
+			}
+		}
+		return null;
+	}
+	
 	//GETTERS AND SETTERS
 	
 	public Type getType() {

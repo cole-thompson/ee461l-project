@@ -1,6 +1,7 @@
 package smartcal;
 
 public class Showtime {
+	
 		private String movieTitle;
 		
 		public String getMovieTitle() { return movieTitle; }
@@ -32,4 +33,42 @@ public class Showtime {
 		public String toString() {
 			return "Theater location: " + theater + "\nTime: " + dateTime;
 		}
+		
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((dateTime == null) ? 0 : dateTime.hashCode());
+			result = prime * result + ((movieTitle == null) ? 0 : movieTitle.hashCode());
+			result = prime * result + ((theater == null) ? 0 : theater.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Showtime other = (Showtime) obj;
+			if (dateTime == null) {
+				if (other.dateTime != null)
+					return false;
+			} else if (!dateTime.equals(other.dateTime))
+				return false;
+			if (movieTitle == null) {
+				if (other.movieTitle != null)
+					return false;
+			} else if (!movieTitle.equals(other.movieTitle))
+				return false;
+			if (theater == null) {
+				if (other.theater != null)
+					return false;
+			} else if (!theater.equals(other.theater))
+				return false;
+			return true;
+		}
+		
 	}

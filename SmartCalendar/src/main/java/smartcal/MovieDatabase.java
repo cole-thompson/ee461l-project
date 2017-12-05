@@ -165,6 +165,10 @@ public class MovieDatabase {
 				parser.skipToKey("title");
 				String title = parser.getText();
 				parser.nextToken();
+				//get runtime
+				parser.skipToKey("runTime");
+				String runTime = parser.getText();
+				parser.nextToken();
 				//showtimes array
 				ArrayList<Showtime> showtimes = new ArrayList<Showtime>();
 				parser.skipToKey("showtimes");
@@ -186,7 +190,7 @@ public class MovieDatabase {
 					showtimes.add(new Showtime(name, dateTime, title));
 					if(t.equals(JsonToken.END_ARRAY)) break; else { multiTime = true; }
 				}
-				movies.add(new Movie(title, showtimes));
+				movies.add(new Movie(title, runTime, showtimes));
 			}
 		}
 		
@@ -209,5 +213,14 @@ public class MovieDatabase {
 	
 	public MovieDatabase(String date, String zip, String radius) {
 		makeRadiusRequest(date, zip, radius);
+	}
+	
+	@Override
+	public String toString() {
+		String res = new String();
+		for(Movie m: movies) {
+			res += m.toString() + "\n";
+		}
+		return res; 
 	}
 }

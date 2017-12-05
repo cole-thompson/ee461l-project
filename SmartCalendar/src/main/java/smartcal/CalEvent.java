@@ -117,6 +117,14 @@ public class CalEvent {
 		return event;
 	}
 	
+	public static CalEvent invitationMovieOptionToEvent(Invitation invitation, MovieOption option) {
+		CalEvent event = new CalEvent(invitation.getCreator(), option.getStartTime(), option.getEndTime());
+		event.setLocation(option.getLocation());
+		event.setAllDay(option.getAllDay());
+		event.setName(invitation.getName() + ": " + option.getOptionName());
+		return event;
+	}
+	
 	/* GETTERS AND SETTERS */
 	
 	public List<User> getPeople() {

@@ -118,23 +118,44 @@ public class SocialServlet extends HttpServlet {
     	InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
     	int index = currentUserInvitations.getInvitations().indexOf(currentUserInvitations.getDisplayedInvitation());
     	Invitation displayInvitation = currentUserInvitations.getInvitations().get(index);
-    	List<InvitationOption> options = displayInvitation.getOptions();
-    	for (int i = 0; i < options.size(); i++) {
-    		if (req.getParameter("option" + i) != null) {
-    			InvitationOption option = options.get(i);
-    			CalEvent event = CalEvent.invitationOptionToEvent(displayInvitation, option);
-    			for (User u : displayInvitation.getFriends()) {
-    				CalEventList friendEventList = ObjectifyService.ofy().load().type(CalEventList.class).filter("user", u).first().now();
-    				friendEventList.addEvent(event);
-    				ObjectifyService.ofy().save().entity(friendEventList).now();
-    				InvitationsList friendInviteList = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", u).first().now();
-    				friendInviteList.getInvitations().remove(displayInvitation);
-    				ObjectifyService.ofy().save().entity(friendInviteList).now();
-    			}
-    			currentUserInvitations.removeInvitation(displayInvitation);
-    			ObjectifyService.ofy().save().entity(currentUserInvitations).now();
-    		}	
+    	
+    	if (displayInvitation.getType() == Invitation.Type.G) {
+    		List<InvitationOption> options = displayInvitation.getOptions();
+        	for (int i = 0; i < options.size(); i++) {
+        		if (req.getParameter("option" + i) != null) {
+        			InvitationOption option = options.get(i);
+        			CalEvent event = CalEvent.invitationOptionToEvent(displayInvitation, option);
+        			for (User u : displayInvitation.getFriends()) {
+        				sendInvitation(displayInvitation, event, u);
+        			}
+        			currentUserInvitations.removeInvitation(displayInvitation);
+        			ObjectifyService.ofy().save().entity(currentUserInvitations).now();
+        		}	
+        	}
     	}
+    	else if (displayInvitation.getType() == Invitation.Type.M) {
+    		List<MovieOption> options = displayInvitation.getMovieOptions();
+        	for (int i = 0; i < options.size(); i++) {
+        		if (req.getParameter("option" + i) != null) {
+        			MovieOption option = options.get(i);
+        			CalEvent event = CalEvent.invitationMovieOptionToEvent(displayInvitation, option);
+        			for (User u : displayInvitation.getFriends()) {
+        				sendInvitation(displayInvitation, event, u);
+        			}
+        			currentUserInvitations.removeInvitation(displayInvitation);
+        			ObjectifyService.ofy().save().entity(currentUserInvitations).now();
+        		}	
+        	}
+    	}
+    }
+    
+    private void sendInvitation(Invitation i, CalEvent e, User u) {
+    	CalEventList friendEventList = ObjectifyService.ofy().load().type(CalEventList.class).filter("user", u).first().now();
+		friendEventList.addEvent(e);
+		ObjectifyService.ofy().save().entity(friendEventList).now();
+		InvitationsList friendInviteList = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", u).first().now();
+		friendInviteList.getInvitations().remove(i);
+		ObjectifyService.ofy().save().entity(friendInviteList).now();
     }
     
 

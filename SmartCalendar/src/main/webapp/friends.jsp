@@ -56,7 +56,6 @@
 			System.out.println("no account data found for: " + user.getNickname());
 			%>
 			
-				%>
 				<div class="container border border-primary p-3 m-3 bg-white">
 	  				<div class="row"><div class="col">
 	  					<h1 class="">It's your first time using <span class="text-primary">Smart Calendar!</span></h1>

@@ -90,13 +90,24 @@ public class SocialServlet extends HttpServlet {
     	InvitationsList currentUserInvitations = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", user).first().now();
     	int index = currentUserInvitations.getInvitations().indexOf(currentUserInvitations.getDisplayedInvitation());
     	Invitation displayInvitation = currentUserInvitations.getInvitations().get(index);
-    	
+    	System.out.println("logging a vote from " + user.getNickname());
     	if (!displayInvitation.hasPersonVoted(user)) {
     		if (displayInvitation.getType() == Invitation.Type.G) {
 		    	List<InvitationOption> options = displayInvitation.getOptions();
+    			System.out.println("found options " + options);
 		    	for (int i = 0; i < options.size(); i++) {
 		    		if (req.getParameter("option" + i) != null) {
 		    			options.get(i).addAvailablePerson(user);
+		    			for (User u : displayInvitation.getFriends()) {
+		    				if (!user.equals(u)) {
+			    		    	InvitationsList invs = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", u).first().now();
+			    		    	int invIndex = invs.getInvitations().indexOf(displayInvitation);
+			    		    	invs.getInvitations().get(invIndex).personVoted(user);
+			    		    	int optIndex = invs.getInvitations().get(invIndex).getOptions().indexOf(options.get(i));
+			    		    	invs.getInvitations().get(invIndex).getOptions().get(optIndex).addAvailablePerson(user);
+			    		    	ObjectifyService.ofy().save().entity(invs).now();
+		    				}
+		    			}
 		    		}
 		    	}
     		}
@@ -105,6 +116,16 @@ public class SocialServlet extends HttpServlet {
 		    	for (int i = 0; i < options.size(); i++) {
 		    		if (req.getParameter("option" + i) != null) {
 		    			options.get(i).addAvailablePerson(user);
+		    			for (User u : displayInvitation.getFriends()) {
+		    				if (!user.equals(u)) {
+			    		    	InvitationsList invs = ObjectifyService.ofy().load().type(InvitationsList.class).filter("user", u).first().now();
+			    		    	int invIndex = invs.getInvitations().indexOf(displayInvitation);
+			    		    	invs.getInvitations().get(invIndex).personVoted(user);
+			    		    	int optIndex = invs.getInvitations().get(invIndex).getOptions().indexOf(options.get(i));
+			    		    	invs.getInvitations().get(invIndex).getOptions().get(optIndex).addAvailablePerson(user);
+			    		    	ObjectifyService.ofy().save().entity(invs).now();
+		    				}
+		    			}
 		    		}
 		    	}
     		}

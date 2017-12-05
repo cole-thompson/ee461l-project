@@ -62,10 +62,10 @@ public class UserDisplayData {
 		List<CalEvent> events = eventList.getEvents();
 		for (CalEvent event : events) {
 			Date dayDate = event.getStartTime();
-			Calendar day = Calendar.getInstance();
-			day.setTime(dayDate);
-			if (day.get(Calendar.MONTH) == displayMonth) {
-				int date = day.get(Calendar.DATE);
+			
+			//System.out.println("Loading display events. eventmonth:" + dayDate.getMonth() + " displaymonth:" +  displayMonth + "eventyear:" +  dayDate.getYear() + " displayyear:" +  displayYear);
+			if (dayDate.getMonth() == displayMonth && dayDate.getYear() == displayYear) {
+				int date = dayDate.getDate();
 				if (getDisplayView() == 2) {
 					if (date == displayDate) {
 						addDisplayEvent(date, event);
@@ -176,7 +176,7 @@ public class UserDisplayData {
 				displayMonth++;
 			}
 			else {
-				displayMonth = 1;
+				displayMonth = 0;
 				displayYear++;
 			}
 		}
@@ -195,7 +195,39 @@ public class UserDisplayData {
 	 * Cycle to next or prev month if needed, set all vars
 	 */
 	public void changeDay(boolean forward) {
-		//TODO
+		Calendar c;
+		if (displayDate == -1) {
+			c = new GregorianCalendar();
+			displayToday();
+		}
+		else {
+			c = new GregorianCalendar(displayYear, displayMonth, 1);
+		}
+		
+		if (forward) {		//increment week up
+			int numDays = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+			c = new GregorianCalendar(displayYear, displayMonth, numDays);
+			if(displayDate + 1 <= numDays) {
+				displayDate++;
+			}else {
+				displayDate = 1;
+				changeMonth(true);
+			}
+		}
+		else {				//increment week down
+			if (displayDate - 1 >= 1) {
+				displayDate--;
+			}
+			else {
+				changeMonth(false);
+				c = new GregorianCalendar(displayYear, displayMonth, 1);
+				int numDays = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+				displayDate = numDays;
+				c = new GregorianCalendar(displayYear, displayMonth, numDays);
+				int numWeeks = c.get(Calendar.WEEK_OF_MONTH);
+				displayWeek = numWeeks;
+			}
+		}
 	}
 	
 	

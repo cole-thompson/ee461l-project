@@ -37,6 +37,7 @@ public class CalendarServlet extends HttpServlet {
        	//check all the different forms in calendar.jsp
        	if (checkTodayButton(display, req)) {}
        	else if (checkWeekLRButtons(display, req)) {}
+       	else if (checkDayLRButtons(display,req)) {}
        	else if (checkViewButtons(display, req)) {}
        	else {
        		updateCalendarDisplayMonth(display, req);
@@ -97,6 +98,20 @@ public class CalendarServlet extends HttpServlet {
         }
         if (req.getParameter("right") != null) {
         	display.changeWeek(true);
+        	pressed = true;
+        }
+    	return pressed;
+    }
+    
+    private boolean checkDayLRButtons(UserDisplayData display, HttpServletRequest req) {
+    	boolean pressed = false;
+    	//check the "Today" button
+        if (req.getParameter("leftDay") != null) {
+        	display.changeDay(false);
+        	pressed = true;
+        }
+        if (req.getParameter("rightDay") != null) {
+        	display.changeDay(true);
         	pressed = true;
         }
     	return pressed;

@@ -387,11 +387,26 @@
       		<!-- Day View Tab -->  	
       		<% } else if (displayView == 2) { %>
 				<div id="dayView" role="tabpanel">
-					<table class="table table-bordered table-light table-responsive-md">
-						<thead class="thead-dark">
-							<tr><th colspan="2" scope="col">Day View</th></tr>
+					<form class="form-inline" action="/calendar" name="viewLeftRightDay" method="post">
+					<table class="table w-100">
+						<thead class="thead-dark w-100">
+							<tr class="d-flex"><th class="w-100">Day View: <%=display.getDisplayMonth() + 1 %>/<%=display.getDisplayDate() %></th>
+							<!-- L/R buttons for day view -->
+							<th width="10%" class="p-2 d-flex justify-content-end">
+	    		  				<div class="btn-group btn-group-sm" role="group" aria-label="leftRightButtons">
+									<button type="submit" class="btn btn-outline-light btn-sm" name="leftDay">
+						  				<span aria-hidden="true">&laquo;</span>
+						        		<span class="sr-only">Previous</span>
+						  			</button>
+						  			<button type="submit" class="btn btn-outline-light btn-sm" name="rightDay">
+						  				<span aria-hidden="true">&raquo;</span>
+						     		   <span class="sr-only">Next</span>
+						  			</button>
+								</div>
+							</th></tr>
 						</thead>       				          	
 					</table>
+					</form>
 					<%smartcal.CalEventList currentUserEvents = ObjectifyService.ofy().load().type(smartcal.CalEventList.class).filter("user", user).first().now();
 					boolean anythingToday = false;%>
 					<div class="list-group">
@@ -414,7 +429,7 @@
 				   			</div>
 			          	<%}
 			          	for(smartcal.CalEvent ev : orderedCurrentEvents) {
-			          		if(ev.getStartTime().getDate() == currentDate && ev.getStartTime().getMonth() == currentMonth && ev.getStartTime().getYear() == currentYear){			          		
+			          		if(ev.getStartTime().getDate() == display.getDisplayDate() && ev.getStartTime().getMonth() == display.getDisplayMonth() && ev.getStartTime().getYear() == display.getDisplayYear()){			          		
 			          		%> 
 			          		<div class="d-flex w-100 justify-content-between">
      							 <h5 class="mb-1">Name: <%=(ev.getName()) %></h5>

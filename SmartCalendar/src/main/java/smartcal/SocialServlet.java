@@ -108,6 +108,7 @@ public class SocialServlet extends HttpServlet {
 		    		}
 		    	}
     		}
+    		currentUserInvitations.setDisplayedInvitation(displayInvitation);
     		displayInvitation.personVoted(user);
     		ObjectifyService.ofy().save().entity(currentUserInvitations).now();
     	}

@@ -1,5 +1,6 @@
 # Smart Calendar EE461L
-Project for Software Design Lab (EE461L) at the University of Texas at Austin. Smart Calendar and Scheduler
+Project for Software Design Lab (EE461L) at the University of Texas at Austin. Smart Calendar and Scheduler<br />
+http://ee461lsmartcalendar.appspot.com/
 
 ## About
 When planning events with many people, everyone tends to have a different opinion. The purpose of this calendar is to make it easy for a user to create event invitations that have multiple options. This scheduler allows users to vote on options before the creator finalizes an event. Movie events are also supported, which allow you to search for movies and select showtimes during event creation.
